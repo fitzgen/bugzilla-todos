@@ -35,9 +35,6 @@ $(function() {
 
     collection.on("add", this.addReview, this);
     collection.on("reset", this.render, this);
-
-    // update queue from the server
-    collection.fetch();
   }
   ReviewList.prototype = {
     el: $("#reviews"),
