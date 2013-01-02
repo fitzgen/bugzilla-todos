@@ -8,23 +8,12 @@ $(function() {
 
    window.Reviews = Backbone.Collection.extend({
       model: Review,
-
       url: '/',
-
       fetch: function() {
          bzhome.user.requests(function(err, requests) {
           console.error(err);
             this.reset(requests.all);
          }.bind(this));
-      },
-
-      initialize: function() {
-         this.bind("reset", this.resetStore, this);
-      },
-
-      resetStore: function() {
-         Backbone.sync("clear", this);
-         Backbone.sync("create", this);
       }
    });
    window.reviews = new Reviews;

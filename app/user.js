@@ -101,7 +101,13 @@ User.prototype.requests = function(callback) {
       superReviews.sort(utils.byTime);
       reviews.sort(utils.byTime);
       feedbacks.sort(utils.byTime);
+      all.sort(utils.byTime);
 
-      callback(null, { superReviews: superReviews, reviews: reviews, feedbacks: feedbacks });
+      callback(null, {
+         superReviews: superReviews,
+         reviews: reviews,
+         feedbacks: feedbacks,
+         all: all
+      });
    });
 }

@@ -4,20 +4,20 @@ Handlebars.registerPartial("bug_tooltip", "bug {{bug.id}} - " +
 );
 
 Handlebars.registerHelper('show_bug', function(id) {
-   return bzhome.base + "/show_bug.cgi?id=" + id;
+   return MyReviews.base + "/show_bug.cgi?id=" + id;
 });
 
 Handlebars.registerHelper('show_comment', function(id, comment) {
-   return bzhome.base + "/show_bug.cgi?id=" + id + "#c" + comment;
+   return MyReviews.base + "/show_bug.cgi?id=" + id + "#c" + comment;
 })
 
 Handlebars.registerHelper('show_attach', function(id, action) {
    action = action || "diff";
-   return bzhome.base + "/attachment.cgi?id=" + id + "&action=" + action;
+   return MyReviews.base + "/attachment.cgi?id=" + id + "&action=" + action;
 })
 
 Handlebars.registerHelper('show_splinter', function(id, attachId) {
-   return bzhome.base + "page.cgi?id=splinter.html&bug=" +
+   return MyReviews.base + "page.cgi?id=splinter.html&bug=" +
      id + "&attachment=" + attachId;
 })
 
@@ -27,7 +27,7 @@ Handlebars.registerHelper('timeago', function(date) {
 
 Handlebars.registerHelper('linkify', function(text) {
    return linkify(text).replace(/bug (\d+)/gi, "<a target=_blank href="
-      + bzhome.base + "/show_bug.cgi?id=$1>$&</a>")
+      + MyReviews.base + "/show_bug.cgi?id=$1>$&</a>")
 })
 
 Handlebars.registerHelper('idify', function(name) {

@@ -1,63 +1,69 @@
 $(document).ready(function() {
-   /* save the user info to localStorage and populate data */
-   bzhome.login();
+  MyReviews.initialize();
+  MyReviews.loadUser();
+  MyReviews.populate();
+});
 
-   var input = $("#login-name");
-   input.val(bzhome.email);
-   input.blur(function() {
+var MyReviews = {
+  base: "https://bugzilla.mozilla.org",
+
+  get email() {
+   return localStorage['bzhome-email'];
+  },
+
+  set email(address) {
+   localStorage["bzhome-email"] = address;
+   this.populate();
+  },
+
+  initialize: function() {
+    $("#login-name").val(this.email);
+    $("#login-name").blur(function() {
       var email = input.val();
-      if (email && email != bzhome.email) {
-         bzhome.login(email);
+      if (email) {
+         this.email = email;
       }
-   });
+    });
 
-   $("#login-form").submit(function(event) {
+    $("#login-form").submit(function(event) {
       // when the user presses "Enter" in login input
       event.preventDefault();
       input.blur();
-   });
+    });
+  },
 
-   var reviewlist = new ReviewList;
-   $("#content").hide();
-});
-
-var bzhome = {
-   base: "https://bugzilla.mozilla.org",
-
-   get email() {
-      return localStorage['bzhome-email'];
-   },
-
-   login : function(email) {
+  loadUser: function() {
+    email = utils.queryFromUrl()['user'];
+    if (!email) {
+      email = this.email; // from localStorage
       if (!email) {
-         email = utils.queryFromUrl()['user'];
-         if (!email) {
-            email = bzhome.email; // in localStorage
-            if (!email) {
-               $("#login-name").addClass("logged-out");
-               $("#content").hide();
-               return;
-            }
-         }
+        $("#login-name").addClass("logged-out");
+        $("#content").hide();
+        return false;
       }
-      $("#login-name").removeClass("logged-out");
+    }
+    $("#login-name").removeClass("logged-out");
+    this.user = new User(email);
 
-      localStorage['bzhome-email'] = email;
-      bzhome.user = new User(email, bzhome.bugLimit);
+    $("#content").show();
+  },
 
-      reviews.fetch();
-      $("#content").show();
-   },
+  populate: function() {
+    var reviewQueue = new Reviews();
+    var reviewlist = new ReviewList(reviewQueue);
 
-   spinner : function(elem, inline) {
-      var spinner = $("<img src='lib/indicator.gif' class='spinner'></img>");
-      if (inline) {
-         spinner.css({display: 'inline'});
-      }
-      elem.append(spinner);
-   },
+    reviewQueue.fetch();
+  },
 
-   isOpen : function(bug) {
-     return bzhome.closedStatus.indexOf(bug.status) < 0
-   }
+  spinner : function(elem, inline) {
+    var spinner = $("<img src='lib/indicator.gif' class='spinner'></img>");
+    if (inline) {
+      spinner.css({display: 'inline'});
+    }
+    elem.append(spinner);
+  },
+
+  isOpen : function(bug) {
+    return bzhome.closedStatus.indexOf(bug.status) < 0
+  }
 };
