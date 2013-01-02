@@ -1,65 +1,63 @@
 $(function() {
-   window.Review = Backbone.Model.extend({
-      attachment: null,
-      bug: null,
-      time: '',
-      url : '/'
-   });
+  window.Reviews = function() {
+    this.items = [];
+    _.extend(this, Backbone.Events);
+  }
+  Reviews.prototype = {
+    fetch: function() {
+      MyReviews.user.requests(function(err, requests) {
+        if (err) throw err;
+        this.reset(requests.all);
+      }.bind(this));
+    },
 
-   window.Reviews = Backbone.Collection.extend({
-      model: Review,
-      url: '/',
-      fetch: function() {
-         bzhome.user.requests(function(err, requests) {
-          console.error(err);
-            this.reset(requests.all);
-         }.bind(this));
-      }
-   });
-   window.reviews = new Reviews;
+    reset: function(items) {
+      this.items = items;
+      this.trigger("reset", items);
+    }
+  }
 
-   window.ReviewRow = Backbone.View.extend({
-      tagName: "div",
+  function ReviewRow(review) {
+    this.review = review;
+    this.el = $("<div/>");
+    this.el.addClass("review-item")
+  }
+  ReviewRow.prototype = {
+    template: Handlebars.compile($("#review-item").html()),
+    render: function() {
+      $(this.el).html(this.template(this.review));
+      return this;
+    }
+  }
 
-      className: "review-item",
+  window.ReviewList = function(collection) {
+    this.collection = collection;
 
-      template: Handlebars.compile($("#review-item").html()),
+    collection.on("add", this.addReview, this);
+    collection.on("reset", this.render, this);
 
-      render: function() {
-         $(this.el).html(this.template(this.model.toJSON()));
-         return this;
-      }
-   });
+    // update queue from the server
+    collection.fetch();
+  }
+  ReviewList.prototype = {
+    el: $("#reviews"),
+    list: $("#all-reviews-list"),
+    type: "reviews",
 
-   window.ReviewList = Backbone.View.extend({
-      el: $("#reviews"),
+    render: function() {
+      this.list.empty();
 
-      list: $("#all-reviews-list"),
+      this.collection.items.forEach(function(item) {
+        this.addReview(item);
+      }.bind(this));
 
-      type: "reviews",
+      this.el.find(".count").html(this.collection.length);
+      $(".timeago").timeago();
+    },
 
-      initialize: function() {
-         var collection = this.collection = reviews;
-
-         collection.bind("add", this.addReview, this);
-         collection.bind("reset", this.render, this);
-
-         // get list from bugzilla server
-         collection.fetch();
-      },
-
-      render: function(reviews) {
-         this.list.empty();
-         this.collection.each(_(this.addReview).bind(this));
-         this.el.find(".count").html(this.collection.length);
-         $(".timeago").timeago();
-      },
-
-      addReview: function(review) {
-         var view = new ReviewRow({
-            model: review
-         });
-         this.list.append(view.render().el);
-      }
-   });
-});
+    addReview: function(review) {
+      var view = new ReviewRow(review);
+      this.list.append(view.render().el);
+    }
+  }
+})
