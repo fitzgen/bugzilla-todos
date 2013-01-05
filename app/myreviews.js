@@ -1,6 +1,7 @@
 $(document).ready(function() {
   MyReviews.initialize();
   MyReviews.loadUser();
+  MyReviews.spinner($("#all-reviews-list"));
 });
 
 var MyReviews = {
