@@ -19,6 +19,9 @@ var MyReviews = {
     this.reviewQueue = new Reviews();
     this.reviewlist = new ReviewList(this.reviewQueue);
 
+    this.checkinQueue = new Checkins();
+    this.checkinlist = new CheckinList(this.checkinQueue);
+
     var input = $("#login-name");
     input.val(this.email);
     input.blur(function() {
@@ -60,6 +63,7 @@ var MyReviews = {
   update: function() {
     if (this.user) {
       this.reviewQueue.fetch();
+      this.checkinQueue.fetch();
     }
   },
 

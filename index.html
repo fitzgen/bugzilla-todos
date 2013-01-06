@@ -19,6 +19,7 @@
   <script src="app/utils.js"></script>
 
   <script src="app/reviews.js"></script>
+  <script src="app/checkins.js"></script>
   <script src="app/myreviews.js"></script>
 
   <script id="review-item" type="text/html">
@@ -37,6 +38,19 @@
       </a>
       <span class="timeago {{urgentify attachment.last_change_time}}"
             title="{{attachment.last_change_time}}"></span>
+    </div>
+  </script>
+
+  <script id="checkin-item" type="text/html">
+    <div class="checkin-attachment">
+      <span class="att-desc">{{attachment.description}}</span>
+      <span class="att-file">{{attachment.file_name}}</span>
+      <span class="timeago {{urgentify attachment.last_change_time}}"
+            title="{{attachment.last_change_time}}"></span>
+    </div>
+    <div class="checkin-bug">
+     <span class="bug-id">{{bug.id}}</span> -
+     <span class="bug-summ">{{bug.summary}}</span>
     </div>
   </script>
 
@@ -65,7 +79,7 @@
            </div>
          </div>
        </section>
-       <section id="topatch">
+       <section id="patch">
          <div class="header">To Patch
           <span class="count"><span class="tally"></span> bugs</span>
          </div>
