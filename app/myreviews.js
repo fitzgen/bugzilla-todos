@@ -2,6 +2,11 @@ $(document).ready(function() {
   MyReviews.initialize();
   MyReviews.loadUser();
   MyReviews.spinner($("#all-reviews-list"));
+
+  MyReviews.user.needsCheckin(function(err, requests) {
+    console.log(requests);
+    console.log(requests.length);
+  })
 });
 
 var MyReviews = {

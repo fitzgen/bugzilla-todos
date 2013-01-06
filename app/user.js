@@ -48,6 +48,49 @@ User.prototype.reviews = function(callback) {
   });
 }
 
+User.prototype.needsCheckin = function(callback) {
+   var name = this.username.replace(/@.+/, ""); // can't get email if not logged in
+
+   this.client.searchBugs({
+      'field0-0-0': 'attachment.attacher',
+      'type0-0-0': 'equals',
+      'value0-0-0': this.username,
+      'field0-1-0': 'whiteboard',
+      'type0-1-0': 'not_contains',
+      'value0-1-0': 'fixed',
+      'field0-2-0': 'flagtypes.name',
+      'type0-2-0': 'substring',
+      'value0-2-0': 'review+',
+      'status': ['NEW','UNCONFIRMED','REOPENED'],
+      include_fields: 'id,summary,status,resolution,last_change_time,attachments'
+   },
+   function(err, bugs) {
+      if (err) {
+        return callback(err);
+      }
+
+      var requests = [];
+
+      bugs.forEach(function(bug) {
+         // only add attachments with this user as requestee
+         bug.attachments.forEach(function(att) {
+            if (att.is_obsolete || !att.flags) {
+               return;
+            }
+            if (att.is_patch && att.attacher.name == name) {
+               var request = {
+                  attachment: att,
+                  bug: bug,
+                  time: att.last_change_time
+               };
+               requests.push(request);
+            }
+         });
+      });
+      callback(null, requests);
+  });
+}
+
 User.prototype.requests = function(callback) {
    var name = this.username.replace(/@.+/, ""), // can't get full email if not logged in
        superReviews = [],
