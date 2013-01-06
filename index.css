@@ -1,0 +1,181 @@
+body {
+  font-family: Helvetica, Arial, sans-serif;
+  font-size: 13px;
+  color: #222;
+}
+
+body, input, select, optgroup {
+   font-family: Helvetica, sans-serif;
+}
+
+a {
+  text-decoration: none;
+  color: #006ECE;
+}
+a:hover {
+  text-decoration: underline;
+}
+a:visited {
+  color: #4F4A9B;
+}
+
+section {
+  box-shadow: rgba(0,0,0,.2) 0 .15em 0.6em;
+  border-radius: 4px 4px 0 0;
+}
+
+#container {
+  display: -moz-box;
+  display: -webkit-box;
+  -moz-box-align: center;
+  -webkit-box-align: center;
+  -moz-box-orient: vertical;
+  -webkit-box-orient: vertical;
+  width: 100%;
+}
+
+#header {
+  font-size: 1.2em;
+  text-align: center;
+  margin: 40px 0 30px 0;
+}
+
+#bug {
+  margin-bottom: -2px;
+  margin-right: 1px;
+}
+
+#login {
+  font-weight: normal;
+  margin-left: 0.1em;
+}
+
+#login-form {
+  display: inline-block;
+}
+
+#login-name {
+  margin-left: 0px;
+  color: inherit;
+  font-size: 100%;
+  box-sizing: border-box;
+  border: none;
+  vertical-align: 0px;
+  margin-bottom: 2px;
+  min-width: 50px;
+  padding: 0.3em 0.3em 0.3em 0.3em;
+  font-style: italic;
+  border: 1px solid transparent;
+}
+
+#login-name.logged-out {
+  border: 1px solid #e9e9e9;
+}
+
+#login-name:focus {
+  border: 1px solid #aaa;
+}
+
+.header {
+  font-size: 1.1em;
+  border-top: 1px solid #ccc;
+  border-left: 1px solid #ccc;
+  border-right: 1px solid #ccc;
+  border-radius: 2px 2px 0 0;
+  padding: 9px 14px;
+  font-weight: bold;
+  background: linear-gradient(#ededed, #eee);
+}
+
+#all-reviews-list {
+  background-color: white;
+  border: 1px solid #CCC;
+}
+
+.count {
+  color: #888;
+  margin-left: 2px;
+}
+
+.count::before {
+  content: "(";
+}
+
+.count::after {
+  content: ")";
+}
+
+.closed-bug * {
+  text-decoration: line-through;
+}
+
+.suffix-time {
+  margin-left: 5px;
+}
+
+.spinner {
+  display: block;
+  margin: auto;
+}
+
+.suffix {
+  margin-top: 0.2em;
+  color: #555;
+  font-size: 94%;
+}
+
+.bug-id {
+  -moz-text-decoration-line: underline;
+  -moz-text-decoration-style: dotted;
+   margin-right: 4px;
+}
+
+.review-item {
+  padding: 1em;
+}
+
+.review-item:hover {
+  background-color: hsl(60, 95%, 96%);
+}
+
+.review-item:not(:last-child) {
+  border-bottom: 1px solid #ccc;
+}
+
+.review-attachment {
+  font-weight: bold;
+}
+
+.review-type {
+  color: inherit;
+  background-color: #f1f1f1;
+  border: 1px solid #ededed;
+  padding: 2px 4px;
+  float: right;
+  cursor: pointer;
+}
+
+.review-type::after {
+  font-weight: normal;
+  font-size: 0.9em;
+}
+
+.review-bug {
+  width: 200px;
+}
+
+.review-link {
+  color: inherit;
+}
+
+.review-item .timeago {
+  float: right;
+}
+
+.overdue {
+  color: hsl(20, 100%, 50%);
+}
+
+.very-overdue {
+  color: red;
+}
