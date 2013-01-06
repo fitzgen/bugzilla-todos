@@ -7,7 +7,7 @@ $(function() {
     fetch: function() {
       MyReviews.user.requests(function(err, requests) {
         if (err) throw err;
-        this.reset(requests.all);
+        this.reset(requests);
       }.bind(this));
     },
 

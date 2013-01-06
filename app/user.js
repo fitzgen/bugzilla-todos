@@ -92,11 +92,7 @@ User.prototype.needsCheckin = function(callback) {
 }
 
 User.prototype.requests = function(callback) {
-   var name = this.username.replace(/@.+/, ""), // can't get full email if not logged in
-       superReviews = [],
-       reviews = [],
-       feedbacks = [],
-       all = [];
+   var name = this.username.replace(/@.+/, ""); // can't get email if not logged in
 
    this.client.searchBugs({
       'field0-0-0': 'flag.requestee',
@@ -108,6 +104,8 @@ User.prototype.requests = function(callback) {
       if (err) {
          return callback(err);
       }
+
+      var requests = [];
 
       bugs.forEach(function(bug) {
          // only add attachments with this user as requestee
@@ -125,32 +123,13 @@ User.prototype.requests = function(callback) {
                      bug: bug,
                      time: att.last_change_time
                   };
-
-                  if (flag.name == "superreview") {
-                     superReviews.push(request);
-                  }
-                  if (flag.name == "review") {
-                     reviews.push(request);
-                  }
-                  else if (flag.name == "feedback") {
-                     feedbacks.push(request);
-                  }
-                  all.push(request);
+                  requests.push(request);
                }
             });
          });
       });
+      requests.sort(utils.byTime);
 
-      superReviews.sort(utils.byTime);
-      reviews.sort(utils.byTime);
-      feedbacks.sort(utils.byTime);
-      all.sort(utils.byTime);
-
-      callback(null, {
-         superReviews: superReviews,
-         reviews: reviews,
-         feedbacks: feedbacks,
-         all: all
-      });
+      callback(null, requests);
    });
 }
