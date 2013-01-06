@@ -42,26 +42,39 @@ User.prototype.component = function(product, component, callback) {
    }, callback);
 }
 
-User.prototype.reviews = function(callback) {
-  this.requests(function(requests) {
-    callback(requests.reviews);
-  });
+User.prototype.needsPatch = function(callback) {
+   var query = {
+      email1: this.username,
+      email1_type: "equals",
+      email1_assigned_to: 1,
+      order: "changeddate DESC",
+      status: ['NEW','UNCONFIRMED','REOPENED'],
+      include_fields: 'id,summary,status,resolution,last_change_time,attachments'
+   };
+   this.client.searchBugs(query, function(err, bugs) {
+      if (err) { return callback(err); }
+
+      var bugsNoPatches = bugs.filter(function(bug) {
+         var hasPatch = bug.attachments && bug.attachments.some(function(att) {
+            return att.is_patch && att.flags;
+         });
+         return !hasPatch;
+      });
+
+      callback(null, bugsNoPatches);
+   });
 }
 
-User.prototype.needsCheckin = function(callback) {
+User.prototype.patches = function(callback) {
    var name = this.username.replace(/@.+/, ""); // can't get email if not logged in
 
    this.client.searchBugs({
       'field0-0-0': 'attachment.attacher',
       'type0-0-0': 'equals',
       'value0-0-0': this.username,
-      'field0-1-0': 'whiteboard',
-      'type0-1-0': 'not_contains',
-      'value0-1-0': 'fixed',
-      'field0-2-0': 'flagtypes.name',
-      'type0-2-0': 'substring',
-      'value0-2-0': 'review+',
-      'status': ['NEW','UNCONFIRMED','REOPENED'],
+      'field0-1-0': 'flagtypes.name',
+      'type0-1-0': 'contains',
+      'value0-1-0': '?',
       include_fields: 'id,summary,status,resolution,last_change_time,attachments'
    },
    function(err, bugs) {
@@ -70,25 +83,31 @@ User.prototype.needsCheckin = function(callback) {
       }
 
       var requests = [];
-
       bugs.forEach(function(bug) {
-         // only add attachments with this user as requestee
+         console.log(bug.id);
          bug.attachments.forEach(function(att) {
-            if (att.is_obsolete || !att.flags) {
+            if (att.is_obsolete || !att.is_patch || !att.flags
+                || att.attacher.name != name) {
                return;
             }
-            if (att.is_patch && att.attacher.name == name) {
-               var request = {
-                  attachment: att,
-                  bug: bug,
-                  time: att.last_change_time
-               };
-               requests.push(request);
-            }
+            att.flags.forEach(function(flag) {
+               if (flag.status == "?") {
+                  var request = {
+                     type: flag.name,
+                     flag: flag,
+                     attachment: att,
+                     bug: bug,
+                     time: att.last_change_time
+                  };
+                  requests.push(request);
+               }
+            });
          });
       });
+      requests.sort(utils.byTime);
+
       callback(null, requests);
-  });
+   });
 }
 
 User.prototype.requests = function(callback) {
@@ -133,3 +152,47 @@ User.prototype.requests = function(callback) {
       callback(null, requests);
    });
 }
+
+User.prototype.needsCheckin = function(callback) {
+   var name = this.username.replace(/@.+/, ""); // can't get email if not logged in
+
+   this.client.searchBugs({
+      'field0-0-0': 'attachment.attacher',
+      'type0-0-0': 'equals',
+      'value0-0-0': this.username,
+      'field0-1-0': 'whiteboard',
+      'type0-1-0': 'not_contains',
+      'value0-1-0': 'fixed',
+      'field0-2-0': 'flagtypes.name',
+      'type0-2-0': 'substring',
+      'value0-2-0': 'review+',
+      status: ['NEW','UNCONFIRMED','REOPENED'],
+      include_fields: 'id,summary,status,resolution,last_change_time,attachments'
+   },
+   function(err, bugs) {
+      if (err) {
+        return callback(err);
+      }
+
+      var requests = [];
+
+      bugs.forEach(function(bug) {
+         bug.attachments.forEach(function(att) {
+            if (att.is_obsolete || !att.is_patch || !att.flags
+                || !att.attacher.name == name) {
+               return;
+            }
+            var request = {
+               attachment: att,
+               bug: bug,
+               time: att.last_change_time
+            };
+            requests.push(request);
+         });
+      });
+      requests.sort(utils.byTime);
+
+      callback(null, requests);
+  });
+}
+
