@@ -84,7 +84,6 @@ User.prototype.patches = function(callback) {
 
       var requests = [];
       bugs.forEach(function(bug) {
-         console.log(bug.id);
          bug.attachments.forEach(function(att) {
             if (att.is_obsolete || !att.is_patch || !att.flags
                 || att.attacher.name != name) {

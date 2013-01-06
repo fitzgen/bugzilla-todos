@@ -2,12 +2,6 @@ $(document).ready(function() {
   MyReviews.initialize();
   MyReviews.loadUser();
   MyReviews.spinner($("#all-reviews-list"));
-
-  MyReviews.user.needsPatch(function(err, requests) {
-    console.log(err);
-    console.log(requests);
-    console.log(requests.length);
-  })
 });
 
 var MyReviews = {

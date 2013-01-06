@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>My Reviews</title>
+  <title>My Bugzilla Todos</title>
   <link rel="stylesheet" href="lib/normalize.css">
   <link rel="stylesheet" href="index.css" type="text/css">
 
@@ -46,7 +46,7 @@
      <div id="header">
        <span id="title">
          <img id="bug" src="lib/bugzilla.png" title="Bugzilla"></img>
-         Reviews
+         Todos
        </span>
          <span id="login"> for
             <form id="login-form">
@@ -56,10 +56,39 @@
        </span>
      </div>
      <div id="content">
-       <section id="reviews">
-         <div class="header">To Review<span class="count"></span></div>
+       <section id="review">
+         <div class="header">To Review
+          <span class="count"><span class="tally"></span> patches</span>
+         </div>
          <div class="content">
-           <div id="all-reviews-list">
+           <div id="review-list">
+           </div>
+         </div>
+       </section>
+       <section id="topatch">
+         <div class="header">To Patch
+          <span class="count"><span class="tally"></span> bugs</span>
+         </div>
+         <div class="content">
+           <div id="topatch-list">
+           </div>
+         </div>
+       </section>
+       <section id="checkin">
+         <div class="header">To Checkin
+          <span class="count"><span class="tally"></span> patches</span>
+         </div>
+         <div class="content">
+           <div id="checkin-list">
+           </div>
+         </div>
+       </section>
+       <section id="nag">
+         <div class="header">To Nag
+          <span class="count"><span class="tally"></span> patches</span>
+         </div>
+         <div class="content">
+           <div id="nag-list">
            </div>
          </div>
        </section>
