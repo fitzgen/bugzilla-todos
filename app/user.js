@@ -65,7 +65,7 @@ User.prototype.needsPatch = function(callback) {
    });
 }
 
-User.prototype.patches = function(callback) {
+User.prototype.awaitingReview = function(callback) {
    var name = this.username.replace(/@.+/, ""); // can't get email if not logged in
 
    this.client.searchBugs({

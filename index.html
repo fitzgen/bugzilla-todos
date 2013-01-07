@@ -20,38 +20,72 @@
 
   <script src="app/reviews.js"></script>
   <script src="app/checkins.js"></script>
+  <script src="app/nags.js"></script>
+  <script src="app/patches.js"></script>
   <script src="app/myreviews.js"></script>
 
   <script id="review-item" type="text/html">
     <div class="review-attachment">
-      <a class="review-link" href={{show_attach attachment.id "edit"}} target=_blank>
-        {{attachment.description}}
-      </a>
+      {{> attachment}}
+    </div>
+    <div class="att-bug">
+      {{> bug}}
       <a class="review-type" href={{show_splinter bug.id attachment.id}}>
         {{show_type type}}
       </a>
-    </div>
-    <div class="suffix">
-      by {{flag.setter.name}}
-      on <a href={{show_bug bug.id}} target=_blank title="{{> bug_tooltip}}">
-        bug {{bug.id}}
-      </a>
-      <span class="timeago {{urgentify attachment.last_change_time}}"
-            title="{{attachment.last_change_time}}"></span>
     </div>
   </script>
 
   <script id="checkin-item" type="text/html">
     <div class="checkin-attachment">
-      <span class="att-desc">{{attachment.description}}</span>
-      <span class="att-file">{{attachment.file_name}}</span>
-      <span class="timeago {{urgentify attachment.last_change_time}}"
-            title="{{attachment.last_change_time}}"></span>
+      {{> attachment}}
+    </div>
+    <div class="att-bug">
+      {{> bug}}
+    </div>
+  </script>
+
+  <script id="nag-item" type="text/html">
+    <div class="nag-attachment">
+      {{> attachment}}
     </div>
     <div class="checkin-bug">
-     <span class="bug-id">{{bug.id}}</span> -
-     <span class="bug-summ">{{bug.summary}}</span>
+     {{> bug}}
     </div>
+    <div class="reviews">
+    </div>
+  </script>
+
+  <script id="nag-review-item" type="text/html">
+    <div class="nag-review">
+      <span class="nag-review-type">{{name}}</span>from
+      <span class="nag-review-name">{{requestee}}</span>
+    </div>
+  </script>
+
+  <script id="patch-item" type="text/html">
+    <div class="patch-bug">
+      {{> bug}}
+      <span class="timeago" title="{{bug.last_change_time}}"></span>
+    </div>
+  </script>
+
+  <script id="attachment-partial" type="text/html">
+    <a class="att-link" href={{show_attach attachment.id "diff"}} target=_blank>
+      {{attachment.description}}
+    </a>
+    <span class="att-by">
+      by {{attachment.attacher.name}}
+    </span>
+    <span class="timeago {{urgentify attachment.last_change_time}}"
+          title="{{attachment.last_change_time}}">
+    </span>
+  </script>
+
+  <script id="bug-partial" type="text/html">
+    <a href={{show_bug bug.id}} target=_blank title="{{> bug_tooltip}}">
+       {{bug.id}} - {{bug.summary}}
+    </a>
   </script>
 
 </head>
@@ -84,7 +118,7 @@
           <span class="count"><span class="tally"></span> bugs</span>
          </div>
          <div class="content">
-           <div id="topatch-list">
+           <div id="patch-list">
            </div>
          </div>
        </section>

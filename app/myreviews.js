@@ -1,7 +1,7 @@
 $(document).ready(function() {
   MyReviews.initialize();
   MyReviews.loadUser();
-  MyReviews.spinner($("#all-reviews-list"));
+  MyReviews.spinner($("#review-list"));
 });
 
 var MyReviews = {
@@ -21,6 +21,12 @@ var MyReviews = {
 
     this.checkinQueue = new Checkins();
     this.checkinlist = new CheckinList(this.checkinQueue);
+
+    this.nagQueue = new Nags();
+    this.naglist = new NagList(this.nagQueue);
+
+    this.patchQueue = new Patches();
+    this.patchlist = new PatchList(this.patchQueue);
 
     var input = $("#login-name");
     input.val(this.email);
@@ -64,6 +70,8 @@ var MyReviews = {
     if (this.user) {
       this.reviewQueue.fetch();
       this.checkinQueue.fetch();
+      this.nagQueue.fetch();
+      this.patchQueue.fetch();
     }
   },
 

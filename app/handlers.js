@@ -1,3 +1,9 @@
+$(document).ready(function() {
+  // gotta wait for the template elements to be created
+  Handlebars.registerPartial("bug", $("#bug-partial").html());
+  Handlebars.registerPartial("attachment", $("#attachment-partial").html());
+});
+
 Handlebars.registerPartial("bug_tooltip", "bug {{bug.id}} - " +
   "{{bug.status}}{{#if bug.resolution}} {{bug.resolution}}{{/if}} - " +
   "{{bug.summary}} (updated {{timeago bug.last_change_time}})"
