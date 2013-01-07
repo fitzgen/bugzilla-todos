@@ -20,7 +20,7 @@ $(function() {
   function CheckinRow(patch) {
     this.patch = patch;
     this.el = $("<div/>");
-    this.el.addClass("checkin-item")
+    this.el.addClass("list-item checkin-item")
   }
   CheckinRow.prototype = {
     template: Handlebars.compile($("#checkin-item").html()),

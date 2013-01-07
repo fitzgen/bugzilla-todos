@@ -20,7 +20,7 @@ $(function() {
   function NagRow(patch) {
     this.patch = patch;
     this.el = $("<div/>");
-    this.el.addClass("nag-item")
+    this.el.addClass("list-item nag-item")
   }
   NagRow.prototype = {
     template: Handlebars.compile($("#nag-item").html()),

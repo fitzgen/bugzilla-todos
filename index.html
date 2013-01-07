@@ -28,10 +28,12 @@
     <div class="review-attachment">
       {{> attachment}}
     </div>
-    <div class="att-bug">
-      {{> bug}}
+    <div class="att-suffix">
+      <span class="att-bug">
+        {{> bug}}
+      </span>
       <a class="review-type" href={{show_splinter bug.id attachment.id}}>
-        {{show_type type}}
+          {{show_type type}}
       </a>
     </div>
   </script>
@@ -49,7 +51,7 @@
     <div class="nag-attachment">
       {{> attachment}}
     </div>
-    <div class="checkin-bug">
+    <div class="att-bug">
      {{> bug}}
     </div>
     <div class="reviews">
@@ -65,8 +67,13 @@
 
   <script id="patch-item" type="text/html">
     <div class="patch-bug">
-      {{> bug}}
-      <span class="timeago" title="{{bug.last_change_time}}"></span>
+      <a class="bug-link" href={{show_bug bug.id}}
+         target=_blank title="{{> bug_tooltip}}">
+         <span class="bug-id">{{bug.id}}</span>-
+         <span class="bug-summary">{{bug.summary}}</span>
+      </a>
+      <span class="item-date timeago {{urgentify bug.last_change_time}}"
+            title="{{bug.last_change_time}}"></span>
     </div>
   </script>
 
@@ -75,16 +82,16 @@
       {{attachment.description}}
     </a>
     <span class="att-by">
-      by {{attachment.attacher.name}}
+      by <span class="att-name">{{attachment.attacher.name}}</span>
     </span>
-    <span class="timeago {{urgentify attachment.last_change_time}}"
+    <span class="item-date timeago {{urgentify attachment.last_change_time}}"
           title="{{attachment.last_change_time}}">
     </span>
   </script>
 
-  <script id="bug-partial" type="text/html">
-    <a href={{show_bug bug.id}} target=_blank title="{{> bug_tooltip}}">
-       {{bug.id}} - {{bug.summary}}
+  <script id="bug-partial" type="text/html">on
+    <a class="bug-summary" href={{show_bug bug.id}} target=_blank title="{{> bug_tooltip}}">
+      {{bug.summary}}
     </a>
   </script>
 
@@ -104,6 +111,17 @@
        </span>
      </div>
      <div id="content">
+       <section id="patch">
+         <div class="header"
+              title="Bugs that assigned to you without a patch">
+              To Patch
+          <span class="count"><span class="tally"></span> bugs</span>
+         </div>
+         <div class="content">
+           <div id="patch-list">
+           </div>
+         </div>
+       </section>
        <section id="review">
          <div class="header"
               title="Patches that you have to review">
@@ -115,21 +133,10 @@
            </div>
          </div>
        </section>
-       <section id="patch">
-         <div class="header"
-              title="Bugs that are assigned to you that don't have a patch">
-              To Patch
-          <span class="count"><span class="tally"></span> bugs</span>
-         </div>
-         <div class="content">
-           <div id="patch-list">
-           </div>
-         </div>
-       </section>
        <div id="side-section">
          <section id="checkin">
            <div class="header"
-                title="Patches created by you that haven't been checked in yet">
+                title="Patches by you that haven't been checked in yet">
                 To Check In
             <span class="count"><span class="tally"></span> patches</span>
            </div>
@@ -140,7 +147,7 @@
          </section>
          <section id="nag">
            <div class="header"
-                title="Patches of yours, awaiting review">
+                title="Patches by you, awaiting review">
                 To Nag
             <span class="count"><span class="tally"></span> patches</span>
            </div>

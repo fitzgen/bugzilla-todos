@@ -48,7 +48,7 @@ User.prototype.needsPatch = function(callback) {
       email1_type: "equals",
       email1_assigned_to: 1,
       order: "changeddate DESC",
-      status: ['NEW','UNCONFIRMED','REOPENED'],
+      status: ['NEW','UNCONFIRMED','REOPENED', 'ASSIGNED'],
       include_fields: 'id,summary,status,resolution,last_change_time,attachments'
    };
    this.client.searchBugs(query, function(err, bugs) {
@@ -169,7 +169,7 @@ User.prototype.needsCheckin = function(callback) {
       'field0-2-0': 'flagtypes.name',
       'type0-2-0': 'substring',
       'value0-2-0': 'review+',
-      status: ['NEW','UNCONFIRMED','REOPENED'],
+      status: ['NEW','UNCONFIRMED','REOPENED', 'ASSIGNED'],
       include_fields: 'id,summary,status,resolution,last_change_time,attachments'
    },
    function(err, bugs) {

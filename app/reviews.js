@@ -20,7 +20,7 @@ $(function() {
   function ReviewRow(review) {
     this.review = review;
     this.el = $("<div/>");
-    this.el.addClass("review-item")
+    this.el.addClass("list-item review-item")
   }
   ReviewRow.prototype = {
     template: Handlebars.compile($("#review-item").html()),

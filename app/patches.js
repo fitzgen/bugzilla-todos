@@ -20,12 +20,11 @@ $(function() {
   function PatchRow(bug) {
     this.bug = bug;
     this.el = $("<div/>");
-    this.el.addClass("patch-item")
+    this.el.addClass("list-item patch-item")
   }
   PatchRow.prototype = {
     template: Handlebars.compile($("#patch-item").html()),
     render: function() {
-      console.log(this.template({bug: this.bug}));
       $(this.el).html(this.template({
         bug: this.bug
       }));
@@ -47,7 +46,6 @@ $(function() {
       this.list.empty();
 
       this.collection.items.forEach(function(item) {
-        console.log(item);
         this.addRow(item);
       }.bind(this));
 
