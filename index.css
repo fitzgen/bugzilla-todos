@@ -40,7 +40,7 @@ section {
   margin: 40px 0 30px 0;
 }
 
-#bug {
+#bug-icon {
   margin-bottom: -2px;
   margin-right: 1px;
 }
@@ -87,9 +87,43 @@ section {
   background: linear-gradient(#ededed, #eee);
 }
 
-#all-reviews-list {
+#content {
+  margin-bottom: 40px;
+}
+
+#review, #patch, #nag, #checkin {
   background-color: white;
   border: 1px solid #CCC;
+}
+
+#review, #patch, #side-section {
+  float: left;
+}
+
+#review, #patch {
+  max-height: 600px;
+  overflow-y: auto;
+}
+
+#checkin, #nag {
+  max-height: 300px;
+  overflow: auto;
+}
+
+#review {
+  max-width: 420px;
+}
+
+#patch {
+  max-width: 420px;
+}
+
+#checkin {
+  max-width: 340px;
+}
+
+#nag {
+  max-width: 340px;
 }
 
 .count {

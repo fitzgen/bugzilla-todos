@@ -61,6 +61,10 @@ User.prototype.needsPatch = function(callback) {
          return !hasPatch;
       });
 
+      bugsNoPatches.sort(function (bug) {
+         return bug.creation_time
+      });
+
       callback(null, bugsNoPatches);
    });
 }

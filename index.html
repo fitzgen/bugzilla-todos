@@ -93,7 +93,7 @@
  <div id="container">
      <div id="header">
        <span id="title">
-         <img id="bug" src="lib/bugzilla.png" title="Bugzilla"></img>
+         <img id="bug-icon" src="lib/bugzilla.png" title="Bugzilla"></img>
          Todos
        </span>
          <span id="login"> for
@@ -105,7 +105,9 @@
      </div>
      <div id="content">
        <section id="review">
-         <div class="header">To Review
+         <div class="header"
+              title="Patches that you have to review">
+              To Review
           <span class="count"><span class="tally"></span> patches</span>
          </div>
          <div class="content">
@@ -114,7 +116,9 @@
          </div>
        </section>
        <section id="patch">
-         <div class="header">To Patch
+         <div class="header"
+              title="Bugs that are assigned to you that don't have a patch">
+              To Patch
           <span class="count"><span class="tally"></span> bugs</span>
          </div>
          <div class="content">
@@ -122,24 +126,30 @@
            </div>
          </div>
        </section>
-       <section id="checkin">
-         <div class="header">To Checkin
-          <span class="count"><span class="tally"></span> patches</span>
-         </div>
-         <div class="content">
-           <div id="checkin-list">
+       <div id="side-section">
+         <section id="checkin">
+           <div class="header"
+                title="Patches created by you that haven't been checked in yet">
+                To Check In
+            <span class="count"><span class="tally"></span> patches</span>
            </div>
-         </div>
-       </section>
-       <section id="nag">
-         <div class="header">To Nag
-          <span class="count"><span class="tally"></span> patches</span>
-         </div>
-         <div class="content">
-           <div id="nag-list">
+           <div class="content">
+             <div id="checkin-list">
+             </div>
            </div>
-         </div>
-       </section>
+         </section>
+         <section id="nag">
+           <div class="header"
+                title="Patches of yours, awaiting review">
+                To Nag
+            <span class="count"><span class="tally"></span> patches</span>
+           </div>
+           <div class="content">
+             <div id="nag-list">
+             </div>
+           </div>
+         </section>
+        </div>
      </div>
   </div>
 </body>
