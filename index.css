@@ -1,6 +1,7 @@
 body {
   font-size: 13px;
   color: #222;
+  background-color: hsl(30, 10%, 90%);
 }
 
 body, input, select, optgroup {
@@ -72,9 +73,44 @@ a:visited {
   border: 1px solid #aaa;
 }
 
+/* Tabs */
+
+#tabs {
+  float: left;
+  width: 480px;
+  background-color: white;
+}
+
+#tab-body {
+  margin-top: 5px;
+}
+
+.patches-tab, .patches-tab:visited {
+  font-weight: bold;
+  font-size: 1.1em;
+  padding: 3px 4px;
+  color: #888;
+}
+
+.patches-tab:hover {
+  text-decoration: none;
+  border-bottom: 2px solid grey;
+}
+
+.patches-tab:focus {
+  outline: none;
+}
+
+.patches-tab.tab-selected {
+  border-bottom: 2px solid black;
+  color: inherit;
+  background-color: #789
+}
+
+
 /* Sections */
 
-section {
+#patch {
   box-shadow: rgba(0,0,0,.2) 0 .15em 0.6em;
   border-radius: 4px 4px 0 0;
   margin: 1em;
@@ -93,43 +129,20 @@ section {
   margin-bottom: 40px;
 }
 
-#review, #patch, #nag, #checkin {
+#patch{
   background-color: white;
   border: 1px solid #CCC;
-}
-
-#review, #patch, #side-section {
   float: left;
 }
 
-#review-list, #patch-list {
+#review-list, #patch-list,
+#checkin-list, #nag-list {
+  min-height: 400px;
   max-height: 600px;
   overflow: auto;
 }
 
-#checkin-list, #nag-list {
-  max-height: 300px;
-  overflow: auto;
-}
-
-#review {
-  max-width: 420px;
-}
-
-#patch {
-  max-width: 420px;
-}
-
-#checkin {
-  max-width: 340px;
-}
-
-#nag {
-  max-width: 340px;
-}
-
 .count {
-  color: #888;
   margin-left: 2px;
 }
 
@@ -142,7 +155,7 @@ section {
 }
 
 .list-item {
-  padding: 0.8em;
+  padding: 0.8em 0;
 }
 
 .list-item:hover {
@@ -157,7 +170,7 @@ section {
 
 .att-link {
   font-weight: bold;
-  width: 180px;
+  max-width: 300px;
   display: inline-block;
   vertical-align: text-bottom;
   white-space: nowrap;
@@ -166,6 +179,7 @@ section {
 }
 
 .att-by {
+  margin-left: 2px;
   font-size: .9em;
   color: #777;
 }
@@ -225,10 +239,6 @@ section {
   background-color: #cdc;
 }
 
-.review-bug {
-  width: 200px;
-}
-
 /* Micellaneous */
 
 .spinner {
@@ -237,6 +247,7 @@ section {
 }
 
 .item-date {
+  margin-left: 6px;
   float: right;
   font-size: 0.9em;
 }

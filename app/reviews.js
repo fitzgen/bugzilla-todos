@@ -37,7 +37,6 @@ $(function() {
     collection.on("reset", this.render, this);
   }
   ReviewList.prototype = {
-    el: $("#review"),
     list: $("#review-list"),
 
     render: function() {
@@ -48,7 +47,7 @@ $(function() {
       }.bind(this));
 
       var tally = this.collection.items.length;
-      this.el.find(".tally").html(tally);
+      $("#review-tab").find(".tally").html(tally);
       $(".timeago").timeago();
     },
 

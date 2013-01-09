@@ -37,7 +37,6 @@ $(function() {
     collection.on("reset", this.render, this);
   }
   CheckinList.prototype = {
-    el: $("#checkin"),
     list: $("#checkin-list"),
 
     render: function() {
@@ -48,7 +47,7 @@ $(function() {
       }.bind(this));
 
       var tally = this.collection.items.length;
-      this.el.find(".tally").html(tally);
+      $("#checkin-tab").find(".tally").html(tally);
       $(".timeago").timeago();
     },
 

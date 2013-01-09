@@ -98,7 +98,7 @@
 </head>
 <body>
  <div id="container">
-     <div id="header">
+    <div id="header">
        <span id="title">
          <img id="bug-icon" src="lib/bugzilla.png" title="Bugzilla"></img>
          Todos
@@ -114,7 +114,7 @@
        <section id="patch">
          <div class="header"
               title="Bugs that assigned to you without a patch">
-              To Patch
+              To Fix
           <span class="count"><span class="tally"></span> bugs</span>
          </div>
          <div class="content">
@@ -122,42 +122,49 @@
            </div>
          </div>
        </section>
-       <section id="review">
-         <div class="header"
-              title="Patches that you have to review">
-              To Review
-          <span class="count"><span class="tally"></span> patches</span>
+       <div id="tabs">
+         <div id="tab-head">
+          <a id="review-tab" class="patches-tab" href="#"
+             data-section="review"
+             title="Patches you have to review">
+            To Review
+            <span class="count"><span class="tally"></span></span>
+          </a>
+          <a id="checkin-tab" class="patches-tab" href="#"
+             data-section="checkin"
+             title="Patches to check in, by you">
+            To Check In
+            <span class="count"><span class="tally"></span></span>
+          </a>
+          <a id="nag-tab" class="patches-tab" href="#"
+             data-section="nag"
+             title="Patches by you, awaiting review">
+            To Nag
+            <span class="count"><span class="tally"></span></span>
+          </a>
          </div>
-         <div class="content">
-           <div id="review-list">
-           </div>
-         </div>
-       </section>
-       <div id="side-section">
-         <section id="checkin">
-           <div class="header"
-                title="Patches by you that haven't been checked in yet">
-                To Check In
-            <span class="count"><span class="tally"></span> patches</span>
-           </div>
-           <div class="content">
-             <div id="checkin-list">
+         <div id="tab-body">
+           <section id="review" class="patches-section">
+             <div class="content">
+               <div id="review-list">
+               </div>
              </div>
-           </div>
-         </section>
-         <section id="nag">
-           <div class="header"
-                title="Patches by you, awaiting review">
-                To Nag
-            <span class="count"><span class="tally"></span> patches</span>
-           </div>
-           <div class="content">
-             <div id="nag-list">
+           </section>
+           <section id="checkin" class="patches-section">
+             <div class="content">
+               <div id="checkin-list">
+               </div>
              </div>
-           </div>
-         </section>
+           </section>
+           <section id="nag" class="patches-section">
+             <div class="content">
+               <div id="nag-list">
+               </div>
+             </div>
+          </section>
         </div>
-     </div>
+      </div>
+    </div>
   </div>
 </body>
 </html>

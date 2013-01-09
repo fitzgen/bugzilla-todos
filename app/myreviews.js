@@ -42,6 +42,24 @@ var MyReviews = {
       event.preventDefault();
       input.blur();
     });
+
+    $(".patches-tab").click(function(event) {
+      var tab = $(event.target).closest("a");
+
+      /* Select this tab */
+      $(".patches-tab").removeClass("tab-selected");
+      tab.addClass("tab-selected");
+
+      var section = tab.data("section");
+
+      /* Show the content for the section */
+      $(".patches-section").hide();
+      $("#" + section).show();
+      return false;
+    })
+    $("#review-tab").click();
+
+    $("#patch").hide();
   },
 
   setUser: function(email) {
