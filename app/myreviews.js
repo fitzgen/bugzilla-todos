@@ -1,7 +1,6 @@
 $(document).ready(function() {
   MyReviews.initialize();
   MyReviews.loadUser();
-  MyReviews.spinner($("#review-list"));
 });
 
 var MyReviews = {
@@ -17,16 +16,20 @@ var MyReviews = {
 
   initialize: function() {
     this.reviewQueue = new Reviews();
-    this.reviewlist = new ReviewList(this.reviewQueue);
+    this.reviewlist = new ReviewList();
+    this.reviewlist.initialize(this.reviewQueue);
 
     this.checkinQueue = new Checkins();
     this.checkinlist = new CheckinList(this.checkinQueue);
+    this.checkinlist.initialize(this.checkinQueue);
 
     this.nagQueue = new Nags();
     this.naglist = new NagList(this.nagQueue);
+    this.naglist.initialize(this.nagQueue);
 
     this.patchQueue = new Patches();
     this.patchlist = new PatchList(this.patchQueue);
+    this.patchlist.initialize(this.patchQueue);
 
     var input = $("#login-name");
     input.val(this.email);
@@ -91,13 +94,5 @@ var MyReviews = {
       this.nagQueue.fetch();
       this.patchQueue.fetch();
     }
-  },
-
-  spinner : function(elem, inline) {
-    var spinner = $("<img src='lib/indicator.gif' class='spinner'></img>");
-    if (inline) {
-      spinner.css({display: 'inline'});
-    }
-    elem.append(spinner);
   }
 };

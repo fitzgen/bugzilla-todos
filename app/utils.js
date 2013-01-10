@@ -34,5 +34,13 @@ var utils = {
 
    idify : function(name) {
      return name.replace(/\W/g, "-");
-   }
+   },
+
+   spinner : function(elem, inline) {
+    var spinner = $("<img src='lib/indicator.gif' class='spinner'></img>");
+    if (inline) {
+      spinner.css({display: 'inline'});
+    }
+    elem.append(spinner);
+  }
 }
