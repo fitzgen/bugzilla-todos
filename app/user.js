@@ -131,6 +131,9 @@ User.prototype.requests = function(callback) {
 
       bugs.forEach(function(bug) {
          // only add attachments with this user as requestee
+         if (!bug.attachments) {
+            return;
+         }
          bug.attachments.forEach(function(att) {
             if (att.is_obsolete || !att.flags) {
                return;
