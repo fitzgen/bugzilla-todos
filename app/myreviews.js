@@ -1,10 +1,6 @@
 $(document).ready(function() {
   MyReviews.initialize();
   MyReviews.loadUser();
-
-  MyReviews.user.flagged(function(err, flags) {
-    console.log(flags);
-  })
 });
 
 var MyReviews = {

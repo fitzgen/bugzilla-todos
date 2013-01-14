@@ -77,13 +77,8 @@ a:visited {
 
 .tabs {
   float: left;
-  width: 430px;
+  width: 520px;
 }
-
-.bug-tabs {
-  margin-right: 30px;
-}
-
 
 .tab-head {
   border-top: 1px solid #ccc;
@@ -115,18 +110,9 @@ a:visited {
 
 .tab.tab-selected {
   font-weight: bold;
-}
-
-.patches-tab.tab-selected {
-  border-bottom: 3px solid hsl(176, 100%, 21%);
-  color: hsl(176, 100%, 21%);
-}
-
-.bugs-tab.tab-selected {
   border-bottom: 3px solid hsl(291, 35%, 36%);
   color: hsl(291, 35%, 36%);
 }
-
 
 /* Sections */
 

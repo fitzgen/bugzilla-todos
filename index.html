@@ -126,61 +126,36 @@
       </span>
     </div>
     <div id="content">
-      <div class="bug-tabs tabs">
-        <div class="tab-head">
-          <div class="tabs-type">
-             Bugs
-          </div>
-          <a id="fix-tab" class="bugs-tab tab" href="#"
-             data-section="fix"
-             title="Bugs assigned to you">
-            To Fix
-            <span class="count"><span class="tally"></span></span>
-          </a>
-          <a id="respond-tab" class="bugs-tab tab" href="#"
-             data-section="respond"
-             title="Bugs where you're a flag requestee">
-            To Respond
-            <span class="count"><span class="tally"></span></span>
-          </a>
-        </div>
-        <div class="tab-body">
-           <section id="fix" class="bugs-section">
-             <div class="content">
-               <div id="fix-list">
-               </div>
-             </div>
-           </section>
-           <section id="respond" class="bugs-section">
-             <div class="content">
-               <div id="respond-list">
-               </div>
-             </div>
-           </section>
-        </div>
-      </div>
-
       <div class="patches-tab tabs">
          <div class="tab-head">
-          <div class="tabs-type">
-            Patches
-          </div>
-          <a id="review-tab" class="patches-tab tab" href="#"
+          <a id="review-tab" class="tab" href="#"
              data-section="review"
              title="Patches you have to review">
             To Review
             <span class="count"><span class="tally"></span></span>
           </a>
-          <a id="checkin-tab" class="patches-tab tab" href="#"
+          <a id="checkin-tab" class="tab" href="#"
              data-section="checkin"
              title="Patches to check in, by you">
             To Check In
             <span class="count"><span class="tally"></span></span>
           </a>
-          <a id="nag-tab" class="patches-tab tab" href="#"
+          <a id="nag-tab" class="tab" href="#"
              data-section="nag"
              title="Patches by you, awaiting review">
             To Nag
+            <span class="count"><span class="tally"></span></span>
+          </a>
+          <a id="fix-tab" class="tab" href="#"
+             data-section="fix"
+             title="Bugs assigned to you">
+            To Fix
+            <span class="count"><span class="tally"></span></span>
+          </a>
+          <a id="respond-tab" class="tab" href="#"
+             data-section="respond"
+             title="Bugs where you're a flag requestee">
+            To Respond
             <span class="count"><span class="tally"></span></span>
           </a>
          </div>
@@ -203,6 +178,18 @@
                </div>
              </div>
           </section>
+          <section id="fix" class="bugs-section">
+             <div class="content">
+               <div id="fix-list">
+               </div>
+             </div>
+           </section>
+           <section id="respond" class="bugs-section">
+             <div class="content">
+               <div id="respond-list">
+               </div>
+             </div>
+           </section>
         </div>
       </div>
     </div>
