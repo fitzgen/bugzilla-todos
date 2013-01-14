@@ -11,6 +11,16 @@ User.prototype = {
    fields : 'id,summary,status,resolution,last_change_time'
 }
 
+User.prototype.component = function(product, component, callback) {
+   this.client.searchBugs({
+      product: product,
+      component: component,
+      include_fields: this.fields,
+      limit: this.limit,
+      order: "changeddate DESC",
+   }, callback);
+}
+
 User.prototype.bugs = function(methods, callback) {
    var query = {
       email1: this.username,
@@ -32,16 +42,6 @@ User.prototype.bugs = function(methods, callback) {
    this.client.searchBugs(query, callback);
 }
 
-User.prototype.component = function(product, component, callback) {
-   this.client.searchBugs({
-      product: product,
-      component: component,
-      include_fields: this.fields,
-      limit: this.limit,
-      order: "changeddate DESC",
-   }, callback);
-}
-
 User.prototype.needsPatch = function(callback) {
    var query = {
       email1: this.username,
@@ -61,11 +61,50 @@ User.prototype.needsPatch = function(callback) {
          return !hasPatch;
       });
 
-      bugsNoPatches.sort(function (bug) {
-         return bug.creation_time
+      bugsNoPatches.sort(function (b1, b2) {
+         return new Date(b2.last_change_time) - new Date(b1.last_change_time);
       });
 
+      bugsNoPatches = bugsNoPatches.map(function(bug) {
+         return { bug: bug };
+      })
       callback(null, bugsNoPatches);
+   });
+}
+
+User.prototype.flagged = function(callback) {
+   var name = this.username.replace(/@.+/, ""); // can't get email if not logged in
+
+   this.client.searchBugs({
+      'field0-0-0': 'flag.requestee',
+      'type0-0-0': 'equals',
+      'value0-0-0': this.username,
+      include_fields: 'id,summary,status,resolution,last_change_time,flags'
+   },
+   function(err, bugs) {
+      if (err) { return callback(err); }
+      var flags = [];
+
+      bugs.forEach(function(bug) {
+         if (!bug.flags) {
+            return;
+         }
+         bug.flags.forEach(function(flag) {
+            if (flag.requestee && flag.requestee.name == name) {
+               flags.push({
+                  name: flag.name,
+                  flag: flag,
+                  bug: bug,
+                  time: bug.last_change_time
+               })
+            }
+         });
+      });
+      flags.sort(function(f1, f2) {
+         return new Date(f2.time) - new Date(f1.time);
+      });
+
+      callback(null, flags);
    });
 }
 
@@ -112,6 +151,7 @@ User.prototype.awaitingReview = function(callback) {
       callback(null, requests);
    });
 }
+
 
 User.prototype.requests = function(callback) {
    var name = this.username.replace(/@.+/, ""); // can't get email if not logged in

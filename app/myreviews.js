@@ -1,6 +1,10 @@
 $(document).ready(function() {
   MyReviews.initialize();
   MyReviews.loadUser();
+
+  MyReviews.user.flagged(function(err, flags) {
+    console.log(flags);
+  })
 });
 
 var MyReviews = {
@@ -27,9 +31,13 @@ var MyReviews = {
     this.naglist = new NagList(this.nagQueue);
     this.naglist.initialize(this.nagQueue);
 
-    this.patchQueue = new Patches();
-    this.patchlist = new PatchList(this.patchQueue);
-    this.patchlist.initialize(this.patchQueue);
+    this.fixQueue = new Fixes();
+    this.fixlist = new FixList(this.fixQueue);
+    this.fixlist.initialize(this.fixQueue);
+
+    this.respondQueue = new Responds();
+    this.respondlist = new RespondList(this.respondQueue);
+    this.respondlist.initialize(this.respondQueue);
 
     var input = $("#login-name");
     input.val(this.email);
@@ -46,21 +54,22 @@ var MyReviews = {
       input.blur();
     });
 
-    $(".patches-tab").click(function(event) {
+    $(".tab").click(function(event) {
       var tab = $(event.target).closest("a");
 
       /* Select this tab */
-      $(".patches-tab").removeClass("tab-selected");
+      $(this).siblings().removeClass("tab-selected");
       tab.addClass("tab-selected");
 
       var section = tab.data("section");
 
       /* Show the content for the section */
-      $(".patches-section").hide();
+      $(this).parents(".tabs").find("section").hide();
       $("#" + section).show();
       return false;
     })
     $("#review-tab").click();
+    $("#fix-tab").click();
 
     $("#patch").hide();
   },
@@ -92,7 +101,8 @@ var MyReviews = {
       this.reviewQueue.fetch();
       this.checkinQueue.fetch();
       this.nagQueue.fetch();
-      this.patchQueue.fetch();
+      this.fixQueue.fetch();
+      this.respondQueue.fetch();
     }
   }
 };
