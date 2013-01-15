@@ -18,8 +18,7 @@ Handlebars.registerHelper('show_comment', function(id, comment) {
 })
 
 Handlebars.registerHelper('show_attach', function(id, action) {
-   action = action || "diff";
-   return MyReviews.base + "/attachment.cgi?id=" + id + "&action=" + action;
+   return MyReviews.base + "/attachment.cgi?id=" + id;
 })
 
 Handlebars.registerHelper('show_splinter', function(id, attachId) {

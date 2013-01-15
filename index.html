@@ -93,7 +93,7 @@
 
 
   <script id="attachment-partial" type="text/html">
-    <a class="att-link" href={{show_attach attachment.id "diff"}} target=_blank>
+    <a class="att-link" href={{show_attach attachment.id}} target=_blank>
       {{attachment.description}}
     </a>
     <span class="att-by">
@@ -104,9 +104,10 @@
     </span>
   </script>
 
-  <script id="bug-partial" type="text/html">on
-    <a class="bug-summary" href={{show_bug bug.id}} target=_blank title="{{> bug_tooltip}}">
-      {{bug.summary}}
+  <script id="bug-partial" type="text/html">
+    <a href={{show_bug bug.id}} target=_blank title="{{> bug_tooltip}}">
+      bug {{bug.id}} -
+      <span class="bug-summary">{{bug.summary}}</span>
     </a>
   </script>
 

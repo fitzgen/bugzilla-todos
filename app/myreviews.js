@@ -65,7 +65,6 @@ var MyReviews = {
       return false;
     })
     $("#review-tab").click();
-    $("#fix-tab").click();
 
     $("#patch").hide();
   },

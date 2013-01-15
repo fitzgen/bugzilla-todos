@@ -11,4 +11,4 @@ Checkins.prototype.fetch = function() {
 function CheckinList() {}
 CheckinList.prototype = new QueueList();
 CheckinList.prototype.type = "checkin";
-CheckinList.prototype.emptyMessage = "No patches to check in"
+CheckinList.prototype.emptyMessage = "No patches of yours to check in."
