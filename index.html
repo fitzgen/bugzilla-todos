@@ -35,7 +35,7 @@
         {{> bug}}
       </span>
       <a class="review-type" href={{show_splinter bug.id attachment.id}}>
-          {{show_type type}}
+        {{show_type type}}
       </a>
     </div>
   </script>
@@ -56,7 +56,15 @@
     <div class="att-bug">
      {{> bug}}
     </div>
-    <div class="reviews">
+    <div class="flags">
+      {{#each attachment.flags}}
+        {{#if_flag status}}
+        <div class="flag">
+          <span class="flag-name">{{name}}</span><span class="flag-status">{{status}}</span>
+          <span class="flag-requestee">{{requestee}}</span>
+        </div>
+        {{/if_flag}}
+      {{/each}}
     </div>
   </script>
 
@@ -74,7 +82,7 @@
          <span class="bug-id">{{bug.id}}</span>-
          <span class="bug-summary">{{bug.summary}}</span>
       </a>
-      <span class="item-date timeago {{urgentify bug.last_change_time}}"
+      <span class="item-date timeago {{urgentify_fix bug.last_change_time}}"
             title="{{bug.last_change_time}}"></span>
     </div>
   </script>
@@ -88,6 +96,20 @@
       </a>
       <span class="item-date timeago {{urgentify bug.last_change_time}}"
             title="{{bug.last_change_time}}"></span>
+    </div>
+    <div class="flags">
+      {{#each bug.flags}}
+        {{#if_flag status}}
+        <div class="flag">
+          <span class="flag-name">{{name}}</span><span class="flag-status">{{status}}</span>
+          {{#if requestee}}
+          <span class="flag-requestee">
+            {{requestee.name}}
+          </span>
+          {{/if}}
+        </div>
+        {{/if_flag}}
+      {{/each}}
     </div>
   </script>
 

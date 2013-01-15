@@ -39,6 +39,12 @@ Handlebars.registerHelper('show_type', function(type) {
   }
 });
 
+Handlebars.registerHelper('if_flag', function(status, options) {
+  if (status == "?") {
+    return options.fn(this);
+  }
+})
+
 Handlebars.registerHelper('urgentify', function(date) {
    var day = 1000 * 60 * 60 * 24 ;
    if ((Date.now() - new Date(date)) > (10 * day)) {
@@ -49,6 +55,18 @@ Handlebars.registerHelper('urgentify', function(date) {
    }
    return "";
 });
+
+Handlebars.registerHelper('urgentify_fix', function(date) {
+   var day = 1000 * 60 * 60 * 24 ;
+   if ((Date.now() - new Date(date)) > (100 * day)) {
+     return "very-overdue";
+   }
+   if ((Date.now() - new Date(date)) > (60 * day)) {
+     return "overdue";
+   }
+   return "";
+});
+
 
 Handlebars.registerHelper('timeago', function(date) {
    return $.timeago(date);
