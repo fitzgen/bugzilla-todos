@@ -119,7 +119,7 @@ User.prototype.needsCheckin = function(callback) {
          var atts = [];
          bug.attachments.forEach(function(att) {
             if (att.is_obsolete || !att.is_patch || !att.flags
-                || !att.attacher.name == name) {
+                || att.attacher.name != name) {
                return;
             }
             att.bug = bug;
