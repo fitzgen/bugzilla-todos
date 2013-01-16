@@ -163,8 +163,12 @@ User.prototype.awaitingReview = function(callback) {
                 || att.attacher.name != name) {
                return;
             }
-            att.bug = bug;
-            atts.push(att);
+            att.flags.forEach(function(flag) {
+               if (flag.status == "?") {
+                  att.bug = bug;
+                  atts.push(att);
+               }
+            })
          });
 
          if (atts.length) {
