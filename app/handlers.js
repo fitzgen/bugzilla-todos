@@ -2,6 +2,7 @@ $(document).ready(function() {
   // gotta wait for the template elements to be created
   Handlebars.registerPartial("bug", $("#bug-partial").html());
   Handlebars.registerPartial("attachment", $("#attachment-partial").html());
+  Handlebars.registerPartial("flag", $("#flag-partial").html());
 });
 
 Handlebars.registerPartial("bug_tooltip", "bug {{bug.id}} - " +

@@ -27,56 +27,52 @@
   <script src="app/myreviews.js"></script>
 
   <script id="review-item" type="text/html">
-    <div class="review-attachment">
-      {{> attachment}}
+    <div class="bug">
+      {{> bug}}
     </div>
-    <div class="att-suffix">
-      <span class="att-bug">
-        {{> bug}}
-      </span>
-      <a class="review-type" href={{show_splinter bug.id attachment.id}}>
-        {{show_type type}}
-      </a>
-    </div>
+    {{#each attachments}}
+      <div class="review-attachment">
+        <span class="attachment">
+          {{> attachment}}
+        </span>
+        <a class="review-type" href={{show_splinter bug.id id}}>
+          {{type}}
+        </a>
+      </div>
+    {{/each}}
   </script>
 
   <script id="checkin-item" type="text/html">
-    <div class="checkin-attachment">
-      {{> attachment}}
-    </div>
-    <div class="att-bug">
+    <div class="bug">
       {{> bug}}
     </div>
+    {{#each attachments}}
+      <div class="checkin-attachment">
+        <span class="attachment">
+          {{> attachment}}
+        </span>
+      </div>
+    {{/each}}
   </script>
 
   <script id="nag-item" type="text/html">
-    <div class="nag-attachment">
-      {{> attachment}}
-    </div>
-    <div class="att-bug">
+    <div class="bug">
      {{> bug}}
     </div>
-    <div class="flags">
-      {{#each attachment.flags}}
-        {{#if_flag status}}
-        <div class="flag">
-          <span class="flag-name">{{name}}</span><span class="flag-status">{{status}}</span>
-          <span class="flag-requestee">{{requestee}}</span>
-        </div>
-        {{/if_flag}}
-      {{/each}}
-    </div>
-  </script>
-
-  <script id="nag-review-item" type="text/html">
-    <div class="nag-review">
-      <span class="nag-review-type">{{name}}</span>from
-      <span class="nag-review-name">{{requestee}}</span>
-    </div>
+    {{#each attachments}}
+      <div class="nag-attachment">
+        {{> attachment}}
+      </div>
+      <div class="flags">
+        {{#each flags}}
+          {{> flag}}
+        {{/each}}
+      </div>
+    {{/each}}
   </script>
 
   <script id="fix-item" type="text/html">
-    <div class="fix-bug">
+    <div class="bug">
       <a class="bug-link" href={{show_bug bug.id}}
          target=_blank title="{{> bug_tooltip}}">
          <span class="bug-id">{{bug.id}}</span>-
@@ -88,7 +84,7 @@
   </script>
 
   <script id="respond-item" type="text/html">
-    <div class="respond-bug">
+    <div class="bug">
       <a class="bug-link" href={{show_bug bug.id}}
          target=_blank title="{{> bug_tooltip}}">
          <span class="bug-id">{{bug.id}}</span>-
@@ -99,38 +95,41 @@
     </div>
     <div class="flags">
       {{#each bug.flags}}
-        {{#if_flag status}}
-        <div class="flag">
-          <span class="flag-name">{{name}}</span><span class="flag-status">{{status}}</span>
-          {{#if requestee}}
-          <span class="flag-requestee">
-            {{requestee.name}}
-          </span>
-          {{/if}}
-        </div>
-        {{/if_flag}}
+        {{> flag}}
       {{/each}}
     </div>
   </script>
 
+  <script id="flag-partial" type="text/html">
+    {{#if_flag status}}
+    <div class="flag">
+      <span class="flag-name">{{name}}</span><span class="flag-status">{{status}}</span>
+      {{#if requestee}}
+      <span class="flag-requestee">
+        {{requestee.name}}
+      </span>
+      {{/if}}
+    </div>
+    {{/if_flag}}
+  </script>
 
   <script id="attachment-partial" type="text/html">
-    <a class="att-link" href={{show_attach attachment.id}} target=_blank>
-      {{attachment.description}}
+    <a class="att-link" href={{show_attach id}} target=_blank>
+      {{description}}
     </a>
     <span class="att-by">
-      by <span class="att-name">{{attachment.attacher.name}}</span>
-    </span>
-    <span class="item-date timeago {{urgentify attachment.last_change_time}}"
-          title="{{attachment.last_change_time}}">
+      by <span class="att-name">{{attacher.name}}</span>
     </span>
   </script>
 
   <script id="bug-partial" type="text/html">
     <a href={{show_bug bug.id}} target=_blank title="{{> bug_tooltip}}">
-      bug {{bug.id}} -
+      {{bug.id}} -
       <span class="bug-summary">{{bug.summary}}</span>
     </a>
+    <span class="item-date timeago {{urgentify bug.last_change_time}}"
+          title="{{bug.last_change_time}}">
+    </span>
   </script>
 
 </head>
