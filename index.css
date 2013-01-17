@@ -1,6 +1,7 @@
+@import url(http://fonts.googleapis.com/css?family=Crete+Round:400,400italic);
+
 body {
   font-size: 13px;
-  color: #222;
   background-color: hsl(40, 20%, 95%)
 }
 
@@ -30,9 +31,20 @@ a:visited {
 }
 
 #header {
-  font-size: 1.2em;
+  font-family: Helvetica Neue, sans-serif;
+  font-size: 2em;
+  color: #444;
   text-align: center;
-  margin: 40px 0 30px 0;
+  margin: 80px 0 30px 0;
+}
+
+#header.was-logged-out {
+  transition: margin-top 2s ease, font-size 2s ease;
+}
+
+#header.logged-in {
+  margin-top: 40px;
+  font-size: 1.4em;
 }
 
 /* Login */
@@ -43,7 +55,6 @@ a:visited {
 }
 
 #login {
-  font-weight: normal;
   margin-left: 0.1em;
 }
 
@@ -52,14 +63,18 @@ a:visited {
 }
 
 #login-name {
-  margin-left: 0px;
+  font-weight: inherit;
+  font-family: inherit;
   color: inherit;
+  background-color: inherit;
   font-size: 100%;
   box-sizing: border-box;
   border: none;
   vertical-align: 0px;
+  margin-left: -4px;
   margin-bottom: 2px;
   min-width: 50px;
+  max-width: 400px;
   padding: 0.3em 0.3em 0.3em 0.3em;
   font-style: italic;
   border: 1px solid transparent;
@@ -110,8 +125,8 @@ a:visited {
 
 .tab.tab-selected {
   font-weight: bold;
-  border-bottom: 3px solid hsl(180, 35%, 30%);
-  color: hsl(180, 35%, 30%);
+  border-bottom: 3px solid #333;
+  color: #333;
 }
 
 /* Sections */
@@ -161,6 +176,7 @@ a:visited {
 }
 
 .list-item {
+  color: #555;
   padding: 0.8em;
   background-color: white;
   border-top: 1px solid #ccc;
@@ -186,24 +202,23 @@ a:visited {
 /* Attachments */
 
 .att-link, .att-link:visited {
-  font-weight: bold;
   max-width: 320px;
   display: inline-block;
   vertical-align: text-bottom;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: "...";
-  color: hsl(180, 50%, 51%);
+  color: #4183c4;
 }
 
 .att-suffix {
   margin-left: 2px;
   font-size: .9em;
-  color: #777;
+  color: #aaa;
 }
 
 .att-name {
-  color: #444;
+  color: #555;
 }
 
 .bug-id {

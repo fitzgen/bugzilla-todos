@@ -39,7 +39,7 @@ var MyReviews = {
     input.val(this.email);
     input.blur(function() {
       var email = input.val();
-      if (email) {
+      if (email && email != this.email) {
         this.setUser(email);
       }
     }.bind(this));
@@ -73,7 +73,9 @@ var MyReviews = {
     this.email = email;
     this.user = new User(email);
 
+    $("#header").addClass("logged-in");
     this.update();
+
     $("#content").show();
   },
 
@@ -82,12 +84,11 @@ var MyReviews = {
     if (!email) {
       email = this.email; // from localStorage
       if (!email) {
-        $("#login-name").addClass("logged-out");
+        $("#header").addClass("was-logged-out");
         $("#content").hide();
         return false;
       }
     }
-    $("#login-name").removeClass("logged-out");
     this.setUser(this.email);
   },
 
