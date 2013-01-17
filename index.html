@@ -27,7 +27,7 @@
   <script src="app/myreviews.js"></script>
 
   <script id="review-item" type="text/html">
-    <div class="bug">
+    <div class="bug att-bug">
       {{> bug}}
     </div>
     {{#each attachments}}
@@ -43,7 +43,7 @@
   </script>
 
   <script id="checkin-item" type="text/html">
-    <div class="bug">
+    <div class="bug att-bug">
       {{> bug}}
     </div>
     {{#each attachments}}
@@ -56,7 +56,7 @@
   </script>
 
   <script id="nag-item" type="text/html">
-    <div class="bug">
+    <div class="bug att-bug">
      {{> bug}}
     </div>
     {{#each attachments}}
@@ -73,25 +73,13 @@
 
   <script id="fix-item" type="text/html">
     <div class="bug">
-      <a class="bug-link" href={{show_bug bug.id}}
-         target=_blank title="{{> bug_tooltip}}">
-         <span class="bug-id">{{bug.id}}</span>-
-         <span class="bug-summary">{{bug.summary}}</span>
-      </a>
-      <span class="item-date timeago {{urgentify_fix bug.last_change_time}}"
-            title="{{bug.last_change_time}}"></span>
+      {{> full_bug}}
     </div>
   </script>
 
   <script id="respond-item" type="text/html">
     <div class="bug">
-      <a class="bug-link" href={{show_bug bug.id}}
-         target=_blank title="{{> bug_tooltip}}">
-         <span class="bug-id">{{bug.id}}</span>-
-         <span class="bug-summary">{{bug.summary}}</span>
-      </a>
-      <span class="item-date timeago {{urgentify bug.last_change_time}}"
-            title="{{bug.last_change_time}}"></span>
+      {{> full_bug}}
     </div>
     <div class="flags">
       {{#each bug.flags}}
@@ -117,8 +105,11 @@
     <a class="att-link" href={{show_attach id}} target=_blank>
       {{description}}
     </a>
-    <span class="att-by">
+    <span class="att-suffix">
       by <span class="att-name">{{attacher.name}}</span>
+      <span class="att-date timeago {{urgentify last_change_time}}"
+            title="{{last_change_time}}">
+      </span>
     </span>
   </script>
 
@@ -127,9 +118,16 @@
       {{bug.id}} -
       <span class="bug-summary">{{bug.summary}}</span>
     </a>
+  </script>
+
+  <script id="full-bug-partial" type="text/html">
+    <a class="bug-link" href={{show_bug bug.id}}
+       target=_blank title="{{> bug_tooltip}}">
+       <span class="bug-id">{{bug.id}}</span>-
+       <span class="full-bug bug-summary">{{bug.summary}}</span>
+    </a>
     <span class="item-date timeago {{urgentify bug.last_change_time}}"
-          title="{{bug.last_change_time}}">
-    </span>
+          title="{{bug.last_change_time}}"></span>
   </script>
 
 </head>

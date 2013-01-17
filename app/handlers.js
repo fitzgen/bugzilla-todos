@@ -1,6 +1,7 @@
 $(document).ready(function() {
   // gotta wait for the template elements to be created
   Handlebars.registerPartial("bug", $("#bug-partial").html());
+  Handlebars.registerPartial("full_bug", $("#full-bug-partial").html());
   Handlebars.registerPartial("attachment", $("#attachment-partial").html());
   Handlebars.registerPartial("flag", $("#flag-partial").html());
 });

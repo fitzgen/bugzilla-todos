@@ -187,7 +187,7 @@ a:visited {
 
 .att-link, .att-link:visited {
   font-weight: bold;
-  max-width: 354px;
+  max-width: 320px;
   display: inline-block;
   vertical-align: text-bottom;
   white-space: nowrap;
@@ -196,7 +196,7 @@ a:visited {
   color: hsl(180, 50%, 51%);
 }
 
-.att-by {
+.att-suffix {
   margin-left: 2px;
   font-size: .9em;
   color: #777;
@@ -212,8 +212,12 @@ a:visited {
    margin-right: 4px;
 }
 
+.full-bug.bug-summary {
+  width: 360px;
+}
+
 .bug-summary {
-  width: 340px;
+  width: 380px;
   display: inline-block;
   vertical-align: text-bottom;
   white-space: nowrap;
