@@ -4,6 +4,7 @@ Reviews.prototype.fetch = function() {
   MyReviews.user.requests(function(err, requests) {
     if (err) throw err;
     this.reset(requests);
+    console.log(requests);
   }.bind(this));
   this.trigger("fetch");
 }

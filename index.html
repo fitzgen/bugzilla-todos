@@ -35,7 +35,7 @@
         <span class="attachment">
           {{> attachment}}
         </span>
-        <a class="review-type" href={{show_splinter bug.id id}}>
+        <a class="review-type" href={{show_splinter bug_id id}}>
           {{type}}
         </a>
       </div>
@@ -102,7 +102,8 @@
   </script>
 
   <script id="attachment-partial" type="text/html">
-    <a class="att-link" href={{show_attach id}} target=_blank>
+    <a class="att-link" href={{show_attach id}} target=_blank
+       title="{{> attachment_tooltip}}">
       {{description}}
     </a>
     <span class="att-suffix">

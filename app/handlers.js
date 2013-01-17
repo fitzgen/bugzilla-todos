@@ -8,8 +8,16 @@ $(document).ready(function() {
 
 Handlebars.registerPartial("bug_tooltip", "bug {{bug.id}} - " +
   "{{bug.status}}{{#if bug.resolution}} {{bug.resolution}}{{/if}} - " +
-  "{{bug.summary}} (updated {{timeago bug.last_change_time}})"
+  "{{bug.summary}} {{bug.whiteboard}} (updated {{timeago bug.last_change_time}})"
 );
+
+Handlebars.registerPartial("attachment_tooltip", "{{description}} - " +
+  "{{show_size size}} patch by {{attacher.name}} (updated {{timeago last_change_time}})"
+);
+
+Handlebars.registerHelper('show_size', function(bytes) {
+  return Math.round(bytes / 1000) + "KB";
+})
 
 Handlebars.registerHelper('show_bug', function(id) {
   return MyReviews.base + "/show_bug.cgi?id=" + id;
