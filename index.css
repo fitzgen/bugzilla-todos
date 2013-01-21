@@ -1,5 +1,9 @@
 @import url(http://fonts.googleapis.com/css?family=Crete+Round:400,400italic);
 
+html {
+  overflow-y: auto;
+}
+
 body {
   font-size: 13px;
   background-color: hsl(200, 8%, 92%);
@@ -157,12 +161,6 @@ a:visited {
   float: left;
 }
 
-#review-list, #patch-list,
-#checkin-list, #nag-list {
-  max-height: 600px;
-  overflow: auto;
-}
-
 .count {
   margin-left: 2px;
 }
@@ -204,6 +202,11 @@ a:visited {
 }
 
 /* Attachments */
+
+.attachment {
+  display: inline-block;
+  padding: 2px 0;
+}
 
 .att-link, .att-link:visited {
   max-width: 320px;
@@ -256,7 +259,7 @@ a:visited {
   font-size: 0.9em;
   border: 1px solid #ededed;
   border-radius: 2px;
-  padding: 2px 4px;
+  padding: 1px 4px;
   float: right;
   cursor: pointer;
 }

@@ -37,18 +37,20 @@ var MyReviews = {
 
     var input = $("#login-name");
     input.val(this.email);
+    input.click(function(){
+      this.select();
+    });
     input.blur(function() {
+      $("#login-form").submit();
+    }.bind(this));
+
+    $("#login-form").submit(function(event) {
+      // when the user presses "Enter" in login input
       var email = input.val();
       if (email && email != this.email) {
         this.setUser(email);
       }
     }.bind(this));
-
-    $("#login-form").submit(function(event) {
-      // when the user presses "Enter" in login input
-      event.preventDefault();
-      input.blur();
-    });
 
     $(".tab").click(function(event) {
       var tab = $(event.target).closest("a");

@@ -139,8 +139,9 @@
          Todos
       </span>
         <span id="login"> for
-          <form id="login-form">
-            <input id="login-name" placeholder="Enter Bugzilla user..."/>
+          <form id="login-form" target="submit-iframe">
+            <input id="login-name"
+                   name="email" placeholder="Enter Bugzilla user..."/>
           </form>
         </span>
       </span>
@@ -214,5 +215,6 @@
       </div>
     </div>
   </div>
+  <iframe id="submit-iframe" hidden="true" name="submit-iframe" src="javascript:false"></iframe>
 </body>
 </html>
