@@ -151,6 +151,7 @@ User.prototype.awaitingReview = function(callback) {
       'field0-1-0': 'flagtypes.name',
       'type0-1-0': 'contains',
       'value0-1-0': '?',
+      status: ['NEW','UNCONFIRMED','REOPENED', 'ASSIGNED'],
       include_fields: 'id,summary,status,resolution,last_change_time,attachments'
    },
    function(err, bugs) {
