@@ -49,6 +49,7 @@ User.prototype.requests = function(callback) {
       'field0-0-0': 'flag.requestee',
       'type0-0-0': 'equals',
       'value0-0-0': this.username,
+      status: ['NEW','UNCONFIRMED','REOPENED', 'ASSIGNED'],
       include_fields: 'id,summary,status,resolution,last_change_time,attachments'
    },
    function(err, bugs) {
