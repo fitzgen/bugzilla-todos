@@ -6,7 +6,7 @@ html {
 
 body {
   font-size: 13px;
-  background-color: hsl(200, 8%, 92%);
+  background-color: hsl(200, 8%, 95%);
   background-image: url(satinweave.png);
 }
 
@@ -85,8 +85,9 @@ a:visited {
   border: 1px solid transparent;
 }
 
-#login-name.logged-out {
-  border: 1px solid #e9e9e9;
+#header:not(.logged-in) #login-name {
+  border: 1px solid #ddd;
+  width: 300px;
 }
 
 #login-name:focus {
