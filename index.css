@@ -5,7 +5,7 @@ html {
 }
 
 body {
-  min-width: 550px;
+
   font-size: 13px;
   background-color: hsl(200, 8%, 95%);
   background-image: url(satinweave.png);
@@ -103,6 +103,7 @@ a:visited {
 /* Tabs */
 
 .tabs {
+
   float: left;
   width: 530px;
 }
