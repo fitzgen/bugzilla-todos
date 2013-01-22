@@ -1,10 +1,11 @@
 function Checkins() {}
 Checkins.prototype = new Queue();
 Checkins.prototype.fetch = function() {
+  var self = this;
   MyReviews.user.needsCheckin(function(err, requests) {
     if (err) throw err;
-    this.reset(requests);
-  }.bind(this));
+    self.reset(requests);
+  });
   this.trigger("fetch");
 }
 

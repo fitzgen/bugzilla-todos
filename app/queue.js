@@ -43,9 +43,10 @@ QueueList.prototype = {
   render: function() {
     this.list.empty();
 
+    var self = this;
     this.collection.items.forEach(function(item) {
-      this.addRow(item);
-    }.bind(this));
+      self.addRow(item);
+    });
 
     if (!this.collection.items.length) {
       this.showEmpty();

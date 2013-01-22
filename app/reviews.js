@@ -1,10 +1,15 @@
 function Reviews() {}
 Reviews.prototype = new Queue();
 Reviews.prototype.fetch = function() {
+  var self = this;
   MyReviews.user.requests(function(err, requests) {
+  	try {
     if (err) throw err;
-    this.reset(requests);
-  }.bind(this));
+    self.reset(requests);
+    } catch(e) {
+    	log(e);
+    }
+  });
   this.trigger("fetch");
 }
 

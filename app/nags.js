@@ -1,10 +1,12 @@
 function Nags() {}
 Nags.prototype = new Queue();
 Nags.prototype.fetch = function() {
+  var self = this;
+
   MyReviews.user.awaitingReview(function(err, requests) {
     if (err) throw err;
-    this.reset(requests);
-  }.bind(this));
+    self.reset(requests);
+  });
   this.trigger("fetch");
 }
 

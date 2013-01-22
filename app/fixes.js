@@ -1,10 +1,11 @@
 function Fixes() {}
 Fixes.prototype = new Queue();
 Fixes.prototype.fetch = function() {
+  var self = this;
   MyReviews.user.needsPatch(function(err, bugs) {
     if (err) throw err;
-    this.reset(bugs);
-  }.bind(this));
+    self.reset(bugs);
+  });
   this.trigger("fetch");
 }
 

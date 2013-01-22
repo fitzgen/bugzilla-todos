@@ -1,10 +1,11 @@
 function Responds() {}
 Responds.prototype = new Queue();
 Responds.prototype.fetch = function() {
+  var self = this;
   MyReviews.user.flagged(function(err, bugs) {
     if (err) throw err;
-    this.reset(bugs);
-  }.bind(this));
+    self.reset(bugs);
+  });
   this.trigger("fetch");
 }
 

@@ -4,9 +4,13 @@ $(document).ready(function() {
     MyReviews.loadUser();
   }
   catch (e) {
-    $("#error-message").html(JSON.stringify(e));
+    log(e);
   }
 });
+
+function log(err) {
+  $("#error-message").html(JSON.stringify(err));
+}
 
 var MyReviews = {
   base: "https://bugzilla.mozilla.org",
@@ -50,6 +54,7 @@ var MyReviews = {
     });
 
     $("#login-form").submit(function(event) {
+      try {
       // don't want to navigate page
       event.preventDefault();
 
@@ -57,6 +62,9 @@ var MyReviews = {
       var email = input.val();
       if (email && email != MyReviews.email) {
         MyReviews.setUser(email);
+      }
+      } catch(e) {
+        log(e);
       }
     });
 
@@ -72,7 +80,7 @@ var MyReviews = {
       this.selectTab(queryTab);
     }
 
-    $("submit-iframe").hide();
+    $("#submit-iframe").hide();
   },
 
   setUser: function(email) {
