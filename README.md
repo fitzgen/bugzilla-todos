@@ -1,9 +1,22 @@
-# myreviews
+# Bugzilla Todos
 
-myreviews is a quick way to see your outstanding Bugzilla requests.
+Bugzilla Todos is a quick way to see your outstanding Bugzilla requests.
 
 You can view yours at:
 
-[http://harthur.github.com/myreviews](http://harthur.github.com/myreviews)
+[http://harthur.github.com/bugzilla-todos](http://harthur.github.com/bugzilla-todos)
 
 You can also add a `user=email@email.com` to the url to get the dashboard for a particular user.
+
+## details
+
+For the given username, Bugzilla Todos will display:
+
+* The flag requests where the user is the flag requestee
+* The patches by the user that have been reviewed, but not yet checked in (bug isn't marked fixed)
+* The patches by the user that are still awaiting review
+* The bugs assigned to the user
+
+## code
+
+Bugzilla Todos uses [bz.js](https://github.com/harthur/bz.js) to make calls to the Bugzilla REST API. The Bugzilla queries used in the app are located in `app/user.js`.
