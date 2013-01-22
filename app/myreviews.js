@@ -71,6 +71,8 @@ var MyReviews = {
     if (queryTab) {
       this.selectTab(queryTab);
     }
+
+    $("submit-iframe").hide();
   },
 
   setUser: function(email) {
