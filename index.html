@@ -138,7 +138,7 @@
          Todos
       </span>
         <span id="login"> for
-          <form id="login-form" target="submit-iframe">
+          <form id="login-form" onsubmit="submitLogin()">
             <input id="login-name"
                    name="email" placeholder="Enter Bugzilla user..."/>
           </form>
@@ -214,9 +214,20 @@
       </div>
     </div>
   </div>
-  <iframe id="submit-iframe" name="submit-iframe" hidden="true"
-          src="javascript:false">
+  <iframe id="submit-iframe" name="submit-iframe" hidden="true">
   </iframe>
+  <script>
+    /* From http://stackoverflow.com/questions/8400269/browser-native-autocomplete-for-ajaxed-forms */
+    function submitLogin() {
+      var iFrameWindow = document.getElementById("submit-iframe").contentWindow;
+      var cloned = document.getElementById("login-form").cloneNode(true);
+      iFrameWindow.document.body.appendChild(cloned);
+      var frameForm = iFrameWindow.document.getElementById("login-form");
+      frameForm.onsubmit = null;
+      frameForm.submit();
+      return false;
+    }
+  </script>
   <script type="text/javascript">
     var _gaq = _gaq || [];
     _gaq.push(['_setAccount', 'UA-37841258-1']);

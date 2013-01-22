@@ -51,8 +51,6 @@ var MyReviews = {
       // when the user presses "Enter" in login input
       var email = input.val();
       if (email && email != this.email) {
-        console.log(email, this.email);
-        console.log("set user from login form");
         this.setUser(email);
       }
     }.bind(this));
@@ -91,7 +89,6 @@ var MyReviews = {
         return false;
       }
     }
-    console.log("set user from load user");
     this.setUser(email);
   },
 
