@@ -1,6 +1,11 @@
 $(document).ready(function() {
-  MyReviews.initialize();
-  MyReviews.loadUser();
+  try {
+    MyReviews.initialize();
+    MyReviews.loadUser();
+  }
+  catch (e) {
+    $("#error-message").html(JSON.stringify(e));
+  }
 });
 
 var MyReviews = {

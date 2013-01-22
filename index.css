@@ -35,6 +35,11 @@ a:visited {
   width: 100%;
 }
 
+#error-message {
+  color: red;
+  font-size: 1.4em;
+}
+
 #header {
   font-family: Crete Round, Helvetica Neue, sans-serif;
   font-size: 2em;
