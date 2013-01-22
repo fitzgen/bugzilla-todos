@@ -54,18 +54,9 @@ var MyReviews = {
 
     $(".tab").click(function(event) {
       var tab = $(event.target).closest("a");
-
-      /* Select this tab */
-      $(this).siblings().removeClass("tab-selected");
-      tab.addClass("tab-selected");
-
-      var section = tab.data("section");
-
-      /* Show the content for the section */
-      $(this).parents(".tabs").find("section").hide();
-      $("#" + section).show();
+      this.selectTab(tab.data("section"));
       return false;
-    })
+    }.bind(this));
     $("#review-tab").click();
 
     $("#patch").hide();
@@ -76,13 +67,14 @@ var MyReviews = {
     this.user = new User(email);
 
     $("#header").addClass("logged-in");
+    $("#login-name").val(email);
     this.update();
 
     $("#content").show();
   },
 
   loadUser: function() {
-    email = utils.queryFromUrl()['user'];
+    var email = utils.queryFromUrl()['user'];
     if (!email) {
       email = this.email; // from localStorage
       if (!email) {
@@ -91,7 +83,18 @@ var MyReviews = {
         return false;
       }
     }
-    this.setUser(this.email);
+    this.setUser(email);
+  },
+
+  selectTab: function(type) {
+    var tab = $("#" + type + "-tab");
+
+    tab.siblings().removeClass("tab-selected");
+    tab.addClass("tab-selected");
+
+    /* Show the content for the section */
+    tab.parents(".tabs").find("section").hide();
+    $("#" + type).show();
   },
 
   update: function() {
