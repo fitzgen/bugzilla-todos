@@ -1,11 +1,6 @@
 $(document).ready(function() {
-  try {
-    MyReviews.initialize();
-    MyReviews.loadUser();
-  }
-  catch (e) {
-    log(e);
-  }
+  MyReviews.initialize();
+  MyReviews.loadUser();
 });
 
 function log(err) {
@@ -54,7 +49,6 @@ var MyReviews = {
     });
 
     $("#login-form").submit(function(event) {
-      try {
       // don't want to navigate page
       event.preventDefault();
 
@@ -62,9 +56,6 @@ var MyReviews = {
       var email = input.val();
       if (email && email != MyReviews.email) {
         MyReviews.setUser(email);
-      }
-      } catch(e) {
-        log(e);
       }
     });
 
