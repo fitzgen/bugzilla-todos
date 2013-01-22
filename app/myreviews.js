@@ -47,7 +47,7 @@ var MyReviews = {
     });
     input.blur(function() {
       $("#login-form").submit();
-    }.bind(this));
+    });
 
     $("#login-form").submit(function(event) {
       // don't want to navigate page
@@ -55,16 +55,16 @@ var MyReviews = {
 
       // when the user presses "Enter" in login input
       var email = input.val();
-      if (email && email != this.email) {
-        this.setUser(email);
+      if (email && email != MyReviews.email) {
+        MyReviews.setUser(email);
       }
-    }.bind(this));
+    });
 
     $(".tab").click(function(event) {
       var tab = $(event.target).closest("a");
-      this.selectTab(tab.data("section"));
+      MyReviews.selectTab(tab.data("section"));
       return false;
-    }.bind(this));
+    });
 
     this.selectTab("review");
     var queryTab = utils.queryFromUrl()['tab'];
