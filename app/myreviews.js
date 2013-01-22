@@ -62,9 +62,12 @@ var MyReviews = {
       this.selectTab(tab.data("section"));
       return false;
     }.bind(this));
-    $("#review-tab").click();
 
-    $("#patch").hide();
+    this.selectTab("review");
+    var queryTab = utils.queryFromUrl()['tab'];
+    if (queryTab) {
+      this.selectTab(queryTab);
+    }
   },
 
   setUser: function(email) {
