@@ -6,7 +6,7 @@ You can view yours at:
 
 [http://harthur.github.com/bugzilla-todos](http://harthur.github.com/bugzilla-todos)
 
-You can also add a `user=email@email.com` to the url to get the dashboard for a particular user.
+You can also add a `user=email@email.com` to the url to get the dashboard for a particular user. It's also hosted at [http://bugmotodo.org/](http://bugmotodo.org/) for an easier url.
 
 ## details
 
