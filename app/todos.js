@@ -1,6 +1,11 @@
 $(document).ready(function() {
   MyReviews.initialize();
   MyReviews.loadUser();
+
+  MyReviews.user.awaiting(function(err, bugs) {
+    console.log(err);
+    console.log(bugs);
+  });
 });
 
 function log(err) {
