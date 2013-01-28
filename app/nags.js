@@ -3,7 +3,7 @@ Nags.prototype = new Queue();
 Nags.prototype.fetch = function() {
   var self = this;
 
-  MyReviews.user.awaitingReview(function(err, requests) {
+  MyReviews.user.awaitingFlag(function(err, requests) {
     if (err) throw err;
     self.reset(requests);
   });

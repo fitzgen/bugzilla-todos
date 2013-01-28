@@ -68,6 +68,11 @@
         {{/each}}
       </div>
     {{/each}}
+    <div class="flags">
+      {{#each bug.flags}}
+        {{> flag}}
+      {{/each}}
+    </div>
   </script>
 
   <script id="fix-item" type="text/html">

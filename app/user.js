@@ -1,5 +1,6 @@
 function User(username, limit) {
    this.username = username;
+   this.name = this.username.replace(/@.+/, "");
    this.limit = limit;
 
    this.client = bz.createClient({
@@ -43,7 +44,7 @@ User.prototype.bugs = function(methods, callback) {
 }
 
 User.prototype.requests = function(callback) {
-   var name = this.username.replace(/@.+/, ""); // can't get email if not logged in
+   var name = this.name;
 
    this.client.searchBugs({
       'field0-0-0': 'flag.requestee',
@@ -96,7 +97,7 @@ User.prototype.requests = function(callback) {
 }
 
 User.prototype.needsCheckin = function(callback) {
-   var name = this.username.replace(/@.+/, ""); // can't get email if not logged in
+   var name = this.name;
 
    this.client.searchBugs({
       'field0-0-0': 'attachment.attacher',
@@ -142,7 +143,7 @@ User.prototype.needsCheckin = function(callback) {
 }
 
 User.prototype.awaitingReview = function(callback) {
-   var name = this.username.replace(/@.+/, ""); // can't get email if not logged in
+   var name = this.name;
 
    this.client.searchBugs({
       'field0-0-0': 'attachment.attacher',
@@ -187,6 +188,78 @@ User.prototype.awaitingReview = function(callback) {
    });
 }
 
+User.prototype.awaitingFlag = function(callback) {
+   var name = this.name;
+
+   this.client.searchBugs({
+      'field0-0-0': 'flag.setter',
+      'type0-0-0': 'equals',
+      'value0-0-0': this.username,
+      'field0-1-0': 'flagtypes.name',
+      'type0-1-0': 'contains',
+      'value0-1-0': '?',
+      status: ['NEW','UNCONFIRMED','REOPENED', 'ASSIGNED'],
+      include_fields: 'id,summary,status,resolution,last_change_time,flags,attachments'
+   }, function(err, bugs) {
+      var requests = [];
+
+      bugs.forEach(function(bug) {
+         var atts = [];
+         var flags = [];
+
+         if (bug.flags) {
+            bug.flags.forEach(function(flag) {
+               if (flag.status == "?" && flag.setter
+                   && flag.setter.name == name) {
+                  flags.push(flag);
+               }
+            });
+         }
+         if (bug.attachments) {
+            bug.attachments.forEach(function(att) {
+               if (att.is_obsolete || !att.is_patch || !att.flags
+                   || att.attacher.name != name) {
+                  return;
+               }
+               att.flags.forEach(function(flag) {
+                  if (flag.status == "?") {
+                     att.bug = bug;
+                     atts.push(att);
+                  }
+               })
+            });
+
+            if (atts.length || flags.length) {
+               requests.push({
+                  bug: bug,
+                  attachments: atts,
+                  flags: flags,
+                  time: bug.last_change_time
+               })
+            }
+         }
+      })
+      requests.sort(utils.byTime);
+
+      callback(null, requests);
+   })
+}
+
+User.prototype.awaiting = function(callback) {
+   var self = this;
+   this.awaitingFlag(function(err, flagBugs) {
+      if (err) return callback(err);
+
+      self.awaitingReview(function(err, reviewBugs) {
+         if (err) return callback(err);
+
+         var bugs = flagBugs.concat(reviewBugs);
+         bugs.sort(utils.byTime);
+
+         callback(null, bugs);
+      })
+   })
+}
 
 User.prototype.needsPatch = function(callback) {
    var query = {
@@ -219,7 +292,7 @@ User.prototype.needsPatch = function(callback) {
 }
 
 User.prototype.flagged = function(callback) {
-   var name = this.username.replace(/@.+/, ""); // can't get email if not logged in
+   var name = this.name;
 
    this.client.searchBugs({
       'field0-0-0': 'flag.requestee',
@@ -230,7 +303,6 @@ User.prototype.flagged = function(callback) {
    function(err, bugs) {
       if (err) { return callback(err); }
       var flags = [];
-
       bugs.forEach(function(bug) {
          if (!bug.flags) {
             return;
