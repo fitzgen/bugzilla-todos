@@ -52,7 +52,6 @@ var MyReviews = {
       // don't want to navigate page
       event.preventDefault();
 
-      // when the user presses "Enter" in login input
       var email = input.val();
       if (email && email != MyReviews.email) {
         MyReviews.setUser(email);
@@ -86,7 +85,10 @@ var MyReviews = {
   },
 
   loadUser: function() {
-    var email = utils.queryFromUrl()['user'];
+    var email = utils.queryFromUrl()['email'];
+    if (!email) {
+      email = utils.queryFromUrl()['user'];
+    }
     if (!email) {
       email = this.email; // from localStorage
       if (!email) {
