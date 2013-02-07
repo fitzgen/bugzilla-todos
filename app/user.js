@@ -245,22 +245,6 @@ User.prototype.awaitingFlag = function(callback) {
    })
 }
 
-User.prototype.awaiting = function(callback) {
-   var self = this;
-   this.awaitingFlag(function(err, flagBugs) {
-      if (err) return callback(err);
-
-      self.awaitingReview(function(err, reviewBugs) {
-         if (err) return callback(err);
-
-         var bugs = flagBugs.concat(reviewBugs);
-         bugs.sort(utils.byTime);
-
-         callback(null, bugs);
-      })
-   })
-}
-
 User.prototype.needsPatch = function(callback) {
    var query = {
       email1: this.username,
