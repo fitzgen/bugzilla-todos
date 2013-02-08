@@ -255,7 +255,7 @@ a:visited {
   vertical-align: text-bottom;
   white-space: nowrap;
   overflow: hidden;
-  text-overflow: "...";
+  text-overflow: ellipsis;
 }
 
 .bug-id:hover, .bug-summary {
