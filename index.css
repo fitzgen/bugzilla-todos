@@ -1,11 +1,15 @@
 @import url(http://fonts.googleapis.com/css?family=Crete+Round:400,400italic);
 
+* {
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
 html {
   overflow-y: auto;
 }
 
 body {
-  min-width:550px;
   font-size: 13px;
   background-color: hsl(200, 8%, 95%);
   background-image: url(satinweave.png);
@@ -34,6 +38,7 @@ a:visited {
   -moz-box-orient: vertical;
   -webkit-box-orient: vertical;
   width: 100%;
+  padding: 0px 10px;
 }
 
 #error-message {
@@ -103,9 +108,7 @@ a:visited {
 /* Tabs */
 
 .tabs {
-
-  float: left;
-  width: 530px;
+  max-width: 530px;
 }
 
 .tab-head {
@@ -243,11 +246,11 @@ a:visited {
 }
 
 .full-bug.bug-summary {
-  width: 360px;
+  max-width: 360px;
 }
 
 .bug-summary {
-  width: 380px;
+  max-width: 380px;
   display: inline-block;
   vertical-align: text-bottom;
   white-space: nowrap;
