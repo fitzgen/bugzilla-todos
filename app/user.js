@@ -131,11 +131,13 @@ User.prototype.needsCheckin = function(callback) {
          if (!ready)
             return false;
 
-         // Do we have a review- or a pending request on the same patch?
+         // Don't add patches that have pending requests, have review-, or have
+         // checkin+.
          for (var i = 0; i < att.flags.length; ++i) {
             var flag = att.flags[i];
             if (flag.status == "?"
-                || flag.name == "review" && flag.status == "-") {
+                || flag.name == "review" && flag.status == "-"
+                || flag.name == "checkin" && flag.status == "+") {
                return false;
             }
          }
