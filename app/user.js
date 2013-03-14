@@ -117,11 +117,38 @@ User.prototype.needsCheckin = function(callback) {
 
       var requests = [];
 
+      function readyToLand(att) {
+         if (att.is_obsolete || !att.is_patch || !att.flags
+             || att.attacher.name != name) {
+            return false;
+         }
+
+         // Do we have at least one review+?
+         var ready = att.flags.filter(function(flag) {
+            return flag.name == "review" && flag.status == "+";
+         }).length > 0;
+
+         if (!ready)
+            return false;
+
+         // Don't add patches that have pending requests, have review-, or have
+         // checkin+.
+         for (var i = 0; i < att.flags.length; ++i) {
+            var flag = att.flags[i];
+            if (flag.status == "?"
+                || flag.name == "review" && flag.status == "-"
+                || flag.name == "checkin" && flag.status == "+") {
+               return false;
+            }
+         }
+
+         return ready;
+      }
+
       bugs.forEach(function(bug) {
          var atts = [];
          bug.attachments.forEach(function(att) {
-            if (att.is_obsolete || !att.is_patch || !att.flags
-                || att.attacher.name != name) {
+            if (!readyToLand(att)) {
                return;
             }
             att.bug = bug;
