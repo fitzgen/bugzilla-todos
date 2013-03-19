@@ -48,7 +48,7 @@ User.prototype.requests = function(callback) {
 
    this.client.searchBugs({
       'field0-0-0': 'flag.requestee',
-      'type0-0-0': 'equals',
+      'type0-0-0': 'contains',
       'value0-0-0': this.username,
       status: ['NEW','UNCONFIRMED','REOPENED', 'ASSIGNED'],
       include_fields: 'id,summary,status,resolution,last_change_time,attachments'
@@ -169,52 +169,10 @@ User.prototype.needsCheckin = function(callback) {
   });
 }
 
-User.prototype.awaitingReview = function(callback) {
-   var name = this.name;
-
-   this.client.searchBugs({
-      'field0-0-0': 'attachment.attacher',
-      'type0-0-0': 'equals',
-      'value0-0-0': this.username,
-      'field0-1-0': 'flagtypes.name',
-      'type0-1-0': 'contains',
-      'value0-1-0': '?',
-      status: ['NEW','UNCONFIRMED','REOPENED', 'ASSIGNED'],
-      include_fields: 'id,summary,status,resolution,last_change_time,attachments'
-   },
-   function(err, bugs) {
-      if (err) { return callback(err); }
-
-      var requests = [];
-      bugs.forEach(function(bug) {
-         var atts = [];
-         bug.attachments.forEach(function(att) {
-            if (att.is_obsolete || !att.is_patch || !att.flags
-                || att.attacher.name != name) {
-               return;
-            }
-            att.flags.forEach(function(flag) {
-               if (flag.status == "?") {
-                  att.bug = bug;
-                  atts.push(att);
-               }
-            })
-         });
-
-         if (atts.length) {
-            requests.push({
-               bug: bug,
-               attachments: atts,
-               time: atts[0].last_change_time
-            })
-         }
-      });
-      requests.sort(utils.byTime);
-
-      callback(null, requests);
-   });
-}
-
+/**
+ * All the patches and bugs the user is awaiting action on
+ * (aka they have a outstanding flag request)
+ */
 User.prototype.awaitingFlag = function(callback) {
    var name = this.name;
 
@@ -222,6 +180,9 @@ User.prototype.awaitingFlag = function(callback) {
       'field0-0-0': 'flag.setter',
       'type0-0-0': 'equals',
       'value0-0-0': this.username,
+      'field0-0-1': 'attachment.attacher',
+      'type0-0-1': 'equals',
+      'value0-0-1': this.username,
       'field0-1-0': 'flagtypes.name',
       'type0-1-0': 'contains',
       'value0-1-0': '?',
@@ -230,6 +191,7 @@ User.prototype.awaitingFlag = function(callback) {
    }, function(err, bugs) {
       var requests = [];
 
+      console.log(bugs);
       bugs.forEach(function(bug) {
          var atts = [];
          var flags = [];

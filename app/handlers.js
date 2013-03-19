@@ -57,21 +57,10 @@ Handlebars.registerHelper('if_flag', function(status, options) {
 
 Handlebars.registerHelper('urgentify', function(date) {
    var day = 1000 * 60 * 60 * 24 ;
-   if ((Date.now() - new Date(date)) > (10 * day)) {
-     return "very-overdue";
-   }
-   if ((Date.now() - new Date(date)) > (5 * day)) {
-     return "overdue";
-   }
-   return "";
-});
-
-Handlebars.registerHelper('urgentify_fix', function(date) {
-   var day = 1000 * 60 * 60 * 24 ;
    if ((Date.now() - new Date(date)) > (100 * day)) {
      return "very-overdue";
    }
-   if ((Date.now() - new Date(date)) > (60 * day)) {
+   if ((Date.now() - new Date(date)) > (30 * day)) {
      return "overdue";
    }
    return "";
