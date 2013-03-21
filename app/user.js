@@ -191,7 +191,6 @@ User.prototype.awaitingFlag = function(callback) {
    }, function(err, bugs) {
       var requests = [];
 
-      console.log(bugs);
       bugs.forEach(function(bug) {
          var atts = [];
          var flags = [];
