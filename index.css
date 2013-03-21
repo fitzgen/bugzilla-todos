@@ -250,7 +250,7 @@ a:visited {
 }
 
 .bug-summary {
-  max-width: 380px;
+  max-width: 420px;
   display: inline-block;
   vertical-align: text-bottom;
   white-space: nowrap;
