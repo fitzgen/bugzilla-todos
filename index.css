@@ -232,7 +232,7 @@ a:visited {
 .att-suffix {
   margin-left: 2px;
   font-size: .9em;
-  color: #aaa;
+  color: #999;
 }
 
 .att-name {
@@ -307,4 +307,8 @@ a:visited {
 
 .very-overdue {
   color: red;
+}
+
+.retired * {
+  color: #aaa;
 }

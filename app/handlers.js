@@ -1,3 +1,5 @@
+const day = 1000 * 60 * 60 * 24;
+
 $(document).ready(function() {
   // gotta wait for the template elements to be created
   Handlebars.registerPartial("bug", $("#bug-partial").html());
@@ -56,7 +58,6 @@ Handlebars.registerHelper('if_flag', function(status, options) {
 })
 
 Handlebars.registerHelper('urgentify', function(date) {
-   var day = 1000 * 60 * 60 * 24 ;
    if ((Date.now() - new Date(date)) > (100 * day)) {
      return "very-overdue";
    }
@@ -66,6 +67,12 @@ Handlebars.registerHelper('urgentify', function(date) {
    return "";
 });
 
+Handlebars.registerHelper('retire', function(date) {
+  if (Date.now() - new Date(date) > 365 * 2 * day) {
+    return "retired";
+  }
+  return "";
+});
 
 Handlebars.registerHelper('timeago', function(date) {
    return $.timeago(date);

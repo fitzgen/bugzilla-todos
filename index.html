@@ -30,69 +30,77 @@
   <script src="app/todos.js"></script>
 
   <script id="review-item" type="text/html">
-    <div class="bug att-bug">
-      {{> bug}}
-    </div>
-    {{#each attachments}}
-      <div class="review-attachment">
-        <span class="attachment">
-          {{> attachment}}
-        </span>
-        <a class="review-type" href={{show_splinter bug_id id}}>
-          {{type}}
-        </a>
+    <div class="{{retire bug.last_change_time}}">
+      <div class="bug att-bug">
+        {{> bug}}
       </div>
-    {{/each}}
+      {{#each attachments}}
+        <div class="review-attachment">
+          <span class="attachment">
+            {{> attachment}}
+          </span>
+          <a class="review-type" href={{show_splinter bug_id id}}>
+            {{type}}
+          </a>
+        </div>
+      {{/each}}
+    </div>
   </script>
 
   <script id="checkin-item" type="text/html">
-    <div class="bug att-bug">
-      {{> bug}}
-    </div>
-    {{#each attachments}}
-      <div class="checkin-attachment">
-        <span class="attachment">
-          {{> attachment}}
-        </span>
+    <div class="{{retire bug.last_change_time}}">
+      <div class="bug att-bug">
+        {{> bug}}
       </div>
-    {{/each}}
+      {{#each attachments}}
+        <div class="checkin-attachment">
+          <span class="attachment">
+            {{> attachment}}
+          </span>
+        </div>
+      {{/each}}
+    </div>
   </script>
 
   <script id="nag-item" type="text/html">
-    <div class="bug att-bug">
-     {{> bug}}
-    </div>
-    {{#each attachments}}
-      <div class="nag-attachment">
-        {{> attachment}}
+    <div class="{{retire bug.last_change_time}}">
+      <div class="bug att-bug">
+       {{> bug}}
       </div>
+      {{#each attachments}}
+        <div class="nag-attachment">
+          {{> attachment}}
+        </div>
+        <div class="flags">
+          {{#each flags}}
+            {{> flag}}
+          {{/each}}
+        </div>
+      {{/each}}
       <div class="flags">
-        {{#each flags}}
+        {{#each bug.flags}}
           {{> flag}}
         {{/each}}
       </div>
-    {{/each}}
-    <div class="flags">
-      {{#each bug.flags}}
-        {{> flag}}
-      {{/each}}
     </div>
   </script>
 
   <script id="fix-item" type="text/html">
-    <div class="bug">
-      {{> bug}}
+    <div class="bug {{retire bug.last_change_time}}">
+      {{> full_bug}}
     </div>
   </script>
 
   <script id="respond-item" type="text/html">
-    <div class="bug">
-      {{> full_bug}}
-    </div>
-    <div class="flags">
-      {{#each bug.flags}}
-        {{> flag}}
-      {{/each}}
+    <div class="{{retire bug.last_change_time}}">
+      <div class="bug">
+        {{> full_bug}}
+      </div>
+      <div class="flags">
+        {{#each bug.flags}}
+          {{> flag}}
+        {{/each}}
+      </div>
     </div>
   </script>
 
