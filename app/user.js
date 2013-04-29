@@ -137,7 +137,7 @@ User.prototype.needsCheckin = function(callback) {
             var flag = att.flags[i];
             if (flag.status == "?"
                 || flag.name == "review" && flag.status == "-"
-                || flag.name == "checkin" && flag.status == "+") {
+                || flag.name == "checked-in" && flag.status == "+") {
                return false;
             }
          }
