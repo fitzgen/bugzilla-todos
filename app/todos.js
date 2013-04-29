@@ -64,10 +64,16 @@ var MyReviews = {
       return false;
     });
 
-    this.selectTab("review");
+    var storedTab;
     var queryTab = utils.queryFromUrl()['tab'];
     if (queryTab) {
       this.selectTab(queryTab);
+    }
+    else if(storedTab = localStorage['bztodos-selected-tab']) {
+      this.selectTab(storedTab);
+    }
+    else {
+      this.selectTab("review");
     }
 
     $("#submit-iframe").hide();
@@ -109,6 +115,8 @@ var MyReviews = {
     /* Show the content for the section */
     tab.parents(".tabs").find("section").hide();
     $("#" + type).show();
+
+    localStorage['bztodos-selected-tab'] = type;
   },
 
   update: function() {
