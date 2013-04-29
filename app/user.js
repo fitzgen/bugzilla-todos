@@ -198,7 +198,8 @@ User.prototype.awaitingFlag = function(callback) {
          if (bug.flags) {
             bug.flags.forEach(function(flag) {
                if (flag.status == "?" && flag.setter
-                   && flag.setter.name == name) {
+                   && flag.setter.name == name
+                   && flag.requestee) {
                   flags.push(flag);
                }
             });
