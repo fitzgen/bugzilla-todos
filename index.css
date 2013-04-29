@@ -10,7 +10,7 @@ html {
 }
 
 body {
-  font-size: 13px;
+  font-size: 13.25px;
   background-color: hsl(200, 8%, 95%);
   background-image: url(satinweave.png);
 }
@@ -108,7 +108,7 @@ a:visited {
 /* Tabs */
 
 .tabs {
-  max-width: 530px;
+  max-width: 550px;
 }
 
 .tab-head {
