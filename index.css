@@ -11,7 +11,6 @@ html {
 
 body {
   font-size: 13.25px;
-  background-color: hsl(200, 8%, 95%);
   background-image: url(satinweave.png);
 }
 
@@ -28,6 +27,12 @@ a:hover {
 }
 a:visited {
   color: inherit;
+}
+
+footer {
+  color: grey;
+  margin: 40px 0;
+  text-decoration: underline;
 }
 
 #container {
