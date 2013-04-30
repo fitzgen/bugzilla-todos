@@ -76,6 +76,8 @@ var MyReviews = {
       this.selectTab("review");
     }
 
+    this.addKeyBindings();
+
     $("#submit-iframe").hide();
   },
 
@@ -104,6 +106,23 @@ var MyReviews = {
       }
     }
     this.setUser(email);
+  },
+
+  addKeyBindings: function() {
+    var keys = {
+      'r': 'review',
+      'c': 'checkin',
+      'n': 'nag',
+      'f': 'fix',
+      'p': 'respond'
+    };
+
+    $(document).keypress(function(e) {
+      var tab = keys[String.fromCharCode(e.charCode)];
+      if (tab) {
+        this.selectTab(tab);
+      }
+    }.bind(this))
   },
 
   selectTab: function(type) {

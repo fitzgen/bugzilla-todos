@@ -168,31 +168,31 @@
          <div class="tab-head">
           <a id="review-tab" class="tab" href="#"
              data-section="review"
-             title="Patches you have to review">
+             title="Patches you have to review (key: r)">
             To Review
             <span class="count"><span class="tally"></span></span>
           </a>
           <a id="checkin-tab" class="tab" href="#"
              data-section="checkin"
-             title="Patches by you, ready to check in">
+             title="Patches by you, ready to check in (key: c)">
             To Check In
             <span class="count"><span class="tally"></span></span>
           </a>
           <a id="nag-tab" class="tab" href="#"
              data-section="nag"
-             title="Patches by you, awaiting review">
+             title="Patches by you, awaiting review (key: n)">
             To Nag
             <span class="count"><span class="tally"></span></span>
           </a>
           <a id="fix-tab" class="tab" href="#"
              data-section="fix"
-             title="Bugs assigned to you">
+             title="Bugs assigned to you (key: f)">
             To Fix
             <span class="count"><span class="tally"></span></span>
           </a>
           <a id="respond-tab" class="tab" href="#"
              data-section="respond"
-             title="Bugs where you're a flag requestee">
+             title="Bugs where you're a flag requestee (key: p)">
             To Respond
             <span class="count"><span class="tally"></span></span>
           </a>
@@ -232,8 +232,12 @@
       </div>
     </div>
     <footer>
-    <a href="https://github.com/harthur/bugzilla-todos">code on GitHub</a>
-  </footer>
+      <a href="https://github.com/harthur/bugzilla-todos">code on GitHub</a>
+      <span class="divider">|</span>
+      <span id="key-info">key shortcuts:
+        <code>r</code>, <code>c</code>, <code>n</code>, <code>f</code>, <code>p</code>
+      </span>
+    </footer>
   </div>
 
   <iframe id="submit-iframe" name="submit-iframe" hidden="true">

@@ -32,6 +32,9 @@ a:visited {
 footer {
   color: grey;
   margin: 40px 0;
+}
+
+footer > a {
   text-decoration: underline;
 }
 
@@ -65,7 +68,7 @@ footer {
 }
 
 #header.logged-in {
-  margin-top: 40px;
+  margin-top: 60px;
   font-size: 1.4em;
 }
 
@@ -316,4 +319,8 @@ footer {
 
 .retired * {
   color: #aaa;
+}
+
+.divider {
+  padding: 0 0.5em;
 }
