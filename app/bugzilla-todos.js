@@ -7,7 +7,7 @@ Tinycon.setOptions({
   background: '#E530A4',
 });
 
-const fetchFrequency = 1000 * 60 * 1;  // every 20 minutes
+const fetchFrequency = 1000 * 60 * 20;  // every 20 minutes
 
 var tabs = {
   review : {
