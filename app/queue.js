@@ -23,18 +23,21 @@ Queue.prototype = {
   },
 
   reset: function(items) {
+    // check for any new items
+    var hasNew = false;
     if (this.shouldDiff) {
-      // check for any new items
-      var hasNew = this.markNew(items);
-      if (hasNew) {
-        this.trigger("update-count-changed");
-      }
+      hasNew = this.markNew(items);
     }
     else {
       this.shouldDiff = true;
     }
+
     this.items = items;
     this.trigger("reset", items);
+
+    if (hasNew) {
+      this.trigger("update-count-changed");
+    }
   },
 
   markNew: function(items) {
