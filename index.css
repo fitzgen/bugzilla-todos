@@ -116,7 +116,7 @@ footer > a {
 /* Tabs */
 
 .tabs {
-  max-width: 550px;
+  max-width: 590px;
 }
 
 .tab-head {
@@ -125,7 +125,7 @@ footer > a {
   border-right: 1px solid #ccc;
   border-radius: 5px 5px 0 0;
   padding: 0.8em 0.4em 0 0.4em;
-  background-color: hsl(80, 20%, 97%)
+  background-color: hsl(40, 0%, 92%);
 }
 
 .tab,
@@ -192,6 +192,16 @@ footer > a {
   content: ")";
 }
 
+.new {
+  color: hsl(320, 80%, 50%);
+}
+
+.added-tally {
+  color: hsl(320, 80%, 50%);
+  letter-spacing: -1px;
+  font-weight: bold;
+}
+
 .list-item {
   color: #444;
   padding: 0.8em;
@@ -199,6 +209,10 @@ footer > a {
   border-top: 1px solid #ccc;
   border-left: 1px solid #ccc;
   border-right: 1px solid #ccc;
+}
+
+.new-item {
+  box-shadow: inset 0 0 8px hsl(120, 50%, 80%);
 }
 
 .list-item:last-child {

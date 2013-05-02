@@ -15,6 +15,7 @@
   <script src="lib/bz-0.2.4.js" type="text/javascript"></script>
   <script src="lib/handlebars.js" type="text/javascript"></script>
   <script src="lib/ba-linkify.min.js"></script>
+  <script src="lib/tinycon.min.js"></script>
   <script src="lib/underscore-min.js"></script>
   <script src="lib/backbone-min.js"></script>
   <script src="app/user.js"></script>
@@ -146,6 +147,23 @@
           title="{{bug.last_change_time}}"></span>
   </script>
 
+  <script id="tab-template" type="text/html">
+    <a id="{{id}}-tab" class="tab" href="#"
+       data-section="{{id}}"
+       title="{{alt}}">
+      {{name}}
+      <span class="count"><span class="tally"></span></span><span class="added-tally"></span>
+    </a>
+  </script>
+
+  <script id="tab-body-template" type="text/html">
+    <section id="{{id}}" class="patches-section">
+     <div class="content">
+       <div id="{{id}}-list">
+       </div>
+     </div>
+    </section>
+  </script>
 </head>
 <body>
  <div id="container">
@@ -166,68 +184,8 @@
     <div id="content">
       <div class="patches-tab tabs">
          <div class="tab-head">
-          <a id="review-tab" class="tab" href="#"
-             data-section="review"
-             title="Patches you have to review (key: r)">
-            To Review
-            <span class="count"><span class="tally"></span></span>
-          </a>
-          <a id="checkin-tab" class="tab" href="#"
-             data-section="checkin"
-             title="Patches by you, ready to check in (key: c)">
-            To Check In
-            <span class="count"><span class="tally"></span></span>
-          </a>
-          <a id="nag-tab" class="tab" href="#"
-             data-section="nag"
-             title="Patches by you, awaiting review (key: n)">
-            To Nag
-            <span class="count"><span class="tally"></span></span>
-          </a>
-          <a id="fix-tab" class="tab" href="#"
-             data-section="fix"
-             title="Bugs assigned to you (key: f)">
-            To Fix
-            <span class="count"><span class="tally"></span></span>
-          </a>
-          <a id="respond-tab" class="tab" href="#"
-             data-section="respond"
-             title="Bugs where you're a flag requestee (key: p)">
-            To Respond
-            <span class="count"><span class="tally"></span></span>
-          </a>
          </div>
          <div class="tab-body">
-           <section id="review" class="patches-section">
-             <div class="content">
-               <div id="review-list">
-               </div>
-             </div>
-           </section>
-           <section id="checkin" class="patches-section">
-             <div class="content">
-               <div id="checkin-list">
-               </div>
-             </div>
-           </section>
-           <section id="nag" class="patches-section">
-             <div class="content">
-               <div id="nag-list">
-               </div>
-             </div>
-          </section>
-          <section id="fix" class="bugs-section">
-             <div class="content">
-               <div id="fix-list">
-               </div>
-             </div>
-           </section>
-           <section id="respond" class="bugs-section">
-             <div class="content">
-               <div id="respond-list">
-               </div>
-             </div>
-           </section>
         </div>
       </div>
     </div>

@@ -12,4 +12,4 @@ Fixes.prototype.fetch = function() {
 function FixList() {}
 FixList.prototype = new QueueList();
 FixList.prototype.type = "fix";
-FixList.prototype.emptyMessage = "No bugs to fix, go assign yourself some more!";
+FixList.prototype.emptyMessage = "No bugs to fix.";
