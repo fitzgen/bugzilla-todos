@@ -8,6 +8,6 @@
   },
   "default_locale": "en-US",
   "icons": {
-    "16": "/bugzilla-todos.png"
+    "128": "/bugzilla-todos-128.png"
   }
 }
