@@ -195,9 +195,6 @@
       <span id="key-info">key shortcuts:
         <code>r</code>, <code>c</code>, <code>n</code>, <code>f</code>, <code>p</code>
       </span>
-      <div>
-        <button id="install">Install App</button>
-      </div>
     </footer>
   </div>
 
@@ -225,28 +222,6 @@
       ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
       var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
     })();
-  </script>
-
-  <script>
-  (function(){
-    function install(event) {
-      event.preventDefault();
-      var location = window.location.href;
-      var manifestUrl = location.substring(0, location.lastIndexOf('/')) + '/manifest.webapp';
-
-      var myapp = navigator.mozApps.install(manifestUrl);
-      myapp.onsuccess = function(data) {
-        // App is installed, remove button
-        this.parentNode.removeChild(this);
-      };
-      myapp.onerror = function() {
-        console.error("error installing ", myapp.error.name);
-       };
-    };
-    // get a reference to the button and call install() on click
-    var button = document.getElementById('install');
-    button.addEventListener('click', install, false);
-  })();
   </script>
 </body>
 </html>
