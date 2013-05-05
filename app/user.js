@@ -199,7 +199,7 @@ User.prototype.awaitingFlag = function(callback) {
             bug.flags.forEach(function(flag) {
                if (flag.status == "?" && flag.setter
                    && flag.setter.name == name
-                   && flag.requestee) {
+                   && flag.name != "in-testsuite") {
                   flags.push(flag);
                }
             });
