@@ -135,7 +135,7 @@ User.prototype.needsCheckin = function(callback) {
          // checkin+.
          for (var i = 0; i < att.flags.length; ++i) {
             var flag = att.flags[i];
-            if (flag.status == "?"
+            if (flag.status == "?" && flag.name != "checkin"
                 || flag.name == "review" && flag.status == "-"
                 || flag.name == "checkin" && flag.status == "+") {
                return false;
