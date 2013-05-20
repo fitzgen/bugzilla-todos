@@ -192,7 +192,8 @@ var MyReviews = {
     };
 
     $(document).keypress(function(e) {
-      if (e.target.nodeName.toLowerCase() == "input") {
+      if (e.ctrlKey || e.altKey || e.shiftKey || e.metaKey
+         || e.target.nodeName.toLowerCase() == "input") {
         return;
       }
       var tab = keys[String.fromCharCode(e.charCode)];
