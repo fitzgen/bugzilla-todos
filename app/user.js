@@ -71,14 +71,16 @@ User.prototype.requests = function(callback) {
             if (att.is_obsolete || !att.flags) {
                return;
             }
-            att.flags.forEach(function(flag) {
+            att.flags.some(function(flag) {
                if (flag.requestee && flag.requestee.name == name
                    && flag.status == "?") {
                   att.bug = bug;
                   att.type = flag.name;
                   att.time = att.last_change_time;
                   atts.push(att);
+                  return true;
                }
+               return false;
             });
          });
 
@@ -210,11 +212,13 @@ User.prototype.awaitingFlag = function(callback) {
                    || att.attacher.name != name) {
                   return;
                }
-               att.flags.forEach(function(flag) {
+               att.flags.some(function(flag) {
                   if (flag.status == "?") {
                      att.bug = bug;
                      atts.push(att);
+                     return true;
                   }
+                  return false;
                })
             });
 
