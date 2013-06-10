@@ -251,10 +251,25 @@ User.prototype.needsPatch = function(callback) {
       if (err) { return callback(err); }
 
       var bugsNoPatches = bugs.filter(function(bug) {
-         var hasPatch = bug.attachments && bug.attachments.some(function(att) {
-            return att.is_patch && att.flags;
-         });
-         return !hasPatch;
+         if (bug.attachments) {
+            var patchForReview = bug.attachments.some(function(att) {
+               if (!att.is_obsolete && att.is_patch && att.flags
+                   && att.attacher.name == name) {
+                  var reviewFlag = att.flags.some(function(flag) {
+                     return flag.name == "review" && (flag.status == "?" ||
+                     flag.status == "+");
+                  });
+                  if (reviewFlag) {
+                     return true;
+                  }
+               }
+               return false;
+            });
+            if (patchForReview) {
+               return false;
+            }
+         }
+         return true;
       });
 
       bugsNoPatches.sort(function (b1, b2) {
