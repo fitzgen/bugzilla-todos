@@ -1,5 +1,6 @@
 function Queue() {
   this.items = [];
+  this.activeItemIndex = 0;
 
   _.extend(this, Backbone.Events);
 }
@@ -68,6 +69,24 @@ Queue.prototype = {
     }
     this.trigger("update-count-changed");
     this.trigger("markers-cleared");
+  },
+
+  nextItem: function() {
+    this.activeItemIndex = Math.min(this.activeItemIndex + 1, this.items.length - 1);
+    this.trigger("activeItemIndexChanged", this.activeItemIndex);
+  },
+
+  previousItem: function() {
+    this.activeItemIndex = Math.max(this.activeItemIndex - 1, 0);
+    this.trigger("activeItemIndexChanged", this.activeItemIndex);
+  },
+
+  viewItem: function() {
+    var item = this.items[this.activeItemIndex];
+    if (!item) {
+      return;
+    }
+    window.open(MyReviews.base + "/show_bug.cgi?id=" + item.bug.id);
   }
 }
 
@@ -99,6 +118,7 @@ QueueList.prototype = {
     collection.on("new-user", this.showSpinner, this);
     collection.on("update-count-changed", this.updateTally, this);
     collection.on("markers-cleared", this.clearMarkers, this);
+    collection.on("activeItemIndexChanged", this.activateItem, this);
 
     // this.type is defined by subclasses
     this.list = $("#" + this.type + "-list");
@@ -119,6 +139,7 @@ QueueList.prototype = {
     this.updateTally();
 
     $(".timeago").timeago();
+    this.activateItem(0);
   },
 
   showEmpty: function() {
@@ -148,6 +169,12 @@ QueueList.prototype = {
 
   clearMarkers: function() {
     this.list.find(".list-item").removeClass("new-item");
+  },
+
+  activateItem: function(index) {
+    this.list.find(".active-list-item").removeClass("active-list-item");
+    // Add one because nth-of-type is 1 indexed.
+    this.list.find(".list-item:nth-of-type(" + (index+1) + ")").addClass("active-list-item");
   },
 
   showSpinner: function() {

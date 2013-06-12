@@ -184,11 +184,16 @@ var MyReviews = {
 
   addKeyBindings: function() {
     var keys = {
+      // Tabs
       'r': 'review',
       'c': 'checkin',
       'n': 'nag',
       'f': 'fix',
-      'p': 'respond'
+      'p': 'respond',
+      // In-tab navigation
+      'j': 'nextItem',
+      'k': 'previousItem',
+      'v': 'viewItem'
     };
 
     $(document).keypress(function(e) {
@@ -196,9 +201,15 @@ var MyReviews = {
          || e.target.nodeName.toLowerCase() == "input") {
         return;
       }
-      var tab = keys[String.fromCharCode(e.charCode)];
-      if (tab) {
-        this.selectTab(tab);
+      var action = keys[String.fromCharCode(e.charCode)];
+      if (!action) {
+        return;
+      }
+      if (action in tabs) {
+        return void this.selectTab(action);
+      }
+      if (typeof this.queues[this.selectedTab][action] == "function") {
+        return void this.queues[this.selectedTab][action]();
       }
     }.bind(this))
   },
