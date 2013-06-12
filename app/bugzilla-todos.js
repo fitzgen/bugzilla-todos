@@ -30,7 +30,9 @@ var tabs = {
     name: "To Respond",
     alt: "Bugs where you're a flag requestee (key: p)"
   }
-}
+};
+
+var tabsByIndex; // defined in initTabs
 
 var MyReviews = {
   base: "https://bugzilla.mozilla.org",
@@ -93,9 +95,14 @@ var MyReviews = {
     var tabTemplate = Handlebars.compile($("#tab-template").html());
     var bodyTemplate = Handlebars.compile($("#tab-body-template").html());
 
+    tabsByIndex = [];
+    var i = 0;
     for (var id in tabs) {
       var tab = tabs[id];
       tab.id = id;
+      tabsByIndex.push(tab);
+      tab.index = i;
+      ++i;
       $(".tab-head").append(tabTemplate(tab));
       $(".tab-body").append(bodyTemplate(tab));
     }
@@ -190,9 +197,11 @@ var MyReviews = {
       'n': 'nag',
       'f': 'fix',
       'p': 'respond',
-      // In-tab navigation
+      // Navigation
+      'h': 'selectPreviousTab',
       'j': 'nextItem',
       'k': 'previousItem',
+      'l': 'selectNextTab',
       'v': 'viewItem'
     };
 
@@ -211,7 +220,22 @@ var MyReviews = {
       if (typeof this.queues[this.selectedTab][action] == "function") {
         return void this.queues[this.selectedTab][action]();
       }
-    }.bind(this))
+      if (typeof this[action] == "function") {
+        return void this[action]();
+      }
+    }.bind(this));
+
+    // Tell the user what keybindings exist.
+    var keyInfo = $("#key-info");
+    var firstIteration = true;
+    for (var key in keys) {
+      if (firstIteration) {
+        firstIteration = false;
+      } else {
+        keyInfo.append(", ");
+      }
+      keyInfo.append($("<code>").append(key));
+    }
   },
 
   selectTab: function(type) {
@@ -235,6 +259,20 @@ var MyReviews = {
 
     this.selectedTab = type;
   },
+
+  selectNextTab: function() {
+    return this._selectTabRelative(1);
+  },
+
+  selectPreviousTab: function() {
+    return this._selectTabRelative(-1);
+  },
+
+  _selectTabRelative: function (offset) {
+    var N = tabsByIndex.length;
+    var tab = tabsByIndex[(tabs[this.selectedTab].index + offset + N) % N];
+    return this.selectTab(tab.id);
+ },
 
   populate: function() {
     clearInterval(this.intervalID);
