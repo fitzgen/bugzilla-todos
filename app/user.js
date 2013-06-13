@@ -238,7 +238,7 @@ User.prototype.awaitingFlag = function(callback) {
    })
 }
 
-User.prototype.needsPatch = function(callback) {
+User.prototype.toFix = function(callback) {
    var query = {
       email1: this.username,
       email1_type: "equals",
@@ -250,36 +250,31 @@ User.prototype.needsPatch = function(callback) {
    this.client.searchBugs(query, function(err, bugs) {
       if (err) { return callback(err); }
 
-      var bugsNoPatches = bugs.filter(function(bug) {
-         if (bug.attachments) {
-            var patchForReview = bug.attachments.some(function(att) {
-               if (!att.is_obsolete && att.is_patch && att.flags
-                   && att.attacher.name == name) {
-                  var reviewFlag = att.flags.some(function(flag) {
-                     return flag.name == "review" && (flag.status == "?" ||
-                     flag.status == "+");
-                  });
-                  if (reviewFlag) {
-                     return true;
-                  }
-               }
-               return false;
-            });
-            if (patchForReview) {
+      var noPatches = bugs.filter(function(bug) {
+         if (!bug.attachments) {
+            return true;
+         }
+         var patchForReview = bug.attachments.some(function(att) {
+            if (att.is_obsolete || !att.is_patch || !att.flags) {
                return false;
             }
-         }
-         return true;
+            var reviewFlag = att.flags.some(function(flag) {
+               return flag.name == "review" && (flag.status == "?" ||
+                      flag.status == "+");
+            });
+            return reviewFlag;
+         });
+         return !patchForReview;
       });
 
-      bugsNoPatches.sort(function (b1, b2) {
+      noPatches.sort(function (b1, b2) {
          return new Date(b2.last_change_time) - new Date(b1.last_change_time);
       });
 
-      bugsNoPatches = bugsNoPatches.map(function(bug) {
+      noPatches = noPatches.map(function(bug) {
          return { bug: bug };
       })
-      callback(null, bugsNoPatches);
+      callback(null, noPatches);
    });
 }
 

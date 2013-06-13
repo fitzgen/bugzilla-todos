@@ -2,7 +2,7 @@ function Fixes() {}
 Fixes.prototype = new Queue();
 Fixes.prototype.fetch = function() {
   var self = this;
-  MyReviews.user.needsPatch(function(err, bugs) {
+  MyReviews.user.toFix(function(err, bugs) {
     if (err) throw err;
     self.reset(bugs);
   });
