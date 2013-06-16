@@ -243,6 +243,9 @@ User.prototype.toFix = function(callback) {
       email1: this.username,
       email1_type: "equals",
       email1_assigned_to: 1,
+      'field0-1-0': 'whiteboard',
+      'type0-1-0': 'not_contains',
+      'value0-1-0': 'fixed',
       order: "changeddate DESC",
       status: ['NEW','UNCONFIRMED','REOPENED', 'ASSIGNED'],
       include_fields: 'id,summary,status,resolution,last_change_time,attachments'
