@@ -9,7 +9,7 @@
   "author": "Heather Arthur <fayearthur@gmail.com>",
   "main": "server.js",
   "dependencies": {
-    "connect" : "2.8.4"
+    "connect" : ">=2.8.0 <3.0.0"
   },
   "engines": {
     "node": ">= 0.8.0"
