@@ -208,12 +208,12 @@ User.prototype.awaitingFlag = function(callback) {
          }
          if (bug.attachments) {
             bug.attachments.forEach(function(att) {
-               if (att.is_obsolete || !att.is_patch || !att.flags
-                   || att.attacher.name != name) {
+               if (att.is_obsolete || !att.is_patch || !att.flags) {
                   return;
                }
+
                att.flags.some(function(flag) {
-                  if (flag.status == "?") {
+                  if (flag.status == "?" && flag.setter.name == name) {
                      att.bug = bug;
                      atts.push(att);
                      return true;
