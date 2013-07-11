@@ -22,13 +22,13 @@ var tabs = {
     name: "To Nag",
     alt: "Patches by you, awaiting review (key: n)"
   },
-  fix : {
-    name: "To Fix",
-    alt: "Bugs assigned to you (key: f)"
-  },
   respond : {
     name: "To Respond",
     alt: "Bugs where you're a flag requestee (key: p)"
+  },
+  fix : {
+    name: "To Fix",
+    alt: "Bugs assigned to you (key: f)"
   }
 };
 
