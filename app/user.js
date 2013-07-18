@@ -221,15 +221,15 @@ User.prototype.awaitingFlag = function(callback) {
                   return false;
                })
             });
+         }
 
-            if (atts.length || flags.length) {
-               requests.push({
-                  bug: bug,
-                  attachments: atts,
-                  flags: flags,
-                  time: bug.last_change_time
-               })
-            }
+         if (atts.length || flags.length) {
+            requests.push({
+               bug: bug,
+               attachments: atts,
+               flags: flags,
+               time: bug.last_change_time
+            });
          }
       })
       requests.sort(utils.byTime);
