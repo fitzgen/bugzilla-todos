@@ -208,7 +208,7 @@ User.prototype.awaitingFlag = function(callback) {
          }
          if (bug.attachments) {
             bug.attachments.forEach(function(att) {
-               if (att.is_obsolete || !att.is_patch || !att.flags) {
+               if (att.is_obsolete || !att.flags) {
                   return;
                }
 
