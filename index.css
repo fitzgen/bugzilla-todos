@@ -32,6 +32,7 @@ a:visited {
 footer {
   color: grey;
   margin: 40px 0;
+  text-align: center;
 }
 
 footer > a {
@@ -332,6 +333,18 @@ footer > a {
   padding: 0 0.5em;
 }
 
+#install {
+  display: none;
+  background-color: hsl(60, 95%, 96%);
+  border: 1px solid #ccc;
+  padding: 6px 20px;
+  text-transform: uppercase;
+}
+
+#install.show-install {
+  display: inline;
+}
+
 /* small screen */
 @media (max-width: 540px) {
   #content {
@@ -342,7 +355,7 @@ footer > a {
     border-radius: 0;
   }
 
-  footer {
+  #info {
     display: none;
   }
 
