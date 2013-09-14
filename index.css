@@ -39,14 +39,9 @@ footer > a {
 }
 
 #container {
-  display: -moz-box;
-  display: -webkit-box;
-  -moz-box-align: center;
-  -webkit-box-align: center;
-  -moz-box-orient: vertical;
-  -webkit-box-orient: vertical;
-  width: 100%;
-  padding: 0px 10px;
+  max-width: 540px;
+  margin: 0 auto;
+  text-align: center;
 }
 
 #error-message {
@@ -115,10 +110,6 @@ footer > a {
 
 /* Tabs */
 
-.tabs {
-  max-width: 590px;
-}
-
 .tab-head {
   border-top: 1px solid #ccc;
   border-left: 1px solid #ccc;
@@ -136,11 +127,12 @@ footer > a {
   padding: 3px 0 8px 0;
   margin: 0 6px;
   color: #888;
+  border-bottom: 3px solid transparent;
 }
 
 .tab:hover {
   text-decoration: none;
-  border-bottom: 3px solid grey;
+  border-bottom-color: grey;
 }
 
 .tab:focus {
@@ -159,6 +151,9 @@ footer > a {
   box-shadow: rgba(0,0,0,.2) 0 .15em 0.6em;
   border-radius: 4px 4px 0 0;
   margin: 1em;
+  background-color: white;
+  border: 1px solid #CCC;
+  float: left;
 }
 
 .header {
@@ -171,13 +166,10 @@ footer > a {
 }
 
 #content {
+  display: inline-block;
+  text-align: left;
   margin-bottom: 40px;
-}
-
-#patch{
-  background-color: white;
-  border: 1px solid #CCC;
-  float: left;
+  max-width: 100%;
 }
 
 .count {
@@ -249,13 +241,12 @@ footer > a {
   padding: 2px 0;
 }
 
-.att-link, .att-link:visited {
-  max-width: 320px;
+.att-link, .att-link:visited { /* FIXME */
   display: inline-block;
   vertical-align: text-bottom;
   white-space: nowrap;
   overflow: hidden;
-  text-overflow: "...";
+  text-overflow: ellipsis;
   color: #4183c4;
 }
 
@@ -272,19 +263,13 @@ footer > a {
 .bug-id {
   -moz-text-decoration-line: underline;
   -moz-text-decoration-style: dotted;
-   margin-right: 4px;
+  margin-right: 4px;
 }
 
-.full-bug.bug-summary {
-  max-width: 360px;
-}
-
-.bug-summary {
-  max-width: 420px;
-  display: inline-block;
-  vertical-align: text-bottom;
+.bug {
   white-space: nowrap;
   overflow: hidden;
+  max-width: 100%;
   text-overflow: ellipsis;
 }
 
@@ -345,4 +330,31 @@ footer > a {
 
 .divider {
   padding: 0 0.5em;
+}
+
+/* small screen */
+@media (max-width: 540px) {
+  #content {
+    width: 100%;
+  }
+
+  .tab-head {
+    border-radius: 0;
+  }
+
+  footer {
+    display: none;
+  }
+
+  .tab-head > * {
+    display: block;
+  }
+
+  .tab, .tab:visited {
+    padding: 0;
+  }
+
+  .tab.tab-selected {
+    border-color: transparent;
+  }
 }
