@@ -1,3 +1,4 @@
+/* -*- Mode: javascript; tab-width: 3; indent-tabs-mode: nil; c-basic-offset: 3; js-indent-level: 3; -*- */
 function User(username, limit) {
    this.username = username;
    this.name = this.username.replace(/@.+/, "");
@@ -249,15 +250,17 @@ User.prototype.toFix = function(callback) {
       'value0-1-0': 'fixed',
       order: "changeddate DESC",
       status: ['NEW','UNCONFIRMED','REOPENED', 'ASSIGNED'],
-      include_fields: 'id,summary,status,resolution,last_change_time,attachments'
+      include_fields: 'id,summary,status,resolution,last_change_time,attachments,depends_on'
    };
+   var self = this;
    this.client.searchBugs(query, function(err, bugs) {
       if (err) { return callback(err); }
 
-      var noPatches = bugs.filter(function(bug) {
+      var bugsToFix = bugs.filter(function(bug) {
          if (!bug.attachments) {
             return true;
          }
+
          var patchForReview = bug.attachments.some(function(att) {
             if (att.is_obsolete || !att.is_patch || !att.flags) {
                return false;
@@ -271,16 +274,61 @@ User.prototype.toFix = function(callback) {
          return !patchForReview;
       });
 
-      noPatches.sort(function (b1, b2) {
-         return new Date(b2.last_change_time) - new Date(b1.last_change_time);
-      });
+      self._fetchDeps(bugsToFix, function () {
+         bugsToFix.sort(function (b1, b2) {
+            return new Date(b2.last_change_time) - new Date(b1.last_change_time);
+         });
 
-      noPatches = noPatches.map(function(bug) {
-         return { bug: bug };
-      })
-      callback(null, noPatches);
+         bugsToFix = bugsToFix.map(function(bug) {
+            return { bug: bug };
+         })
+         callback(null, bugsToFix);
+      });
    });
 }
+
+// Fetch all of each bugs dependencies and modify in place each bug's depends_on
+// array so that it only contains OPEN bugs that it depends on.
+User.prototype._fetchDeps = function(bugs, callback) {
+   var waiting = 0;
+
+   function maybeFinish() {
+      if (waiting) return;
+      callback();
+   }
+
+   var self = this;
+   bugs.forEach(function (bug) {
+      if (!bug.depends_on) {
+         return;
+      }
+
+      var oldDeps = bug.depends_on;
+      bug.depends_on = [];
+      oldDeps.forEach(function(dep) {
+         waiting++;
+         self.client.getBug(dep, function (err, depBug) {
+            waiting--;
+
+            try {
+               if (err) {
+                  return console.error("Error fetching bug " + dep);
+               }
+
+               if (depBug.status === "RESOLVED") {
+                  return;
+               }
+
+               bug.depends_on.push(depBug);
+            } finally {
+               maybeFinish();
+            }
+         });
+      });
+   });
+
+   maybeFinish();
+};
 
 User.prototype.flagged = function(callback) {
    var name = this.name;
