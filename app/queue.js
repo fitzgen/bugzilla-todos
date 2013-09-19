@@ -1,5 +1,5 @@
 function Queue() {
-  this._items = [];
+  this.items = [];
   this.activeItemIndex = 0;
 
   _.extend(this, Backbone.Events);
@@ -16,7 +16,7 @@ Queue.prototype = {
   },
 
   newUser: function() {
-    this._items = [];
+    this.items = [];
     this.clearUpdates();
 
     this.shouldDiff = false;
@@ -33,7 +33,7 @@ Queue.prototype = {
       this.shouldDiff = true;
     }
 
-    this._items = items;
+    this.items = items;
     this.trigger("reset", items);
 
     if (hasNew) {
@@ -50,9 +50,9 @@ Queue.prototype = {
 
       // is it in the current set of items?
       var oldItem = null;
-      for (var j in this._items) {
-        if (this._items[j].bug.id == newItem.bug.id) {
-          oldItem = this._items[j];
+      for (var j in this.items) {
+        if (this.items[j].bug.id == newItem.bug.id) {
+          oldItem = this.items[j];
           break;
         }
       }
@@ -64,8 +64,8 @@ Queue.prototype = {
   },
 
   clearUpdates: function() {
-    for (var i in this._items) {
-      this._items[i].new = false;
+    for (var i in this.items) {
+      this.items[i].new = false;
     }
     this.trigger("update-count-changed");
     this.trigger("markers-cleared");
@@ -96,7 +96,7 @@ Queue.prototype = {
   },
 
   getItems: function(cb) {
-    return this._items.filter(this.filter.bind(this));
+    return this.items.filter(this.filter.bind(this));
   }
 }
 

@@ -1,12 +1,16 @@
-function Fixes() {}
-Fixes.prototype = new Queue();
-
-try {
-  Fixes.prototype.includeBlockedBugs = JSON.parse(localStorage['bztodos-include-blocked-bugs']);
-} catch (e) {
-  // Never been saved to localStorage before.
-  Fixes.prototype.includeBlockedBugs = true;
+function Fixes() {
+  var storedVal = localStorage['bztodos-include-blocked-bugs'];
+  var parsedVal;
+  try {
+    parsedVal = JSON.parse(storedVal);
+  } catch(e) {
+    // Never been saved to localStorage before, or bad value.
+    parsedVal = true;
+  }
+  this.includeBlockedBugs = parsedVal;
 }
+
+Fixes.prototype = new Queue();
 
 Fixes.prototype.filter = function (item) {
   if (!this.includeBlockedBugs && item.bug.depends_on) {

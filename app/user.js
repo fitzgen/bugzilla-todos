@@ -274,7 +274,7 @@ User.prototype.toFix = function(callback) {
          return !patchForReview;
       });
 
-      self._fetchDeps(bugsToFix, function () {
+      self.fetchDeps(bugsToFix, function () {
          bugsToFix.sort(function (b1, b2) {
             return new Date(b2.last_change_time) - new Date(b1.last_change_time);
          });
@@ -289,9 +289,12 @@ User.prototype.toFix = function(callback) {
 
 // Fetch all of each bugs dependencies and modify in place each bug's depends_on
 // array so that it only contains OPEN bugs that it depends on.
-User.prototype._fetchDeps = function(bugs, callback) {
+User.prototype.fetchDeps = function(bugs, callback) {
+   // The number of bug requests we are waiting on.
    var waiting = 0;
 
+   // Helper function to call the callback when we are no longer waiting for
+   // anymore bug requests.
    function maybeFinish() {
       if (waiting) return;
       callback();
@@ -309,16 +312,9 @@ User.prototype._fetchDeps = function(bugs, callback) {
          waiting++;
          self.client.getBug(dep, function (err, depBug) {
             waiting--;
-
             try {
-               if (err) {
-                  return console.error("Error fetching bug " + dep);
-               }
-
-               if (depBug.status === "RESOLVED") {
-                  return;
-               }
-
+               if (err) return console.error("Error fetching bug " + dep);
+               if (depBug.status === "RESOLVED") return;
                bug.depends_on.push(depBug);
             } finally {
                maybeFinish();
