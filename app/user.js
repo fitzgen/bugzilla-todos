@@ -313,10 +313,15 @@ User.prototype.fetchDeps = function(bugs, callback) {
          self.client.getBug(dep, function (err, depBug) {
             waiting--;
             try {
-               if (err) return console.error("Error fetching bug " + dep);
-               if (depBug.status === "RESOLVED") return;
+               if (err) throw err;
+               if (depBug.status === "RESOLVED") {
+                  return;
+               }
                bug.depends_on.push(depBug);
             } finally {
+               // Always call maybeFinish regardless of which branch of above
+               // logic we took, so that we can make sure we will always call
+               // the callback when we need to.
                maybeFinish();
             }
          });

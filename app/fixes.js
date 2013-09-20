@@ -38,10 +38,10 @@ FixList.prototype.initialize = function(collection, type) {
 
   this.checkbox = $("#include-blocked-bugs");
   this.checkbox.attr("checked", this.collection.includeBlockedBugs);
-  this.checkbox.change(this._setIncludeBlockedBugs.bind(this));
+  this.checkbox.change(this.setIncludeBlockedBugs.bind(this));
 };
 
-FixList.prototype._setIncludeBlockedBugs = function(event) {
+FixList.prototype.setIncludeBlockedBugs = function(event) {
   var shouldInclude = event.target.checked;
   localStorage['bztodos-include-blocked-bugs'] = JSON.stringify(shouldInclude);
   this.collection.includeBlockedBugs = shouldInclude;
