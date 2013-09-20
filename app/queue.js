@@ -7,11 +7,11 @@ function Queue() {
 Queue.prototype = {
   get updateCount() {
     var count = 0;
-    for (var i in this.items) {
-      if (this.items[i].new) {
+    this.getItems().forEach(function (item) {
+      if (item.new) {
         count++;
       }
-    }
+    });
     return count;
   },
 
@@ -72,7 +72,7 @@ Queue.prototype = {
   },
 
   nextItem: function() {
-    this.activeItemIndex = Math.min(this.activeItemIndex + 1, this.items.length - 1);
+    this.activeItemIndex = Math.min(this.activeItemIndex + 1, this.getItems().length - 1);
     this.trigger("activeItemIndexChanged", this.activeItemIndex);
   },
 
@@ -82,11 +82,21 @@ Queue.prototype = {
   },
 
   viewItem: function() {
-    var item = this.items[this.activeItemIndex];
+    var item = this.getItems()[this.activeItemIndex];
     if (!item) {
       return;
     }
     window.open(MyReviews.base + "/show_bug.cgi?id=" + item.bug.id);
+  },
+
+  // Filter items from being iterated over in getItems. Meant to be overridden
+  // by subclasses, should they so choose.
+  filter: function(item) {
+    return true;
+  },
+
+  getItems: function(cb) {
+    return this.items.filter(this.filter.bind(this));
   }
 }
 
@@ -129,11 +139,11 @@ QueueList.prototype = {
     this.list.empty();
 
     var self = this;
-    this.collection.items.forEach(function(item) {
+    this.collection.getItems().forEach(function(item) {
       self.addRow(item);
     });
 
-    if (!this.collection.items.length) {
+    if (!this.collection.getItems().length) {
       this.showEmpty();
     }
     this.updateTally();
@@ -154,7 +164,7 @@ QueueList.prototype = {
   },
 
   updateTally: function(clear) {
-    var tally = this.collection.items.length;
+    var tally = this.collection.getItems().length;
     if (clear) {
       tally = "";
     }
