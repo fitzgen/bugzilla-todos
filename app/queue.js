@@ -1,16 +1,17 @@
 function Queue() {
   this.items = [];
+  this.activeItemIndex = 0;
 
   _.extend(this, Backbone.Events);
 }
 Queue.prototype = {
   get updateCount() {
     var count = 0;
-    for (var i in this.items) {
-      if (this.items[i].new) {
+    this.getItems().forEach(function (item) {
+      if (item.new) {
         count++;
       }
-    }
+    });
     return count;
   },
 
@@ -68,6 +69,34 @@ Queue.prototype = {
     }
     this.trigger("update-count-changed");
     this.trigger("markers-cleared");
+  },
+
+  nextItem: function() {
+    this.activeItemIndex = Math.min(this.activeItemIndex + 1, this.getItems().length - 1);
+    this.trigger("activeItemIndexChanged", this.activeItemIndex);
+  },
+
+  previousItem: function() {
+    this.activeItemIndex = Math.max(this.activeItemIndex - 1, 0);
+    this.trigger("activeItemIndexChanged", this.activeItemIndex);
+  },
+
+  viewItem: function() {
+    var item = this.getItems()[this.activeItemIndex];
+    if (!item) {
+      return;
+    }
+    window.open(MyReviews.base + "/show_bug.cgi?id=" + item.bug.id);
+  },
+
+  // Filter items from being iterated over in getItems. Meant to be overridden
+  // by subclasses, should they so choose.
+  filter: function(item) {
+    return true;
+  },
+
+  getItems: function(cb) {
+    return this.items.filter(this.filter.bind(this));
   }
 }
 
@@ -99,6 +128,7 @@ QueueList.prototype = {
     collection.on("new-user", this.showSpinner, this);
     collection.on("update-count-changed", this.updateTally, this);
     collection.on("markers-cleared", this.clearMarkers, this);
+    collection.on("activeItemIndexChanged", this.activateItem, this);
 
     // this.type is defined by subclasses
     this.list = $("#" + this.type + "-list");
@@ -109,16 +139,17 @@ QueueList.prototype = {
     this.list.empty();
 
     var self = this;
-    this.collection.items.forEach(function(item) {
+    this.collection.getItems().forEach(function(item) {
       self.addRow(item);
     });
 
-    if (!this.collection.items.length) {
+    if (!this.collection.getItems().length) {
       this.showEmpty();
     }
     this.updateTally();
 
     $(".timeago").timeago();
+    this.activateItem(0);
   },
 
   showEmpty: function() {
@@ -133,7 +164,7 @@ QueueList.prototype = {
   },
 
   updateTally: function(clear) {
-    var tally = this.collection.items.length;
+    var tally = this.collection.getItems().length;
     if (clear) {
       tally = "";
     }
@@ -148,6 +179,12 @@ QueueList.prototype = {
 
   clearMarkers: function() {
     this.list.find(".list-item").removeClass("new-item");
+  },
+
+  activateItem: function(index) {
+    this.list.find(".active-list-item").removeClass("active-list-item");
+    // Add one because nth-of-type is 1 indexed.
+    this.list.find(".list-item:nth-of-type(" + (index+1) + ")").addClass("active-list-item");
   },
 
   showSpinner: function() {

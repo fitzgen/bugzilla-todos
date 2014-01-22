@@ -4,6 +4,7 @@
   <title>Bugzilla Todos</title>
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="utf-8">
 
   <meta content="text/html;charset=utf-8" http-equiv="Content-Type">
   <meta content="utf-8" http-equiv="encoding">
@@ -32,6 +33,7 @@
   <script src="app/reviews.js"></script>
   <script src="app/checkins.js"></script>
   <script src="app/nags.js"></script>
+  <script src="app/mozApps.js"></script>
   <script src="app/bugzilla-todos.js"></script>
 
   <script id="review-item" type="text/html">
@@ -194,11 +196,18 @@
       </div>
     </div>
     <footer>
-      <a href="https://github.com/harthur/bugzilla-todos">code on GitHub</a>
-      <span class="divider">|</span>
-      <span id="key-info">key shortcuts:
-        <code>r</code>, <code>c</code>, <code>n</code>, <code>f</code>, <code>p</code>
-      </span>
+      <p>
+        <label>
+          <input id="include-blocked-bugs" type="checkbox" checked/>
+          Include blocked bugs inside "To Fix"
+        </label>
+      </p>
+      <p id="info">
+        <a href="https://github.com/harthur/bugzilla-todos">code on GitHub</a>
+        <span class="divider">|</span>
+        <span id="key-info">key shortcuts: </span>
+      </p>
+      <button id="install">Install App</button>
     </footer>
   </div>
 

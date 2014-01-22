@@ -1,3 +1,4 @@
+/* -*- Mode: javascript; tab-width: 3; indent-tabs-mode: nil; c-basic-offset: 3; js-indent-level: 3; -*- */
 function User(username, limit) {
    this.username = username;
    this.name = this.username.replace(/@.+/, "");
@@ -71,14 +72,16 @@ User.prototype.requests = function(callback) {
             if (att.is_obsolete || !att.flags) {
                return;
             }
-            att.flags.forEach(function(flag) {
+            att.flags.some(function(flag) {
                if (flag.requestee && flag.requestee.name == name
                    && flag.status == "?") {
                   att.bug = bug;
                   att.type = flag.name;
                   att.time = att.last_change_time;
                   atts.push(att);
+                  return true;
                }
+               return false;
             });
          });
 
@@ -199,6 +202,7 @@ User.prototype.awaitingFlag = function(callback) {
             bug.flags.forEach(function(flag) {
                if (flag.status == "?" && flag.setter
                    && flag.setter.name == name
+                   && (!flag.requestee || flag.requestee.name != name)
                    && flag.name != "in-testsuite") {
                   flags.push(flag);
                }
@@ -206,26 +210,28 @@ User.prototype.awaitingFlag = function(callback) {
          }
          if (bug.attachments) {
             bug.attachments.forEach(function(att) {
-               if (att.is_obsolete || !att.is_patch || !att.flags
-                   || att.attacher.name != name) {
+               if (att.is_obsolete || !att.flags) {
                   return;
                }
-               att.flags.forEach(function(flag) {
-                  if (flag.status == "?") {
+
+               att.flags.some(function(flag) {
+                  if (flag.status == "?" && flag.setter.name == name) {
                      att.bug = bug;
                      atts.push(att);
+                     return true;
                   }
+                  return false;
                })
             });
+         }
 
-            if (atts.length || flags.length) {
-               requests.push({
-                  bug: bug,
-                  attachments: atts,
-                  flags: flags,
-                  time: bug.last_change_time
-               })
-            }
+         if (atts.length || flags.length) {
+            requests.push({
+               bug: bug,
+               attachments: atts,
+               flags: flags,
+               time: bug.last_change_time
+            });
          }
       })
       requests.sort(utils.byTime);
@@ -234,35 +240,96 @@ User.prototype.awaitingFlag = function(callback) {
    })
 }
 
-User.prototype.needsPatch = function(callback) {
+User.prototype.toFix = function(callback) {
    var query = {
       email1: this.username,
       email1_type: "equals",
       email1_assigned_to: 1,
+      'field0-1-0': 'whiteboard',
+      'type0-1-0': 'not_contains',
+      'value0-1-0': 'fixed',
       order: "changeddate DESC",
       status: ['NEW','UNCONFIRMED','REOPENED', 'ASSIGNED'],
-      include_fields: 'id,summary,status,resolution,last_change_time,attachments'
+      include_fields: 'id,summary,status,resolution,last_change_time,attachments,depends_on'
    };
+   var self = this;
    this.client.searchBugs(query, function(err, bugs) {
       if (err) { return callback(err); }
 
-      var bugsNoPatches = bugs.filter(function(bug) {
-         var hasPatch = bug.attachments && bug.attachments.some(function(att) {
-            return att.is_patch && att.flags;
+      var bugsToFix = bugs.filter(function(bug) {
+         if (!bug.attachments) {
+            return true;
+         }
+
+         var patchForReview = bug.attachments.some(function(att) {
+            if (att.is_obsolete || !att.is_patch || !att.flags) {
+               return false;
+            }
+            var reviewFlag = att.flags.some(function(flag) {
+               return flag.name == "review" && (flag.status == "?" ||
+                      flag.status == "+");
+            });
+            return reviewFlag;
          });
-         return !hasPatch;
+         return !patchForReview;
       });
 
-      bugsNoPatches.sort(function (b1, b2) {
-         return new Date(b2.last_change_time) - new Date(b1.last_change_time);
-      });
+      self.fetchDeps(bugsToFix, function () {
+         bugsToFix.sort(function (b1, b2) {
+            return new Date(b2.last_change_time) - new Date(b1.last_change_time);
+         });
 
-      bugsNoPatches = bugsNoPatches.map(function(bug) {
-         return { bug: bug };
-      })
-      callback(null, bugsNoPatches);
+         bugsToFix = bugsToFix.map(function(bug) {
+            return { bug: bug };
+         })
+         callback(null, bugsToFix);
+      });
    });
 }
+
+// Fetch all of each bugs dependencies and modify in place each bug's depends_on
+// array so that it only contains OPEN bugs that it depends on.
+User.prototype.fetchDeps = function(bugs, callback) {
+   // The number of bug requests we are waiting on.
+   var waiting = 0;
+
+   // Helper function to call the callback when we are no longer waiting for
+   // anymore bug requests.
+   function maybeFinish() {
+      if (waiting) return;
+      callback();
+   }
+
+   var self = this;
+   bugs.forEach(function (bug) {
+      if (!bug.depends_on) {
+         return;
+      }
+
+      var oldDeps = bug.depends_on;
+      bug.depends_on = [];
+      oldDeps.forEach(function(dep) {
+         waiting++;
+         self.client.getBug(dep, function (err, depBug) {
+            waiting--;
+            try {
+               if (err) throw err;
+               if (depBug.status === "RESOLVED") {
+                  return;
+               }
+               bug.depends_on.push(depBug);
+            } finally {
+               // Always call maybeFinish regardless of which branch of above
+               // logic we took, so that we can make sure we will always call
+               // the callback when we need to.
+               maybeFinish();
+            }
+         });
+      });
+   });
+
+   maybeFinish();
+};
 
 User.prototype.flagged = function(callback) {
    var name = this.name;
