@@ -75,11 +75,8 @@ footer > a {
   margin-right: 1px;
 }
 
-#login {
-  margin-left: 0.1em;
-}
-
 #login-form {
+  margin-left: 0.1em;
   display: inline-block;
 }
 
