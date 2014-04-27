@@ -2,7 +2,7 @@ function Reviews() {}
 Reviews.prototype = new Queue();
 Reviews.prototype.fetch = function() {
   var self = this;
-  MyReviews.user.requests(function(err, requests) {
+  MyReviews.user.toReview(function(err, requests) {
     if (err) throw err;
     self.reset(requests);
   });

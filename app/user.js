@@ -44,7 +44,7 @@ User.prototype.bugs = function(methods, callback) {
    this.client.searchBugs(query, callback);
 }
 
-User.prototype.requests = function(callback) {
+User.prototype.toReview = function(callback) {
    var name = this.name;
 
    this.client.searchBugs({
@@ -99,7 +99,7 @@ User.prototype.requests = function(callback) {
    });
 }
 
-User.prototype.needsCheckin = function(callback) {
+User.prototype.toCheckin = function(callback) {
    var name = this.name;
 
    this.client.searchBugs({
@@ -176,7 +176,7 @@ User.prototype.needsCheckin = function(callback) {
  * All the patches and bugs the user is awaiting action on
  * (aka they have a outstanding flag request)
  */
-User.prototype.awaitingFlag = function(callback) {
+User.prototype.toNag = function(callback) {
    var name = this.name;
 
    this.client.searchBugs({
@@ -331,7 +331,7 @@ User.prototype.fetchDeps = function(bugs, callback) {
    maybeFinish();
 };
 
-User.prototype.flagged = function(callback) {
+User.prototype.toRespond = function(callback) {
    var name = this.name;
 
    this.client.searchBugs({

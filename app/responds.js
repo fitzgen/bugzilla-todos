@@ -2,7 +2,7 @@ function Responds() {}
 Responds.prototype = new Queue();
 Responds.prototype.fetch = function() {
   var self = this;
-  MyReviews.user.flagged(function(err, bugs) {
+  MyReviews.user.toRespond(function(err, bugs) {
     if (err) throw err;
     self.reset(bugs);
   });
