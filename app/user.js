@@ -294,7 +294,7 @@ User.prototype.fetchDeps = function(bugs, callback) {
    var waiting = 0;
 
    // Helper function to call the callback when we are no longer waiting for
-   // anymore bug requests.
+   // any more bug requests.
    function maybeFinish() {
       if (waiting) return;
       callback();
@@ -311,23 +311,31 @@ User.prototype.fetchDeps = function(bugs, callback) {
       oldDeps.forEach(function(dep) {
          waiting++;
          self.client.getBug(dep, function (err, depBug) {
-            waiting--;
             try {
-               if (err) throw err;
+               if (err) {
+                  // Private bugs have an err of "HTTP status 400", so ignore such cases.
+                  // Upstream https://github.com/harthur/bz.js/issues/17 filed for making
+                  // the bz.js response more clear for these.
+                  if (err === "HTTP status 400") {
+                     return;
+                  }
+                  throw err;
+               }
                if (depBug.status === "RESOLVED") {
                   return;
                }
                bug.depends_on.push(depBug);
             } finally {
-               // Always call maybeFinish regardless of which branch of above
-               // logic we took, so that we can make sure we will always call
-               // the callback when we need to.
+               // Make sure we check for completion even in the case of errors & resolved bugs.
+               waiting--;
                maybeFinish();
             }
          });
       });
    });
 
+   // Check if we're all done, in case there were no dependant bugs.
+   // Failing that we'll check again via the dependant bugs' getBug() callback.
    maybeFinish();
 };
 
