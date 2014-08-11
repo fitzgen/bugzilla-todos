@@ -2,7 +2,7 @@ function Checkins() {}
 Checkins.prototype = new Queue();
 Checkins.prototype.fetch = function() {
   var self = this;
-  MyReviews.user.needsCheckin(function(err, requests) {
+  MyReviews.user.toCheckin(function(err, requests) {
     if (err) throw err;
     self.reset(requests);
   });
