@@ -146,6 +146,14 @@ footer > a {
   color: #333;
 }
 
+.tab-content {
+  display: none;
+}
+
+.tab-content-selected {
+  display: block;
+}
+
 /* Sections */
 
 #patch {
