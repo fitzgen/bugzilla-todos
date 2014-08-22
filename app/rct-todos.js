@@ -63,7 +63,7 @@ var TodoTabs = React.createClass({
     };
   },
   render: function() {
-    return <div>
+    return <div className="tabs">
       <TabsNav items={this.state.tabs} active={this.state.active} onTabClick={this.handleTabClick}/>
       <TabsContent items={this.state.tabs} active={this.state.active}/>
       </div>;
@@ -80,7 +80,7 @@ var TabsNav = React.createClass({
       return <a href="#" className={'tab ' + (active === index ? 'tab-selected' : '')}
                 onClick={this.onClick.bind(this, index)}>{item.name}</a>;
     }.bind(this));
-    return <div>{items}</div>;
+    return <div className="tab-head">{items}</div>;
   },
   onClick: function(index) {
     this.props.onTabClick(index);
@@ -90,7 +90,7 @@ var TabsNav = React.createClass({
 var TabsContent = React.createClass({
   render: function() {
     var active = tabs[this.props.active].id;
-    var content = <div>
+    var content = <div className="tab-body">
       <div className={'tab-content ' + (active == "review" ? 'tab-content-selected' : '')}>
         <PatchList/>
       </div>
@@ -117,7 +117,7 @@ var BugList = React.createClass({
   },
   render: function() {
     var items = this.state.items.map(function(item) {
-      return <BugItem bug={item.bug}/>;
+      return <div className="list-item"><BugItem bug={item.bug}/></div>;
     });
     return <div className="">{items}</div>
   },
@@ -140,7 +140,7 @@ var NagList = React.createClass({
       });
       var requests = patches.concat(flags);
 
-      return <div><BugItem bug={item.bug}/><div>{requests}</div></div>;
+      return <div className="list-item"><BugItem bug={item.bug}/><div>{requests}</div></div>;
     });
     return <div className="">{items}</div>
   }
@@ -155,7 +155,7 @@ var RespondList = React.createClass({
       var flags = item.flags.map(function(flag) {
         return <FlagItem flag={flag}/>;
       });
-      return <div><BugItem bug={item.bug}/><div>{flags}</div></div>;
+      return <div className="list-item"><BugItem bug={item.bug}/><div>{flags}</div></div>;
     });
     return <div className="">{items}</div>
   }
@@ -170,7 +170,7 @@ var PatchList = React.createClass({
       var patches = item.attachments.map(function(patch) {
          return <PatchItem patch={patch}/>;
       });
-      return <div><BugItem bug={item.bug}/><div>{patches}</div></div>;
+      return <div className="list-item"><BugItem bug={item.bug}/><div>{patches}</div></div>;
     });
     return <div className="">{items}</div>
   },
