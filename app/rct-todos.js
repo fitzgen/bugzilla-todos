@@ -6,24 +6,6 @@ var bugURL = baseURL + "/show_bug.cgi?id=";
 var attachURL = baseURL + "/attachment.cgi?id=";
 var reviewURL = baseURL + "/page.cgi?id=splinter.html&bug=" // +"&attachment=" + attachId;
 
-var tabs = [
-  { id: "review",
-    name: "Review",
-  },
-  { id: "checkin",
-    name: "Check In"
-  },
-  { id: "nag",
-    name: "Nag"
-  },
-  { id: "respond",
-    name: "Respond"
-  },
-  { id: "fix",
-    name: "Fix"
-  }
-]
-
 var bugItems = [
  {bug: {id: 23, status: "NEW", summary: "window is too small", last_change_time: "2 days ago"}},
  {bug: {id: 58, status: "REOP", summary: "window is too big", last_change_time: "6 days ago"}},
@@ -57,7 +39,7 @@ var nagItems = [
 
 var TodoTabs = React.createClass({
   getInitialState: function() {
-  return {
+    return {
       tabs: tabs,
       active: 0
     };
@@ -208,7 +190,6 @@ var FlagItem = React.createClass({
 var BugItem = React.createClass({
   render: function() {
     var bug = this.props.bug;
-
     return <div className="bug">
       <a className="bug-link" href={bugURL + bug.id}
          target="_blank" title={bug.status + " " + bug.id + "-" + bug.summary}>
@@ -220,5 +201,3 @@ var BugItem = React.createClass({
     </div>
   }
 });
-
-React.renderComponent(<TodoTabs/>, document.querySelector("#content"));

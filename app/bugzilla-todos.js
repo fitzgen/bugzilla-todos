@@ -1,3 +1,5 @@
+/** @jsx React.DOM */
+
 $(document).ready(function() {
   MyReviews.initialize();
   MyReviews.loadUser();
@@ -7,30 +9,30 @@ Tinycon.setOptions({
   background: '#E530A4',
 });
 
-const fetchFrequency = 1000 * 60 * 15;  // every 15 minutes
-
-var tabs = {
-  review : {
+var tabs = [
+  { id: "review",
     name: "To Review",
     alt: "Patches you have to review (key: r)"
   },
-  checkin : {
+  { id: "checkin",
     name: "To Check In",
     alt: "Patches by you, ready to check in (key: c)"
   },
-  nag : {
+  { id: "nag",
     name: "To Nag",
     alt: "Patches by you, awaiting review (key: n)"
   },
-  respond : {
+  { id: "respond",
     name: "To Respond",
     alt: "Bugs where you're a flag requestee (key: p)"
   },
-  fix : {
+  { id: "fix",
     name: "To Fix",
     alt: "Bugs assigned to you (key: f)"
   }
-};
+];
+
+const fetchFrequency = 1000 * 60 * 15;  // every 15 minutes
 
 var tabsByIndex; // defined in initTabs
 
@@ -68,44 +70,25 @@ var MyReviews = {
       }
     });
 
-    $(".tab").click(function(event) {
-      var tab = $(event.target).closest("a");
-      MyReviews.selectTab(tab.data("section"));
-      return false;
-    });
+    // var storedTab;
+    // var queryTab = utils.queryFromUrl()['tab'];
+    // if (queryTab) {
+    //   this.selectTab(queryTab);
+    // }
+    // else if(storedTab = localStorage['bztodos-selected-tab']) {
+    //   this.selectTab(storedTab);
+    // }
+    // else {
+    //   this.selectTab("review");
+    // }
 
-    var storedTab;
-    var queryTab = utils.queryFromUrl()['tab'];
-    if (queryTab) {
-      this.selectTab(queryTab);
-    }
-    else if(storedTab = localStorage['bztodos-selected-tab']) {
-      this.selectTab(storedTab);
-    }
-    else {
-      this.selectTab("review");
-    }
-
-    this.addKeyBindings();
+    // this.addKeyBindings();
 
     $("#submit-iframe").hide();
   },
 
   initTabs: function() {
-    var tabTemplate = Handlebars.compile($("#tab-template").html());
-    var bodyTemplate = Handlebars.compile($("#tab-body-template").html());
-
-    tabsByIndex = [];
-    var i = 0;
-    for (var id in tabs) {
-      var tab = tabs[id];
-      tab.id = id;
-      tabsByIndex.push(tab);
-      tab.index = i;
-      ++i;
-      $(".tab-head").append(tabTemplate(tab));
-      $(".tab-body").append(bodyTemplate(tab));
-    }
+    React.renderComponent(<TodoTabs/>, document.querySelector("#content"));
   },
 
   initQueues: function() {
