@@ -12,23 +12,28 @@ Tinycon.setOptions({
 var tabs = [
   { id: "review",
     name: "To Review",
-    alt: "Patches you have to review (key: r)"
+    alt: "Patches you have to review (key: r)",
+    type: "patches"
   },
   { id: "checkin",
     name: "To Check In",
-    alt: "Patches by you, ready to check in (key: c)"
+    alt: "Patches by you, ready to check in (key: c)",
+    type: "patches"
   },
   { id: "nag",
     name: "To Nag",
-    alt: "Patches by you, awaiting review (key: n)"
+    alt: "Patches by you, awaiting review (key: n)",
+    type: "flags+reviews"
   },
   { id: "respond",
     name: "To Respond",
-    alt: "Bugs where you're a flag requestee (key: p)"
+    alt: "Bugs where you're a flag requestee (key: p)",
+    type: "flags"
   },
   { id: "fix",
     name: "To Fix",
-    alt: "Bugs assigned to you (key: f)"
+    alt: "Bugs assigned to you (key: f)",
+    type: "bugs"
   }
 ];
 
@@ -88,42 +93,11 @@ var MyReviews = {
   },
 
   initTabs: function() {
-    React.renderComponent(<TodoTabs/>, document.querySelector("#content"));
+    React.renderComponent(<TodoTabs tabs={tabs}/>, document.querySelector("#content"));
   },
 
   initQueues: function() {
-    var reviewQueue = new Reviews();
-    var reviewlist = new ReviewList();
-    reviewlist.initialize(reviewQueue);
 
-    var checkinQueue = new Checkins();
-    var checkinlist = new CheckinList(this.checkinQueue);
-    checkinlist.initialize(checkinQueue);
-
-    var nagQueue = new Nags();
-    var naglist = new NagList(this.nagQueue);
-    naglist.initialize(nagQueue);
-
-    var fixQueue = new Fixes();
-    var fixlist = new FixList(this.fixQueue);
-    fixlist.initialize(fixQueue);
-
-    var respondQueue = new Responds();
-    var respondlist = new RespondList(this.respondQueue);
-    respondlist.initialize(respondQueue);
-
-    this.queues = {
-      review: reviewQueue,
-      checkin: checkinQueue,
-      nag: nagQueue,
-      fix: fixQueue,
-      respond: respondQueue
-    };
-
-    for (var id in this.queues) {
-      var queue = this.queues[id];
-      queue.on("update-count-changed", this.updateTitle.bind(this));
-    }
   },
 
   updateTitle: function() {

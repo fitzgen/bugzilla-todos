@@ -40,14 +40,14 @@ var nagItems = [
 var TodoTabs = React.createClass({
   getInitialState: function() {
     return {
-      tabs: tabs,
+      tabs: this.props.tabs,
       active: 0
     };
   },
   render: function() {
     return <div className="tabs">
-      <TabsNav items={this.state.tabs} active={this.state.active} onTabClick={this.handleTabClick}/>
-      <TabsContent items={this.state.tabs} active={this.state.active}/>
+      <TabsNav tabs={this.state.tabs} active={this.state.active} onTabClick={this.handleTabClick}/>
+      <TabsContent tabs={this.state.tabs} active={this.state.active}/>
       </div>;
   },
   handleTabClick: function(index) {
@@ -58,7 +58,7 @@ var TodoTabs = React.createClass({
 var TabsNav = React.createClass({
   render: function() {
     var active = this.props.active;
-    var items = this.props.items.map(function(item, index) {
+    var items = this.props.tabs.map(function(item, index) {
       return <a href="#" className={'tab ' + (active === index ? 'tab-selected' : '')}
                 onClick={this.onClick.bind(this, index)}>{item.name}</a>;
     }.bind(this));
@@ -71,27 +71,33 @@ var TabsNav = React.createClass({
 
 var TabsContent = React.createClass({
   render: function() {
-    var active = tabs[this.props.active].id;
-    var content = <div className="tab-body">
-      <div className={'tab-content ' + (active == "review" ? 'tab-content-selected' : '')}>
-        <PatchList/>
-      </div>
-      <div className={'tab-content ' + (active == "checkin" ? 'tab-content-selected' : '')}>
-        <PatchList/>
-      </div>
-      <div className={'tab-content ' + (active == "nag" ? 'tab-content-selected' : '')}>
-        <NagList/>
-      </div>
-      <div className={'tab-content ' + (active == "respond" ? 'tab-content-selected' : '')}>
-        <RespondList/>
-      </div>
-      <div className={'tab-content ' + (active == "fix" ? 'tab-content-selected' : '')}>
-        <BugList/>
-      </div>
-    </div>
-    return content;
+    var panels = this.props.tabs.map(function(tab, index) {
+      var list;
+      switch(tab.type) {
+        case "patches":
+          list = <PatchList/>;
+          break;
+        case "flags":
+          list = <RespondList/>;
+          break;
+        case "flags+reviews":
+          list = <NagList/>;
+          break;
+        case "bugs":
+        default:
+          list = <BugList/>;
+          break;
+      }
+
+      return <div className={'tab-content ' +
+                  (this.props.active == index ? 'tab-content-selected' : '')}>
+               {list}</div>;
+    }.bind(this));
+
+    return <div className="tab-body">{panels}</div>
   }
 });
+
 
 var BugList = React.createClass({
   getInitialState: function() {
