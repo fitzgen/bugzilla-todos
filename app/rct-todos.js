@@ -46,26 +46,29 @@ var TabsNav = React.createClass({
 var TabsContent = React.createClass({
   render: function() {
     var panels = this.props.tabs.map(function(tab, index) {
+      var data = this.props.data[tab.id];
+
       var list;
       switch(tab.type) {
         case "patches":
-          list = <PatchList data={this.props.data.review}/>;
+          list = <PatchList data={data}/>;
           break;
         case "flags":
-          list = <RespondList data={this.props.data.respond}/>;
+          list = <RespondList data={data}/>;
           break;
         case "flags+reviews":
-          list = <NagList data={this.props.data.nag}/>;
+          list = <NagList data={data}/>;
           break;
         case "bugs":
         default:
-          list = <BugList data={this.props.data.fix}/>;
+          list = <BugList data={data}/>;
           break;
       }
 
       return <div className={'tab-content ' +
                   (this.props.active == index ? 'tab-content-selected' : '')}>
-               {list}</div>;
+               {list}
+             </div>;
     }.bind(this));
 
     return <div className="tab-body">{panels}</div>
