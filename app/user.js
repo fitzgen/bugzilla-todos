@@ -44,6 +44,51 @@ User.prototype.bugs = function(methods, callback) {
    this.client.searchBugs(query, callback);
 }
 
+User.prototype.fetchTodos = function(callback) {
+   var total = 5;
+   var count = 0;  // lists fetched so far
+   var data = {};
+
+   this.toReview(function(err, requests) {
+      console.log("got review");
+      if (err) throw err;
+      data.review = requests;
+      if (++count == total) {
+         callback(data);
+      }
+   });
+   this.toCheckin(function(err, requests) {
+      console.log("got checkin");
+      if (err) throw err;
+      data.checkin = requests;
+      if (++count == total) {
+         callback(data);
+      }
+   });
+   this.toNag(function(err, requests) {
+      console.log("got nag");
+      if (err) throw err;
+      data.nag = requests;
+      if (++count == total) {
+         callback(data);
+      }
+   });
+   this.toRespond(function(err, requests) {
+      if (err) throw err;
+      data.respond = requests;
+      if (++count == total) {
+         callback(data);
+      }
+   });
+   this.toFix(function(err, requests) {
+      if (err) throw err;
+      data.fix = requests;
+      if (++count == total) {
+         callback(data);
+      }
+   });
+}
+
 User.prototype.toReview = function(callback) {
    var name = this.name;
 

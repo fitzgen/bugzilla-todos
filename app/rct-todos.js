@@ -6,36 +6,6 @@ var bugURL = baseURL + "/show_bug.cgi?id=";
 var attachURL = baseURL + "/attachment.cgi?id=";
 var reviewURL = baseURL + "/page.cgi?id=splinter.html&bug=" // +"&attachment=" + attachId;
 
-var bugItems = [
- {bug: {id: 23, status: "NEW", summary: "window is too small", last_change_time: "2 days ago"}},
- {bug: {id: 58, status: "REOP", summary: "window is too big", last_change_time: "6 days ago"}},
- {bug: {id: 19, status: "NEW", summary: "window is too medium", last_change_time: "3 months ago"}}
- ];
-
-var patchItems = [
- {bug: {id: 23, summary: "window is too small", last_change_time: "2 days ago"},
-  attachments: [{id: 400, name: "Joe"}, {id: 300, name: "Betty"}]},
- {bug: {id: 58, summary: "window is too big", last_change_time: "6 days ago"},
- attachments: [{id: 120, name: "Betty"}, {id: 230, name: "Chuck"}]}
-];
-
-var flagItems = [
- {bug: {id: 23, summary: "window is too small", last_change_time: "2 days ago"},
-  flags: [{name: "needinfo", status: "?", requestee: "jill"},
-          {name: "review", status: "?", requestee: "pravin"}]},
- {bug: {id: 58, summary: "window is too big", last_change_time: "6 days ago"},
- flags: [{name: "review", status: "?", requestee: "sam"}]}
-];
-
-var nagItems = [
- {bug: {id: 23, summary: "window is too small", last_change_time: "2 days ago"},
-  flags: [{name: "needinfo", status: "?", requestee: "jill"},
-          {name: "review", status: "?", requestee: "pravin"}],
-  attachments: [{id: 120, name: "Sue"}]},
- {bug: {id: 58, summary: "window is too big", last_change_time: "6 days ago"},
- flags: [{name: "review", status: "?", requestee: "sam"}],
- attachments: []}
-];
 
 var TodoTabs = React.createClass({
   getInitialState: function() {
@@ -46,8 +16,12 @@ var TodoTabs = React.createClass({
   },
   render: function() {
     return <div className="tabs">
-      <TabsNav tabs={this.state.tabs} active={this.state.active} onTabClick={this.handleTabClick}/>
-      <TabsContent tabs={this.state.tabs} active={this.state.active}/>
+        <TabsNav tabs={this.state.tabs}
+          active={this.state.active}
+          onTabClick={this.handleTabClick}/>
+        <TabsContent tabs={this.state.tabs}
+          active={this.state.active}
+          data={this.props.data}/>
       </div>;
   },
   handleTabClick: function(index) {
@@ -75,17 +49,17 @@ var TabsContent = React.createClass({
       var list;
       switch(tab.type) {
         case "patches":
-          list = <PatchList/>;
+          list = <PatchList data={this.props.data.review}/>;
           break;
         case "flags":
-          list = <RespondList/>;
+          list = <RespondList data={this.props.data.respond}/>;
           break;
         case "flags+reviews":
-          list = <NagList/>;
+          list = <NagList data={this.props.data.nag}/>;
           break;
         case "bugs":
         default:
-          list = <BugList/>;
+          list = <BugList data={this.props.data.fix}/>;
           break;
       }
 
@@ -98,28 +72,24 @@ var TabsContent = React.createClass({
   }
 });
 
-
 var BugList = React.createClass({
   getInitialState: function() {
-    return {items: bugItems};
+    return null;
   },
   render: function() {
-    var items = this.state.items.map(function(item) {
+    var items = this.props.data.map(function(item) {
       return <div className="list-item"><BugItem bug={item.bug}/></div>;
     });
     return <div className="">{items}</div>
-  },
-  fetch: function() {
-    this.setState({items: bugs});
   }
 });
 
 var NagList = React.createClass({
   getInitialState: function() {
-    return {items: nagItems};
+    return null;
   },
   render: function() {
-    var items = this.state.items.map(function(item) {
+    var items = this.props.data.map(function(item) {
       var flags = item.flags.map(function(flag) {
         return <FlagItem flag={flag}/>;
       });
@@ -136,11 +106,11 @@ var NagList = React.createClass({
 
 var RespondList = React.createClass({
   getInitialState: function() {
-    return {items: flagItems};
+    return null;
   },
   render: function() {
-    var items = this.state.items.map(function(item) {
-      var flags = item.flags.map(function(flag) {
+    var items = this.props.data.map(function(item) {
+      var flags = item.bug.flags.map(function(flag) {
         return <FlagItem flag={flag}/>;
       });
       return <div className="list-item"><BugItem bug={item.bug}/><div>{flags}</div></div>;
@@ -151,19 +121,16 @@ var RespondList = React.createClass({
 
 var PatchList = React.createClass({
   getInitialState: function() {
-    return {items: patchItems};
+    return null;
   },
   render: function() {
-    var items = this.state.items.map(function(item) {
+    var items = this.props.data.map(function(item) {
       var patches = item.attachments.map(function(patch) {
          return <PatchItem patch={patch}/>;
       });
       return <div className="list-item"><BugItem bug={item.bug}/><div>{patches}</div></div>;
     });
     return <div className="">{items}</div>
-  },
-  fetch: function() {
-    this.setState({items: patches});
   }
 });
 

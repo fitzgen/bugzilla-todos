@@ -1,13 +1,40 @@
 /** @jsx React.DOM */
 
-$(document).ready(function() {
-  MyReviews.initialize();
-  MyReviews.loadUser();
+var BugzillaTodosApp = React.createClass({
+  getInitialState: function() {
+    return {
+      data: {
+        review: [],
+        checkin: [],
+        nag: [],
+        respond: [],
+        fix: []
+    }};
+  },
+
+  componentDidMount: function() {
+    var user = new User("paul@mozilla.com");
+
+    user.fetchTodos(function(data) {
+      console.log("fetched todos");
+      this.setState({data: data});
+    }.bind(this));
+  },
+
+  render: function() {
+    return (
+      <div>
+        <h1>The App</h1>
+        <TodoTabs tabs={tabs} data={this.state.data}/>
+      </div>
+    );
+  }
 });
 
-Tinycon.setOptions({
-  background: '#E530A4',
+$(document).ready(function() {
+  React.renderComponent(<BugzillaTodosApp/>, document.getElementById("content"))
 });
+
 
 var tabs = [
   { id: "review",
@@ -37,219 +64,41 @@ var tabs = [
   }
 ];
 
-const fetchFrequency = 1000 * 60 * 15;  // every 15 minutes
+var bugItems = [
+ {bug: {id: 23, status: "NEW", summary: "window is too small", last_change_time: "2 days ago"}},
+ {bug: {id: 58, status: "REOP", summary: "window is too big", last_change_time: "6 days ago"}},
+ {bug: {id: 19, status: "NEW", summary: "window is too medium", last_change_time: "3 months ago"}}
+ ];
 
-var tabsByIndex; // defined in initTabs
+var patchItems = [
+ {bug: {id: 23, summary: "window is too small", last_change_time: "2 days ago"},
+  attachments: [{id: 400, name: "Joe"}, {id: 300, name: "Betty"}]},
+ {bug: {id: 58, summary: "window is too big", last_change_time: "6 days ago"},
+ attachments: [{id: 120, name: "Betty"}, {id: 230, name: "Chuck"}]}
+];
 
-var MyReviews = {
-  base: "https://bugzilla.mozilla.org",
+var flagItems = [
+ {bug: {id: 23, summary: "window is too small", last_change_time: "2 days ago"},
+  flags: [{name: "needinfo", status: "?", requestee: "jill"},
+          {name: "review", status: "?", requestee: "pravin"}]},
+ {bug: {id: 58, summary: "window is too big", last_change_time: "6 days ago"},
+ flags: [{name: "review", status: "?", requestee: "sam"}]}
+];
 
-  get email() {
-    return localStorage['bzhome-email'];
-  },
+var nagItems = [
+ {bug: {id: 23, summary: "window is too small", last_change_time: "2 days ago"},
+  flags: [{name: "needinfo", status: "?", requestee: "jill"},
+          {name: "review", status: "?", requestee: "pravin"}],
+  attachments: [{id: 120, name: "Sue"}]},
+ {bug: {id: 58, summary: "window is too big", last_change_time: "6 days ago"},
+ flags: [{name: "review", status: "?", requestee: "sam"}],
+ attachments: []}
+];
 
-  set email(address) {
-    localStorage["bzhome-email"] = address;
-  },
-
-  initialize: function() {
-    this.initTabs();
-    this.initQueues();
-
-    var input = $("#login-name");
-    input.val(this.email);
-    input.click(function(){
-      this.select();
-    });
-    input.blur(function() {
-      $("#login-form").submit();
-    });
-
-    $("#login-form").submit(function(event) {
-      // don't want to navigate page
-      event.preventDefault();
-
-      var email = input.val();
-      if (email && email != MyReviews.email) {
-        MyReviews.setUser(email);
-      }
-    });
-
-    // var storedTab;
-    // var queryTab = utils.queryFromUrl()['tab'];
-    // if (queryTab) {
-    //   this.selectTab(queryTab);
-    // }
-    // else if(storedTab = localStorage['bztodos-selected-tab']) {
-    //   this.selectTab(storedTab);
-    // }
-    // else {
-    //   this.selectTab("review");
-    // }
-
-    // this.addKeyBindings();
-
-    $("#submit-iframe").hide();
-  },
-
-  initTabs: function() {
-    React.renderComponent(<TodoTabs tabs={tabs}/>, document.querySelector("#content"));
-  },
-
-  initQueues: function() {
-
-  },
-
-  updateTitle: function() {
-    var title = document.title;
-    title = title.replace(/\(\w+\) /, "");
-
-    var updates = 0;
-    for (var id in this.queues) {
-      updates += this.queues[id].updateCount;
-    }
-
-    // update title with the number of new requests
-    if (updates) {
-      title = "(" + updates + ") " + title;
-    }
-    document.title = title;
-
-    // update favicon too
-    Tinycon.setBubble(updates);
-  },
-
-  setUser: function(email) {
-    this.email = email;
-    this.user = new User(email);
-
-    $("#header").addClass("logged-in");
-    $("#login-name").val(email);
-    this.populate();
-
-    $("#content").show();
-  },
-
-  loadUser: function() {
-    var email = utils.queryFromUrl()['email'];
-    if (!email) {
-      email = utils.queryFromUrl()['user'];
-    }
-    if (!email) {
-      email = this.email; // from localStorage
-      if (!email) {
-        $("#header").addClass("was-logged-out");
-        $("#content").hide();
-        return false;
-      }
-    }
-    this.setUser(email);
-  },
-
-  addKeyBindings: function() {
-    var keys = {
-      // Tabs
-      'r': 'review',
-      'c': 'checkin',
-      'n': 'nag',
-      'f': 'fix',
-      'p': 'respond',
-      // Navigation
-      'h': 'selectPreviousTab',
-      'j': 'nextItem',
-      'k': 'previousItem',
-      'l': 'selectNextTab',
-      'v': 'viewItem'
-    };
-
-    $(document).keypress(function(e) {
-      if (e.ctrlKey || e.altKey || e.shiftKey || e.metaKey
-         || e.target.nodeName.toLowerCase() == "input") {
-        return;
-      }
-      var action = keys[String.fromCharCode(e.charCode)];
-      if (!action) {
-        return;
-      }
-      if (action in tabs) {
-        return void this.selectTab(action);
-      }
-      if (typeof this.queues[this.selectedTab][action] == "function") {
-        return void this.queues[this.selectedTab][action]();
-      }
-      if (typeof this[action] == "function") {
-        return void this[action]();
-      }
-    }.bind(this));
-
-    // Tell the user what keybindings exist.
-    var keyInfo = $("#key-info");
-    var firstIteration = true;
-    for (var key in keys) {
-      if (firstIteration) {
-        firstIteration = false;
-      } else {
-        keyInfo.append(", ");
-      }
-      keyInfo.append($("<code>").append(key));
-    }
-  },
-
-  selectTab: function(type) {
-    if (type == this.selectedTab) {
-      return;
-    }
-    // mark previous tab's updates as "read"
-    if (this.selectedTab) {
-      this.queues[this.selectedTab].clearUpdates();
-    }
-
-    var tab = $("#" + type + "-tab");
-    tab.siblings().removeClass("tab-selected");
-    tab.addClass("tab-selected");
-
-    /* Show the content for the section */
-    tab.parents(".tabs").find("section").hide();
-    $("#" + type).show();
-
-    localStorage['bztodos-selected-tab'] = type;
-
-    this.selectedTab = type;
-  },
-
-  selectNextTab: function() {
-    return this._selectTabRelative(1);
-  },
-
-  selectPreviousTab: function() {
-    return this._selectTabRelative(-1);
-  },
-
-  _selectTabRelative: function (offset) {
-    var N = tabsByIndex.length;
-    var tab = tabsByIndex[(tabs[this.selectedTab].index + offset + N) % N];
-    return this.selectTab(tab.id);
- },
-
-  populate: function() {
-    clearInterval(this.intervalID);
-
-    this.clearQueues();
-    this.update();
-    this.updateTitle();
-
-    this.intervalID = setInterval(this.update.bind(this), fetchFrequency);
-  },
-
-  clearQueues: function() {
-    for (var id in this.queues) {
-      this.queues[id].newUser();
-    }
-  },
-
-  update: function() {
-    for (var id in this.queues) {
-      this.queues[id].fetch();
-    }
-  }
+var data = {
+  review: patchItems,
+  checkin: patchItems,
+  nag: nagItems,
+  respond: flagItems,
+  fix: bugItems
 };
