@@ -1,6 +1,18 @@
 /** @jsx React.DOM */
 
-var BugzillaTodosApp = React.createClass({
+var TodosApp = React.createClass({
+  handleLoginSubmit: function(email) {
+    this.setUser(email);
+  },
+
+  setUser: function(email) {
+    var user = new User(email);
+
+    user.fetchTodos(function(data) {
+      this.setState({data: data});
+    }.bind(this));
+  },
+
   getInitialState: function() {
     return {
       data: {
@@ -11,28 +23,62 @@ var BugzillaTodosApp = React.createClass({
         fix: []
     }};
   },
-
   componentDidMount: function() {
-    var user = new User("paul@mozilla.com");
-
-    user.fetchTodos(function(data) {
-      console.log("fetched todos");
-      this.setState({data: data});
-    }.bind(this));
+    this.setUser("paul@mozilla.com");
   },
-
   render: function() {
     return (
       <div>
-        <h1>The App</h1>
+        <TodosLogin onLoginSubmit={this.handleLoginSubmit}/>
         <TodoTabs tabs={tabs} data={this.state.data}/>
       </div>
     );
   }
 });
 
+var TodosLogin = React.createClass({
+  /**
+   * Handle login form submission. We're using a form here so we can take
+   * advantage of the browser's native autocomplete for remembering emails.
+   */
+  handleSubmit: function(e) {
+    e.preventDefault();
+
+    // Update the app for the new user
+    var email = this.refs.email.getDOMNode().value.trim();
+    this.props.onLoginSubmit(email);
+
+    // From http://stackoverflow.com/questions/8400269/browser-native-autocomplete-for-ajaxed-forms */
+    var iFrameWindow = document.getElementById("submit-iframe").contentWindow;
+    var cloned = document.getElementById("login-form").cloneNode(true);
+    iFrameWindow.document.body.appendChild(cloned);
+    var frameForm = iFrameWindow.document.getElementById("login-form");
+    frameForm.onsubmit = null;
+    frameForm.submit();
+    return false;
+  },
+
+  render: function() {
+    return (
+      <div id="login-container">
+        <span id="title">
+          <img id="bug-icon" src="lib/bugzilla.png" title="Bugzilla"></img>
+           Todos
+        </span>
+        <span id="login"> for
+          <form id="login-form" onSubmit={this.handleSubmit}>
+            <input id="login-name"
+                   name="email" placeholder="Enter Bugzilla user..."
+                   ref="email"/>
+          </form>
+        </span>
+      </div>
+    );
+  }
+})
+
 $(document).ready(function() {
-  React.renderComponent(<BugzillaTodosApp/>, document.getElementById("content"))
+  React.renderComponent(<TodosApp/>, document.getElementById("content"))
 });
 
 
