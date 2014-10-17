@@ -36,6 +36,11 @@ var utils = {
      return name.replace(/\W/g, "-");
    },
 
+   isCodeAttachment : function(att) {
+     return att.is_patch || att.content_type == "text/x-github-pull-request"
+            || att.content_type == "text/x-review-board-request";
+   },
+
    spinner : function(elem, inline) {
     var spinner = $("<img src='lib/indicator.gif' class='spinner'></img>");
     if (inline) {

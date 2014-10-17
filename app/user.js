@@ -121,7 +121,7 @@ User.prototype.needsCheckin = function(callback) {
       var requests = [];
 
       function readyToLand(att) {
-         if (att.is_obsolete || !att.is_patch || !att.flags
+         if (att.is_obsolete || !utils.isCodeAttachment(att) || !att.flags
              || att.attacher.name != name) {
             return false;
          }
@@ -262,7 +262,7 @@ User.prototype.toFix = function(callback) {
          }
 
          var patchForReview = bug.attachments.some(function(att) {
-            if (att.is_obsolete || !att.is_patch || !att.flags) {
+            if (att.is_obsolete || !utils.isCodeAttachment(att) || !att.flags) {
                return false;
             }
             var reviewFlag = att.flags.some(function(flag) {
