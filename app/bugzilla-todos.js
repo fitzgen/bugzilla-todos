@@ -1,16 +1,21 @@
 /** @jsx React.DOM */
 
-var TodosApp = React.createClass({
-  handleLoginSubmit: function(email) {
-    this.setUser(email);
+var TodosModel = {
+  get email() {
+    return localStorage['bzhome-email'];
   },
 
-  setUser: function(email) {
-    var user = new User(email);
+  set email(address) {
+    localStorage["bzhome-email"] = address;
+  }
+}
 
-    user.fetchTodos(function(data) {
-      this.setState({data: data});
-    }.bind(this));
+var TodosApp = React.createClass({
+  handleLoginSubmit: function(email) {
+    if (!email || email == TodosModel.email) {
+      return;
+    }
+    this.setUser(email);
   },
 
   getInitialState: function() {
@@ -23,9 +28,37 @@ var TodosApp = React.createClass({
         fix: []
     }};
   },
+
   componentDidMount: function() {
-    this.setUser("paul@mozilla.com");
+    // first see if the user is specified in the url
+    var email = utils.queryFromUrl()['email'];
+    if (!email) {
+      email = utils.queryFromUrl()['user'];
+    }
+    // if not, fetch the last user from storage
+    if (!email) {
+      email = TodosModel.email;
+      if (!email) {
+        $("#login-container").addClass("was-logged-out");
+        return;
+      }
+    }
+    this.setUser(email);
   },
+
+  setUser: function(email) {
+    var user = new User(email);
+
+    TodosModel.email = email;
+
+    $("#login-container").addClass("logged-in");
+    $("#login-name").val(email);
+
+    user.fetchTodos(function(data) {
+      this.setState({data: data});
+    }.bind(this));
+  },
+
   render: function() {
     return (
       <div>
@@ -56,6 +89,9 @@ var TodosLogin = React.createClass({
     frameForm.onsubmit = null;
     frameForm.submit();
     return false;
+  },
+
+  componentDidMount: function() {
   },
 
   render: function() {

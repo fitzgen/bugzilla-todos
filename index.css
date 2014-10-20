@@ -59,11 +59,11 @@ footer > a {
   padding-left: 20px;
 }
 
-#header.was-logged-out {
+.was-logged-out {
   transition: margin-top 2s ease, font-size 2s ease;
 }
 
-#header.logged-in {
+.logged-in {
   margin-top: 60px;
   font-size: 1.4em;
 }

@@ -15,7 +15,7 @@ var TodoTabs = React.createClass({
     };
   },
   render: function() {
-    return <div className="tabs">
+    return <div id="todo-lists" className="tabs">
         <TabsNav tabs={this.state.tabs}
           active={this.state.active}
           onTabClick={this.handleTabClick}/>
