@@ -92,6 +92,20 @@ var TodosLogin = React.createClass({
   },
 
   componentDidMount: function() {
+    var input = $(this.refs.email.getDOMNode());
+
+    input.val(TodosModel.email);
+
+    input.click(function(){
+      this.select();
+    });
+
+    // clicking outside of the login should change the user
+    input.blur(function() {
+      $("#login-form").submit();
+    });
+    // React won't catch the submission fired from the blur handler
+    $("#login-form").submit(this.handleSubmit);
   },
 
   render: function() {
