@@ -7,6 +7,14 @@ var TodosModel = {
 
   set email(address) {
     localStorage["bzhome-email"] = address;
+  },
+
+  get selectedTab() {
+    return localStorage['bztodos-selected-tab'];
+  },
+
+  set selectedTab(id) {
+    localStorage['bztodos-selected-tab'] = id;
   }
 }
 
