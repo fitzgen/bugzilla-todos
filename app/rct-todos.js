@@ -18,6 +18,7 @@ var TodoTabs = React.createClass({
     return <div id="todo-lists" className="tabs">
         <TabsNav tabs={this.state.tabs}
           active={this.state.active}
+          data={this.props.data}
           onTabClick={this.handleTabClick}/>
         <TabsContent tabs={this.state.tabs}
           active={this.state.active}
@@ -33,8 +34,13 @@ var TabsNav = React.createClass({
   render: function() {
     var active = this.props.active;
     var items = this.props.tabs.map(function(item, index) {
+      // get count of items in this list
+      var tabData = this.props.data[item.id].items;
+      var count = tabData ? tabData.length : "";
+
       return <a href="#" className={'tab ' + (active === index ? 'tab-selected' : '')}
-                onClick={this.onClick.bind(this, index)}>{item.name}</a>;
+                onClick={this.onClick.bind(this, index)}>{item.name}
+                <span className="count">{count}</span></a>;
     }.bind(this));
     return <div className="tab-head">{items}</div>;
   },
@@ -80,7 +86,10 @@ var BugList = React.createClass({
     return null;
   },
   render: function() {
-    var items = this.props.data.map(function(item) {
+    if (!this.props.data.items) {
+      return <div>spinner</div>;
+    }
+    var items = this.props.data.items.map(function(item) {
       return <div className="list-item"><BugItem bug={item.bug}/></div>;
     });
     return <div className="">{items}</div>
@@ -92,7 +101,10 @@ var NagList = React.createClass({
     return null;
   },
   render: function() {
-    var items = this.props.data.map(function(item) {
+    if (!this.props.data.items) {
+      return <div>spinner</div>;
+    }
+    var items = this.props.data.items.map(function(item) {
       var flags = item.flags.map(function(flag) {
         return <FlagItem flag={flag}/>;
       });
@@ -112,7 +124,10 @@ var RespondList = React.createClass({
     return null;
   },
   render: function() {
-    var items = this.props.data.map(function(item) {
+    if (!this.props.data.items) {
+      return <div>spinner</div>;
+    }
+    var items = this.props.data.items.map(function(item) {
       var flags = item.bug.flags.map(function(flag) {
         return <FlagItem flag={flag}/>;
       });
@@ -127,7 +142,10 @@ var PatchList = React.createClass({
     return null;
   },
   render: function() {
-    var items = this.props.data.map(function(item) {
+    if (!this.props.data.items) {
+      return <div>spinner</div>;
+    }
+    var items = this.props.data.items.map(function(item) {
       var patches = item.attachments.map(function(patch) {
          return <PatchItem patch={patch}/>;
       });

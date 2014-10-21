@@ -29,11 +29,11 @@ var TodosApp = React.createClass({
   getInitialState: function() {
     return {
       data: {
-        review: [],
-        checkin: [],
-        nag: [],
-        respond: [],
-        fix: []
+        review: {},
+        checkin: {},
+        nag: {},
+        respond: {},
+        fix: {}
     }};
   },
 
