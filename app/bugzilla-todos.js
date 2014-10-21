@@ -38,6 +38,12 @@ var TodosApp = React.createClass({
   },
 
   componentDidMount: function() {
+    this.loadUser();
+
+    setInterval(this.update, this.props.pollInterval);
+  },
+
+  loadUser: function() {
     // first see if the user is specified in the url
     var email = utils.queryFromUrl()['email'];
     if (!email) {
@@ -55,14 +61,19 @@ var TodosApp = React.createClass({
   },
 
   setUser: function(email) {
-    var user = new User(email);
+    this.user = new User(email);
 
     TodosModel.email = email;
 
     $("#login-container").addClass("logged-in");
     $("#login-name").val(email);
 
-    user.fetchTodos(function(data) {
+    this.update();
+  },
+
+  update: function() {
+    // refresh lists
+    this.user.fetchTodos(function(data) {
       this.setState({data: data});
     }.bind(this));
   },
@@ -136,7 +147,7 @@ var TodosLogin = React.createClass({
 })
 
 $(document).ready(function() {
-  React.renderComponent(<TodosApp/>, document.getElementById("content"))
+  React.renderComponent(<TodosApp pollInterval={1000 * 60 * 15}/>, document.getElementById("content"))
 });
 
 
