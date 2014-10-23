@@ -87,7 +87,7 @@ var BugList = React.createClass({
   },
   render: function() {
     if (!this.props.data.items) {
-      return <div>spinner</div>;
+      return <EmptyList/>;
     }
     var items = this.props.data.items.map(function(item) {
       return <div className="list-item"><BugItem bug={item.bug}/></div>;
@@ -102,7 +102,7 @@ var NagList = React.createClass({
   },
   render: function() {
     if (!this.props.data.items) {
-      return <div>spinner</div>;
+      return <EmptyList/>;
     }
     var items = this.props.data.items.map(function(item) {
       var flags = item.flags.map(function(flag) {
@@ -125,7 +125,7 @@ var RespondList = React.createClass({
   },
   render: function() {
     if (!this.props.data.items) {
-      return <div>spinner</div>;
+      return <EmptyList/>;
     }
     var items = this.props.data.items.map(function(item) {
       var flags = item.bug.flags.map(function(flag) {
@@ -143,7 +143,7 @@ var PatchList = React.createClass({
   },
   render: function() {
     if (!this.props.data.items) {
-      return <div>spinner</div>;
+      return <EmptyList/>;
     }
     var items = this.props.data.items.map(function(item) {
       var patches = item.attachments.map(function(patch) {
@@ -195,3 +195,11 @@ var BugItem = React.createClass({
     </div>
   }
 });
+
+var EmptyList = React.createClass({
+  render: function() {
+    return <div className="list-item">
+      <img src='lib/indicator.gif' className='spinner'></img>
+    </div>;
+  }
+})
