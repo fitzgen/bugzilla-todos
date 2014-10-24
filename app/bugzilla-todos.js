@@ -28,13 +28,8 @@ var TodosApp = React.createClass({
 
   getInitialState: function() {
     return {
-      data: {
-        review: {},
-        checkin: {},
-        nag: {},
-        respond: {},
-        fix: {}
-    }};
+      data: {review: {}, checkin: {}, nag: {}, respond: {}, fix: {}}
+    };
   },
 
   componentDidMount: function() {
@@ -74,8 +69,54 @@ var TodosApp = React.createClass({
   update: function() {
     // refresh lists
     this.user.fetchTodos(function(data) {
+      this.markNew(data);
       this.setState({data: data});
     }.bind(this));
+  },
+
+  /**
+   * Mark which items in the fetched data are new since last time.
+   * We need this to display the count of new items in the tab title
+   * and favicon, and to visually highlight the new items in the list.
+   */
+  markNew: function(newData) {
+    var oldData = this.state.data;
+    var hasNew = false; // whether or not we have any new items
+
+    for (var id in newData) {
+      var newList = newData[id].items;
+      var oldList = oldData[id].items;
+      var newCount = 0;
+
+      if (!newList || !oldList) {
+        continue;
+      }
+      for (var i in newList) {
+        // try to find this item in the old list
+        var newItem = newList[i];
+        var oldItem = null;
+        for (var j in oldList) {
+          if (newItem.bug.id == oldList[j].bug.id) {
+            oldItem = oldList[j];
+            break;
+          }
+        }
+        // mark as new if there was no match in the old list, or
+        // there is, but that item hasn't been seen yet by the user.
+        var isNew = !oldItem || oldItem.new;
+        if (isNew) {
+          newCount++;
+          console.log("New Item!", newItem);
+        }
+        newItem.new = isNew;
+        hasNew = hasNew || !oldItem;
+      }
+      // cache the count of new items for easy fetching
+      newData[id].newCount = newCount;
+      console.log("new count:", newCount);
+    }
+
+    return hasNew;
   },
 
   render: function() {
@@ -147,7 +188,7 @@ var TodosLogin = React.createClass({
 })
 
 $(document).ready(function() {
-  React.renderComponent(<TodosApp pollInterval={1000 * 60 * 15}/>, document.getElementById("content"))
+  React.renderComponent(<TodosApp pollInterval={1000 * 60 * 5}/>, document.getElementById("content"))
 });
 
 
