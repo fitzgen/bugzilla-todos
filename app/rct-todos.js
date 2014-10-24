@@ -76,85 +76,102 @@ var TabsContent = React.createClass({
           break;
       }
 
-      return <div className={'tab-content ' +
-                  (this.props.active == index ? 'tab-content-selected' : '')}>
-               {list}
-             </div>;
+      return <div className={'tab-content ' + (this.props.active == index ?
+                             'tab-content-selected' : '')}>{list}</div>;
     }.bind(this));
-
     return <div className="tab-body">{panels}</div>
   }
 });
 
 var BugList = React.createClass({
   render: function() {
-    if (!this.props.data.items) {
-      return <EmptyList/>;
+    var items = this.props.data.items;
+    if (items) {
+      var listItems = items.map(function(item) {
+        return <ListItem isNew={item.new}><BugItem bug={item.bug}/></ListItem>;
+      });
     }
-    var items = this.props.data.items.map(function(item) {
-      return <ListItem isNew={item.new}><BugItem bug={item.bug}/></ListItem>;
-    });
-    return <div className="">{items}</div>
+    return <List items={items}>{listItems}</List>;
   }
 });
 
 var NagList = React.createClass({
   render: function() {
-    if (!this.props.data.items) {
-      return <EmptyList/>;
-    }
-    var items = this.props.data.items.map(function(item) {
-      var flags = item.flags.map(function(flag) {
-        return <FlagItem flag={flag}/>;
-      });
-      var patches = item.attachments.map(function(patch) {
-        return <PatchItem patch={patch}/>;
-      });
-      var requests = patches.concat(flags);
+    var items = this.props.data.items;
+    if (items) {
+      var listItems = items.map(function(item) {
+        var flags = item.flags.map(function(flag) {
+          return <FlagItem flag={flag}/>;
+        });
+        var patches = item.attachments.map(function(patch) {
+          return <PatchItem patch={patch}/>;
+        });
+        var requests = patches.concat(flags);
 
-      return <ListItem isNew={item.new}><BugItem bug={item.bug}/><div>{requests}</div></ListItem>;
-    });
-    return <div className="">{items}</div>
+        return <ListItem isNew={item.new}><BugItem bug={item.bug}/><div>{requests}</div></ListItem>;
+      });
+    }
+    return <List items={items}>{listItems}</List>;
   }
 });
 
 var RespondList = React.createClass({
   render: function() {
-    if (!this.props.data.items) {
-      return <EmptyList/>;
-    }
-    var items = this.props.data.items.map(function(item) {
-      var flags = item.bug.flags.map(function(flag) {
-        return <FlagItem flag={flag}/>;
+    var items = this.props.data.items;
+    if (items) {
+      var listItems = items.map(function(item) {
+        var flags = item.bug.flags.map(function(flag) {
+          return <FlagItem flag={flag}/>;
+        });
+        return <ListItem isNew={item.new}><BugItem bug={item.bug}/><div>{flags}</div></ListItem>;
       });
-      return <ListItem isNew={item.new}><BugItem bug={item.bug}/><div>{flags}</div></ListItem>;
-    });
-    return <div className="">{items}</div>
+    }
+    return <List items={items}>{listItems}</List>;
   }
 });
 
 var PatchList = React.createClass({
   render: function() {
-    if (!this.props.data.items) {
-      return <EmptyList/>;
-    }
-    var items = this.props.data.items.map(function(item) {
-      var patches = item.attachments.map(function(patch) {
-         return <PatchItem patch={patch}/>;
+    var items = this.props.data.items;
+    if (items) {
+      var listItems = items.map(function(item) {
+        var patches = item.attachments.map(function(patch) {
+           return <PatchItem patch={patch}/>;
+        });
+        return <ListItem isNew={item.new}><BugItem bug={item.bug}/><div>{patches}</div></ListItem>;
       });
-      return <ListItem isNew={item.new}><BugItem bug={item.bug}/><div>{patches}</div></ListItem>;
-    });
-    return <div className="">{items}</div>
+    }
+    return <List items={items}>{listItems}</List>;
   }
 });
 
-var ListItem = React.createClass({
+var List = React.createClass({
   render: function() {
-    return <div className={"list-item " + (this.props.isNew ? "new-item" : "")}>
-             {this.props.children}
-           </div>;
+    if (!this.props.items) {
+      return <WaitingList/>;
+    }
+    if (this.props.items.length == 0) {
+      return <EmptyList/>;
+    }
+    return <div>{this.props.children}</div>;
   }
-});
+})
+
+var WaitingList = React.createClass({
+  render: function() {
+    return <div className="list-item">
+      <img src='lib/indicator.gif' className='spinner'></img>
+    </div>;
+  }
+})
+
+var EmptyList = React.createClass({
+  render: function() {
+    return <div className="list-item empty-message">
+      No items to display
+    </div>;
+  }
+})
 
 var PatchItem = React.createClass({
   render: function() {
@@ -197,10 +214,10 @@ var BugItem = React.createClass({
   }
 });
 
-var EmptyList = React.createClass({
+var ListItem = React.createClass({
   render: function() {
-    return <div className="list-item">
-      <img src='lib/indicator.gif' className='spinner'></img>
-    </div>;
+    return <div className={"list-item " + (this.props.isNew ? "new-item" : "")}>
+             {this.props.children}
+           </div>;
   }
-})
+});
