@@ -69,7 +69,9 @@ var TodosApp = React.createClass({
   update: function() {
     // refresh lists
     this.user.fetchTodos(function(data) {
-      this.markNew(data);
+      var count = this.markNew(data);
+      this.updateTitle(count);
+
       this.setState({data: data});
     }.bind(this));
   },
@@ -81,7 +83,7 @@ var TodosApp = React.createClass({
    */
   markNew: function(newData) {
     var oldData = this.state.data;
-    var hasNew = false; // whether or not we have any new items
+    var totalNew = 0; // number of new non-seen items
 
     for (var id in newData) {
       var newList = newData[id].items;
@@ -106,17 +108,33 @@ var TodosApp = React.createClass({
         var isNew = !oldItem || oldItem.new;
         if (isNew) {
           newCount++;
-          console.log("New Item!", newItem);
+          totalNew++;
         }
         newItem.new = isNew;
-        hasNew = hasNew || !oldItem;
       }
       // cache the count of new items for easy fetching
       newData[id].newCount = newCount;
       console.log("new count:", newCount);
     }
 
-    return hasNew;
+    return totalNew;
+  },
+
+  /**
+   * Update the page title to reflect the number of updates.
+   */
+  updateTitle: function(updateCount) {
+    var title = document.title;
+    title = title.replace(/\(\w+\) /, "");
+
+    // update title with the number of new requests
+    if (updateCount) {
+      title = "(" + updateCount + ") " + title;
+    }
+    document.title = title;
+
+    // update favicon too
+    Tinycon.setBubble(updateCount);
   },
 
   render: function() {
@@ -188,7 +206,7 @@ var TodosLogin = React.createClass({
 })
 
 $(document).ready(function() {
-  React.renderComponent(<TodosApp pollInterval={1000 * 60 * 5}/>, document.getElementById("content"))
+  React.renderComponent(<TodosApp pollInterval={1000 * 60 * 10}/>, document.getElementById("content"))
 });
 
 
@@ -219,42 +237,3 @@ var tabs = [
     type: "bugs"
   }
 ];
-
-var bugItems = [
- {bug: {id: 23, status: "NEW", summary: "window is too small", last_change_time: "2 days ago"}},
- {bug: {id: 58, status: "REOP", summary: "window is too big", last_change_time: "6 days ago"}},
- {bug: {id: 19, status: "NEW", summary: "window is too medium", last_change_time: "3 months ago"}}
- ];
-
-var patchItems = [
- {bug: {id: 23, summary: "window is too small", last_change_time: "2 days ago"},
-  attachments: [{id: 400, name: "Joe"}, {id: 300, name: "Betty"}]},
- {bug: {id: 58, summary: "window is too big", last_change_time: "6 days ago"},
- attachments: [{id: 120, name: "Betty"}, {id: 230, name: "Chuck"}]}
-];
-
-var flagItems = [
- {bug: {id: 23, summary: "window is too small", last_change_time: "2 days ago"},
-  flags: [{name: "needinfo", status: "?", requestee: "jill"},
-          {name: "review", status: "?", requestee: "pravin"}]},
- {bug: {id: 58, summary: "window is too big", last_change_time: "6 days ago"},
- flags: [{name: "review", status: "?", requestee: "sam"}]}
-];
-
-var nagItems = [
- {bug: {id: 23, summary: "window is too small", last_change_time: "2 days ago"},
-  flags: [{name: "needinfo", status: "?", requestee: "jill"},
-          {name: "review", status: "?", requestee: "pravin"}],
-  attachments: [{id: 120, name: "Sue"}]},
- {bug: {id: 58, summary: "window is too big", last_change_time: "6 days ago"},
- flags: [{name: "review", status: "?", requestee: "sam"}],
- attachments: []}
-];
-
-var data = {
-  review: patchItems,
-  checkin: patchItems,
-  nag: nagItems,
-  respond: flagItems,
-  fix: bugItems
-};
