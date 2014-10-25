@@ -38,6 +38,11 @@ var TodosApp = React.createClass({
     setInterval(this.update, this.props.pollInterval);
   },
 
+  componentDidUpdate: function() {
+    // turn timestamps into human times
+    $(".timeago").timeago();
+  },
+
   loadUser: function() {
     // first see if the user is specified in the url
     var email = utils.queryFromUrl()['email'];

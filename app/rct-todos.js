@@ -209,7 +209,7 @@ var BugItem = React.createClass({
          <span className="full-bug bug-summary">{bug.summary}</span>
       </a>
       <span className="item-date timeago"
-            title="{bug.last_change_time}">{bug.last_change_time}</span>
+            title={bug.last_change_time}>{bug.last_change_time}</span>
     </div>
   }
 });
