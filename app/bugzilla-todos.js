@@ -36,6 +36,13 @@ var TodosApp = React.createClass({
     this.loadUser();
 
     setInterval(this.update, this.props.pollInterval);
+
+    // When they navigate to+away, mark all items as "seen"
+    $(window).blur(function() {
+      console.log("blurred");
+      this.markAsSeen();
+      this.updateTitle(0);
+    }.bind(this));
   },
 
   componentDidUpdate: function() {
@@ -123,6 +130,27 @@ var TodosApp = React.createClass({
     }
 
     return totalNew;
+  },
+
+  /**
+   * Mark every item as "seen", thus clearing favicon and title counts
+   * and removing the highlights from new items.
+   */
+  markAsSeen: function() {
+    // mutate old state briefly
+    var data = this.state.data;
+    for (var id in data) {
+      var list = data[id].items;
+      if (!list) {
+        continue;
+      }
+
+      for (var i in list) {
+        list[i].new = false;
+      }
+    }
+    // then reset state to old state but without markers
+    this.setState(data);
   },
 
   /**

@@ -193,11 +193,7 @@ footer > a {
   content: ")";
 }
 
-.new {
-  color: hsl(320, 80%, 50%);
-}
-
-.added-tally {
+.new-count {
   color: hsl(320, 80%, 50%);
   letter-spacing: -1px;
   font-weight: bold;

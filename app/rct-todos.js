@@ -26,7 +26,7 @@ var TodoTabs = React.createClass({
       </div>;
   },
   handleTabClick: function(index) {
-    this.setState({active: index})
+    this.setState({active: index});
   }
 });
 
@@ -38,8 +38,10 @@ var TabsNav = React.createClass({
       var list = this.props.data[item.id];
       var count = list.items ? list.items.length : "";
 
-      var newCount = list.newCount ?
-        <span className="new-count"> + {list.newCount}</span> : "";
+      var newCount = "";
+      if (list.newCount) {
+        newCount = <span className="new-count"> +{list.newCount}</span>;
+      }
 
       return <a href="#" className={'tab ' + (active === index ? 'tab-selected' : '')}
                 onClick={this.onClick.bind(this, index)}>{item.name}
