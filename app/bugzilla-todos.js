@@ -26,9 +26,14 @@ var TodosApp = React.createClass({
     this.setUser(email);
   },
 
+  handleTabSelect: function(listId) {
+    TodosModel.selectedTab = listId;
+  },
+
   getInitialState: function() {
     return {
-      data: {review: {}, checkin: {}, nag: {}, respond: {}, fix: {}}
+      data: {review: {}, checkin: {}, nag: {}, respond: {}, fix: {}},
+      selectedTab: TodosModel.selectedTab || "review"
     };
   },
 
@@ -43,6 +48,14 @@ var TodosApp = React.createClass({
       this.markAsSeen();
       this.updateTitle(0);
     }.bind(this));
+  },
+
+  selectTab: function(listId) {
+    if (listId == TodosModel.selectedTab) {
+      return;
+    }
+
+    TodosModel.selectedTab = listId;
   },
 
   componentDidUpdate: function() {
@@ -174,7 +187,9 @@ var TodosApp = React.createClass({
     return (
       <div>
         <TodosLogin onLoginSubmit={this.handleLoginSubmit}/>
-        <TodoTabs tabs={tabs} data={this.state.data}/>
+        <TodoTabs tabs={tabs} data={this.state.data}
+                  selectedTab={this.state.selectedTab}
+                  onTabSelect={this.handleTabSelect}/>
       </div>
     );
   }

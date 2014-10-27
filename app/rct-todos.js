@@ -11,28 +11,30 @@ var TodoTabs = React.createClass({
   getInitialState: function() {
     return {
       tabs: this.props.tabs,
-      active: 0
+      selectedTab: this.props.selectedTab
     };
   },
   render: function() {
     return <div id="todo-lists" className="tabs">
         <TabsNav tabs={this.state.tabs}
-          active={this.state.active}
+          selectedTab={this.state.selectedTab}
           data={this.props.data}
           onTabClick={this.handleTabClick}/>
         <TabsContent tabs={this.state.tabs}
-          active={this.state.active}
+          selectedTab={this.state.selectedTab}
           data={this.props.data}/>
       </div>;
   },
-  handleTabClick: function(index) {
-    this.setState({active: index});
+  handleTabClick: function(tabId) {
+    this.setState({selectedTab: tabId});
+
+    this.props.onTabSelect(tabId);
   }
 });
 
 var TabsNav = React.createClass({
   render: function() {
-    var active = this.props.active;
+    var selectedTab = this.props.selectedTab;
     var items = this.props.tabs.map(function(item, index) {
       // get count of items in this list
       var list = this.props.data[item.id];
@@ -43,8 +45,11 @@ var TabsNav = React.createClass({
         newCount = <span className="new-count"> +{list.newCount}</span>;
       }
 
-      return <a href="#" className={'tab ' + (active === index ? 'tab-selected' : '')}
-                onClick={this.onClick.bind(this, index)}>{item.name}
+      var className = "tab" + (selectedTab == item.id ? " tab-selected" : "");
+
+      return <a href="#" className={className}
+                onClick={this.onClick.bind(this, item.id)}>
+                {item.name}
                 <span className="count">{count}</span>
                 {newCount}
              </a>;
@@ -78,7 +83,7 @@ var TabsContent = React.createClass({
           break;
       }
 
-      return <div className={'tab-content ' + (this.props.active == index ?
+      return <div className={'tab-content ' + (this.props.selectedTab == tab.id ?
                              'tab-content-selected' : '')}>{list}</div>;
     }.bind(this));
     return <div className="tab-body">{panels}</div>
