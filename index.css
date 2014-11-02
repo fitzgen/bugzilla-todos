@@ -349,6 +349,12 @@ footer > a {
   display: inline;
 }
 
+@media (min-width: 540px) {
+  #content {
+    width: 530px;
+  }
+}
+
 /* small screen */
 @media (max-width: 540px) {
   #content {
