@@ -13,7 +13,7 @@ html {
 }
 
 body {
-  font-size: 14px;
+  font-size: 13.5px;
   background-image: url(satinweave.png);
 }
 
@@ -55,7 +55,7 @@ footer > a {
 
 #login-container {
   font-family: Roboto Slab, Helvetica, sans-serif;
-  font-size: 24px;
+  font-size: 22px;
   color: #333;
   text-align: center;
   margin: 80px 0 30px 0;
@@ -125,7 +125,7 @@ footer > a {
 .tab,
 .tab:visited {
   font-weight: normal;
-  font-size: 16px;
+  font-size: 15.5px;
   display: inline-block;
   padding: 3px 0 8px 0;
   margin: 0 6px;
@@ -274,10 +274,13 @@ footer > a {
 }
 
 .bug {
-  white-space: nowrap;
   overflow: hidden;
-  max-width: 100%;
   text-overflow: ellipsis;
+}
+
+.bug-link {
+  width: 100px;
+  white-space: nowrap;
 }
 
 .bug-id:hover, .bug-summary {

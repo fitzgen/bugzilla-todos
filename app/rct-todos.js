@@ -213,7 +213,7 @@ var BugItem = React.createClass({
       <a className="bug-link" href={bugURL + bug.id}
          target="_blank" title={bug.status + " " + bug.id + "-" + bug.summary}>
          <span className="bug-id">{bug.id}</span>-
-         <span className="full-bug bug-summary">{bug.summary}</span>
+        <span className="full-bug bug-summary"> {bug.summary}</span>
       </a>
       <span className="item-date timeago"
             title={bug.last_change_time}>{bug.last_change_time}</span>
