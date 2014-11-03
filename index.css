@@ -48,10 +48,24 @@ footer > a {
   text-align: center;
 }
 
+/* Special header displays */
+
 #error-message {
   color: red;
   font-size: 1.4em;
 }
+
+#welcome-message {
+  margin-top: 60px;
+  font-size: 22px;
+  font-weight: 300;
+}
+
+.keyword {
+  font-weight: 400;
+}
+
+/* Login */
 
 #login-container {
   font-family: Roboto Slab, Helvetica, sans-serif;
@@ -62,16 +76,13 @@ footer > a {
   padding-left: 20px;
 }
 
-.was-logged-out {
-  transition: margin-top 2s ease, font-size 2s ease;
+#login-container.logged-out {
+  font-size: 2em;
 }
 
 .logged-in {
-  margin-top: 60px;
-  font-size: 1.4em;
+  transition: font-size 2s ease;
 }
-
-/* Login */
 
 #bug-icon {
   margin-bottom: 0px;
@@ -102,9 +113,8 @@ footer > a {
   border: 1px solid transparent;
 }
 
-#header:not(.logged-in) #login-name {
+.logged-out #login-name {
   border: 1px solid #ddd;
-  width: 300px;
 }
 
 #login-name:focus {

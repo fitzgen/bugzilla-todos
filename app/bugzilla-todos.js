@@ -2,11 +2,11 @@
 
 var TodosModel = {
   get email() {
-    return localStorage['bzhome-email'];
+    return localStorage['bztodos-email'];
   },
 
   set email(address) {
-    localStorage["bzhome-email"] = address;
+    localStorage["bztodos-email"] = address;
   },
 
   get selectedTab() {
@@ -39,13 +39,21 @@ var TodosApp = React.createClass({
   },
 
   componentDidMount: function() {
-    this.loadUser();
+    var email = this.loadUser();
+
+    if (!email) {
+      $("#login-container").addClass("logged-out");
+      $("#todo-lists").hide();
+      $("footer").hide();
+    }
+    else {
+      this.setUser(email);
+    }
 
     setInterval(this.update, this.props.pollInterval);
 
     // When they navigate to+away, mark all items as "seen"
     $(window).blur(function() {
-      console.log("blurred");
       this.markAsSeen();
       this.updateTitle(0);
     }.bind(this));
@@ -74,11 +82,10 @@ var TodosApp = React.createClass({
     if (!email) {
       email = TodosModel.email;
       if (!email) {
-        $("#login-container").addClass("was-logged-out");
-        return;
+        return null;
       }
     }
-    this.setUser(email);
+    return email;
   },
 
   setUser: function(email) {
@@ -86,8 +93,12 @@ var TodosApp = React.createClass({
 
     TodosModel.email = email;
 
+    $("#login-container").removeClass("logged-out");
     $("#login-container").addClass("logged-in");
     $("#login-name").val(email);
+    $("#welcome-message").hide();
+    $("#todo-lists").show();
+    $("footer").show();
 
     this.update();
   },
