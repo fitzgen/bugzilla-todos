@@ -185,7 +185,7 @@ var PatchItem = React.createClass({
     var patch = this.props.patch;
     return <div>
       <a className="att-link" href={attachURL + patch.id} target="_blank"
-        title={"patch by " + patch.name}>patch by {patch.name}
+        title={"patch by " + patch.name}>patch by {patch.attacher.name}
       </a>
       <span className="att-suffix">
         <span className="att-date timeago"
@@ -201,7 +201,7 @@ var FlagItem = React.createClass({
     var flag = this.props.flag;
     return <div className="flag"><span className="flag-name">{flag.name}</span>
       <span className="flag-status">{flag.status}</span>
-      <span className="flag-requestee">{flag.requestee}</span>
+      <span className="flag-requestee"> {flag.requestee}</span>
     </div>;
   }
 });
