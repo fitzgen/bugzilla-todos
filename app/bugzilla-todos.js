@@ -23,6 +23,7 @@ var TodosApp = React.createClass({
     if (!email || email == TodosModel.email) {
       return;
     }
+    this.setState(this.getInitialState());
     this.setUser(email);
   },
 
