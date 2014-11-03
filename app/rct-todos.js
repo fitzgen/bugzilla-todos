@@ -95,7 +95,9 @@ var BugList = React.createClass({
     var items = this.props.data.items;
     if (items) {
       var listItems = items.map(function(item) {
-        return <ListItem isNew={item.new}><BugItem bug={item.bug}/></ListItem>;
+        return <ListItem isNew={item.new}>
+                 <BugItem bug={item.bug}/>
+               </ListItem>;
       });
     }
     return <List items={items}>{listItems}</List>;
@@ -115,7 +117,10 @@ var NagList = React.createClass({
         });
         var requests = patches.concat(flags);
 
-        return <ListItem isNew={item.new}><BugItem bug={item.bug}/><div>{requests}</div></ListItem>;
+        return <ListItem isNew={item.new}>
+                 <BugItem bug={item.bug}/>
+                 <div>{requests}</div>
+               </ListItem>;
       });
     }
     return <List items={items}>{listItems}</List>;
@@ -130,7 +135,10 @@ var RespondList = React.createClass({
         var flags = item.bug.flags.map(function(flag) {
           return <FlagItem flag={flag}/>;
         });
-        return <ListItem isNew={item.new}><BugItem bug={item.bug}/><div>{flags}</div></ListItem>;
+        return <ListItem isNew={item.new}>
+                 <BugItem bug={item.bug}/>
+                 <div>{flags}</div>
+               </ListItem>;
       });
     }
     return <List items={items}>{listItems}</List>;
@@ -145,7 +153,10 @@ var PatchList = React.createClass({
         var patches = item.attachments.map(function(patch) {
            return <PatchItem patch={patch}/>;
         });
-        return <ListItem isNew={item.new}><BugItem bug={item.bug}/><div>{patches}</div></ListItem>;
+        return <ListItem isNew={item.new}>
+                 <BugItem bug={item.bug}/>
+                 <div>{patches}</div>
+               </ListItem>;
       });
     }
     return <List items={items}>{listItems}</List>;
@@ -199,7 +210,8 @@ var PatchItem = React.createClass({
 var FlagItem = React.createClass({
   render: function() {
     var flag = this.props.flag;
-    return <div className="flag"><span className="flag-name">{flag.name}</span>
+    return <div className="flag">
+      <span className="flag-name">{flag.name}</span>
       <span className="flag-status">{flag.status}</span>
       <span className="flag-requestee"> {flag.requestee}</span>
     </div>;
