@@ -8,26 +8,18 @@ var reviewURL = baseURL + "/page.cgi?id=splinter.html&bug=" // +"&attachment=" +
 
 
 var TodoTabs = React.createClass({
-  getInitialState: function() {
-    return {
-      tabs: this.props.tabs,
-      selectedTab: this.props.selectedTab
-    };
-  },
   render: function() {
     return <div id="todo-lists" className="tabs">
-        <TabsNav tabs={this.state.tabs}
-          selectedTab={this.state.selectedTab}
+        <TabsNav tabs={this.props.tabs}
+          selectedTab={this.props.selectedTab}
           data={this.props.data}
           onTabClick={this.handleTabClick}/>
-        <TabsContent tabs={this.state.tabs}
-          selectedTab={this.state.selectedTab}
+        <TabsContent tabs={this.props.tabs}
+          selectedTab={this.props.selectedTab}
           data={this.props.data}/>
       </div>;
   },
   handleTabClick: function(tabId) {
-    this.setState({selectedTab: tabId});
-
     this.props.onTabSelect(tabId);
   }
 });
@@ -36,7 +28,6 @@ var TabsNav = React.createClass({
   render: function() {
     var selectedTab = this.props.selectedTab;
     var items = this.props.tabs.map(function(item, index) {
-      // get count of items in this list
       var list = this.props.data[item.id];
       var count = list.items ? list.items.length : "";
 
@@ -48,7 +39,8 @@ var TabsNav = React.createClass({
       var className = "tab" + (selectedTab == item.id ? " tab-selected" : "");
 
       return <a href="#" className={className}
-                onClick={this.onClick.bind(this, item.id)}>
+                onClick={this.onClick.bind(this, item.id)}
+                title={item.alt}>
                 {item.name}
                 <span className="count">{count}</span>
                 {newCount}

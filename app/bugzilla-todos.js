@@ -28,7 +28,13 @@ var TodosApp = React.createClass({
   },
 
   handleTabSelect: function(listId) {
+    if (listId == TodosModel.selectedTab) {
+      return;
+    }
+
     TodosModel.selectedTab = listId;
+
+    this.setState({selectedTab: listId});
   },
 
   getInitialState: function() {
@@ -57,14 +63,8 @@ var TodosApp = React.createClass({
       this.markAsSeen();
       this.updateTitle(0);
     }.bind(this));
-  },
 
-  selectTab: function(listId) {
-    if (listId == TodosModel.selectedTab) {
-      return;
-    }
-
-    TodosModel.selectedTab = listId;
+    this.addKeyBindings();
   },
 
   componentDidUpdate: function() {
@@ -96,6 +96,7 @@ var TodosApp = React.createClass({
     $("#login-container").removeClass("logged-out");
     $("#login-container").addClass("logged-in");
     $("#login-name").val(email);
+
     $("#welcome-message").hide();
     $("#todo-lists").show();
     $("footer").show();
@@ -193,6 +194,74 @@ var TodosApp = React.createClass({
 
     // update favicon too
     Tinycon.setBubble(updateCount);
+  },
+
+  addKeyBindings: function() {
+    var keys = {
+      // Tabs
+      'r': 'review',
+      'c': 'checkin',
+      'n': 'nag',
+      'p': 'respond',
+      'f': 'fix',
+      // Navigation
+      'h': 'selectPreviousTab',
+      'l': 'selectNextTab',
+    };
+
+    $(document).keypress(function(e) {
+      if (e.ctrlKey || e.altKey || e.shiftKey || e.metaKey
+         || e.target.nodeName.toLowerCase() == "input") {
+        return;
+      }
+      var action = keys[String.fromCharCode(e.charCode)];
+      if (!action) {
+        return;
+      }
+      if (this.indexForTab(action) >= 0) {
+        return void this.handleTabSelect(action);
+      }
+      if (typeof this[action] == "function") {
+        return void this[action]();
+      }
+    }.bind(this));
+
+    // Tell the user what keybindings exist.
+    var keyInfo = $("#key-info");
+    var firstIteration = true;
+    for (var key in keys) {
+      if (firstIteration) {
+        firstIteration = false;
+      } else {
+        keyInfo.append(", ");
+      }
+      keyInfo.append($("<code>").append(key));
+    }
+  },
+
+  selectNextTab: function() {
+    this.selectTabRelative(1);
+  },
+
+  selectPreviousTab: function() {
+    this.selectTabRelative(-1);
+  },
+
+  selectTabRelative: function (offset) {
+    var N = tabs.length;
+    var index = this.indexForTab(this.state.selectedTab);
+    var tab = tabs[(index + offset + N) % N];
+
+    this.handleTabSelect(tab.id);
+  },
+
+  indexForTab: function(listId) {
+    for (var i = 0; i < tabs.length; i++) {
+      if (tabs[i].id == listId) {
+        return i;
+      }
+    }
+    return -1;
   },
 
   render: function() {
