@@ -344,10 +344,11 @@ footer > a {
 
 #install {
   display: none;
-  background-color: hsl(60, 95%, 96%);
+  color: #333;
+  background-color: hsl(0, 0%, 99%);
   border: 1px solid #ccc;
-  padding: 6px 20px;
-  text-transform: uppercase;
+  border-radius: 3px;
+  padding: 8px 14px;
 }
 
 #install.show-install {
