@@ -1,5 +1,5 @@
 /* -*- Mode: javascript; tab-width: 3; indent-tabs-mode: nil; c-basic-offset: 3; js-indent-level: 3; -*- */
-function User(username, limit) {
+function BugzillaUser(username, limit) {
    this.username = username;
    this.name = this.username.replace(/@.+/, "");
    this.limit = limit;
@@ -9,11 +9,11 @@ function User(username, limit) {
    });
 }
 
-User.prototype = {
+BugzillaUser.prototype = {
    fields : 'id,summary,status,resolution,last_change_time'
 }
 
-User.prototype.component = function(product, component, callback) {
+BugzillaUser.prototype.component = function(product, component, callback) {
    this.client.searchBugs({
       product: product,
       component: component,
@@ -23,7 +23,7 @@ User.prototype.component = function(product, component, callback) {
    }, callback);
 }
 
-User.prototype.bugs = function(methods, callback) {
+BugzillaUser.prototype.bugs = function(methods, callback) {
    var query = {
       email1: this.username,
       email1_type: "equals",
@@ -44,7 +44,7 @@ User.prototype.bugs = function(methods, callback) {
    this.client.searchBugs(query, callback);
 }
 
-User.prototype.fetchTodos = function(callback) {
+BugzillaUser.prototype.fetchTodos = function(callback) {
    var total = 5;
    var count = 0;  // lists fetched so far
    var data = {};
@@ -86,7 +86,7 @@ User.prototype.fetchTodos = function(callback) {
    });
 }
 
-User.prototype.toReview = function(callback) {
+BugzillaUser.prototype.toReview = function(callback) {
    var name = this.name;
 
    this.client.searchBugs({
@@ -141,7 +141,7 @@ User.prototype.toReview = function(callback) {
    });
 }
 
-User.prototype.toCheckin = function(callback) {
+BugzillaUser.prototype.toCheckin = function(callback) {
    var name = this.name;
 
    this.client.searchBugs({
@@ -218,7 +218,7 @@ User.prototype.toCheckin = function(callback) {
  * All the patches and bugs the user is awaiting action on
  * (aka they have a outstanding flag request)
  */
-User.prototype.toNag = function(callback) {
+BugzillaUser.prototype.toNag = function(callback) {
    var name = this.name;
 
    this.client.searchBugs({
@@ -282,7 +282,7 @@ User.prototype.toNag = function(callback) {
    })
 }
 
-User.prototype.toFix = function(callback) {
+BugzillaUser.prototype.toFix = function(callback) {
    var query = {
       email1: this.username,
       email1_type: "equals",
@@ -331,7 +331,7 @@ User.prototype.toFix = function(callback) {
 
 // Fetch all of each bugs dependencies and modify in place each bug's depends_on
 // array so that it only contains OPEN bugs that it depends on.
-User.prototype.fetchDeps = function(bugs, callback) {
+BugzillaUser.prototype.fetchDeps = function(bugs, callback) {
    // The number of bug requests we are waiting on.
    var waiting = 0;
 
@@ -373,7 +373,7 @@ User.prototype.fetchDeps = function(bugs, callback) {
    maybeFinish();
 };
 
-User.prototype.toRespond = function(callback) {
+BugzillaUser.prototype.toRespond = function(callback) {
    var name = this.name;
 
    this.client.searchBugs({

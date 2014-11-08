@@ -89,7 +89,7 @@ var TodosApp = React.createClass({
   },
 
   setUser: function(email) {
-    this.user = new User(email);
+    this.user = new BugzillaUser(email);
 
     TodosModel.email = email;
 
