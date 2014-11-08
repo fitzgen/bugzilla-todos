@@ -6,7 +6,6 @@ var bugURL = baseURL + "/show_bug.cgi?id=";
 var attachURL = baseURL + "/attachment.cgi?id=";
 var reviewURL = baseURL + "/page.cgi?id=splinter.html&bug=" // +"&attachment=" + attachId;
 
-
 var TodoTabs = React.createClass({
   render: function() {
     return (

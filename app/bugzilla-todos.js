@@ -1,5 +1,33 @@
 /** @jsx React.DOM */
 
+var tabs = [
+  { id: "review",
+    name: "To Review",
+    alt: "Patches you have to review (key: r)",
+    type: "patches"
+  },
+  { id: "checkin",
+    name: "To Check In",
+    alt: "Patches by you, ready to check in (key: c)",
+    type: "patches"
+  },
+  { id: "nag",
+    name: "To Nag",
+    alt: "Patches by you, awaiting review (key: n)",
+    type: "flags+reviews"
+  },
+  { id: "respond",
+    name: "To Respond",
+    alt: "Bugs where you're a flag requestee (key: p)",
+    type: "flags"
+  },
+  { id: "fix",
+    name: "To Fix",
+    alt: "Bugs assigned to you (key: f)",
+    type: "bugs"
+  }
+];
+
 var TodosModel = {
   get email() {
     return localStorage['bztodos-email'];
@@ -212,13 +240,11 @@ var TodosApp = React.createClass({
    */
   addKeyBindings: function() {
     var keys = {
-      // Tabs
       'r': 'review',
       'c': 'checkin',
       'n': 'nag',
       'p': 'respond',
       'f': 'fix',
-      // Navigation
       'h': 'selectPreviousTab',
       'l': 'selectNextTab',
     };
@@ -291,7 +317,7 @@ var TodosLogin = React.createClass({
 
     this.props.onLoginSubmit(email);
 
-    // We do all this so we get the default form autocomplete for the email address
+    // We do all this so we get the native autocomplete for the email address
     // http://stackoverflow.com/questions/8400269/browser-native-autocomplete-for-ajaxed-forms
     var iFrameWindow = document.getElementById("submit-iframe").contentWindow;
     var cloned = document.getElementById("login-form").cloneNode(true);
@@ -304,13 +330,11 @@ var TodosLogin = React.createClass({
 
   componentDidMount: function() {
     var input = $(this.refs.email.getDOMNode());
-
     input.val(TodosModel.email);
 
     input.click(function(){
       this.select();
     });
-
     // clicking outside of the login should change the user
     input.blur(function() {
       $("#login-form").submit();
@@ -323,7 +347,7 @@ var TodosLogin = React.createClass({
     return (
       <div id="login-container">
         <span id="title">
-          <img id="bug-icon" src="lib/bugzilla.png" title="Bugzilla"></img>
+          <img id="bug-icon" src="lib/bugzilla.png" alt="Bugzilla"></img>
            Todos
         </span>
         <span id="login"> for
@@ -342,32 +366,3 @@ $(document).ready(function() {
   React.renderComponent(<TodosApp pollInterval={1000 * 60 * 10}/>,
                         document.getElementById("content"))
 });
-
-
-var tabs = [
-  { id: "review",
-    name: "To Review",
-    alt: "Patches you have to review (key: r)",
-    type: "patches"
-  },
-  { id: "checkin",
-    name: "To Check In",
-    alt: "Patches by you, ready to check in (key: c)",
-    type: "patches"
-  },
-  { id: "nag",
-    name: "To Nag",
-    alt: "Patches by you, awaiting review (key: n)",
-    type: "flags+reviews"
-  },
-  { id: "respond",
-    name: "To Respond",
-    alt: "Bugs where you're a flag requestee (key: p)",
-    type: "flags"
-  },
-  { id: "fix",
-    name: "To Fix",
-    alt: "Bugs assigned to you (key: f)",
-    type: "bugs"
-  }
-];
