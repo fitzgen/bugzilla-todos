@@ -135,7 +135,7 @@ BugzillaUser.prototype.toReview = function(callback) {
             })
          }
       });
-      requests.sort(utils.byTime);
+      requests.sort(compareByTime);
 
       callback(null, requests);
    });
@@ -208,7 +208,7 @@ BugzillaUser.prototype.toCheckin = function(callback) {
             })
          }
       });
-      requests.sort(utils.byTime);
+      requests.sort(compareByTime);
 
       callback(null, requests);
   });
@@ -276,7 +276,7 @@ BugzillaUser.prototype.toNag = function(callback) {
             });
          }
       })
-      requests.sort(utils.byTime);
+      requests.sort(compareByTime);
 
       callback(null, requests);
    })
@@ -406,4 +406,8 @@ BugzillaUser.prototype.toRespond = function(callback) {
 
       callback(null, flags);
    });
+}
+
+function compareByTime(event1, event2) {
+  return new Date(event2.time) - new Date(event1.time);
 }

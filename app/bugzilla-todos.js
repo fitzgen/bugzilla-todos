@@ -113,9 +113,10 @@ var TodosApp = React.createClass({
 
   loadUser: function() {
     // first see if the user is specified in the url
-    var email = utils.queryFromUrl()['email'];
+    var query = this.queryFromUrl();
+    var email = query['email'];
     if (!email) {
-      email = utils.queryFromUrl()['user'];
+      email = query['user'];
     }
     // if not, fetch the last user from storage
     if (!email) {
@@ -125,6 +126,16 @@ var TodosApp = React.createClass({
       }
     }
     return email;
+  },
+
+  queryFromUrl: function(url) {
+    var vars = (url || document.URL).replace(/.+\?/, "").split("&"),
+        query = {};
+    for (var i = 0; i < vars.length; i++) {
+      var pair = vars[i].split("=");
+      query[pair[0]] = decodeURIComponent(pair[1]);
+    }
+    return query;
   },
 
   setUser: function(email) {
