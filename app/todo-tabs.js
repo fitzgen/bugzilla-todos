@@ -101,7 +101,7 @@ var TabsContent = React.createClass({
 
     return (
       <div className="tab-body">
-        {panels}
+        {panelNodes}
       </div>
     );
   }
