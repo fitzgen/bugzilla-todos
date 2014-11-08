@@ -50,7 +50,6 @@ User.prototype.fetchTodos = function(callback) {
    var data = {};
 
    this.toReview(function(err, requests) {
-      console.log("got review");
       if (err) throw err;
       data.review = {items: requests};
       if (++count == total) {
@@ -58,7 +57,6 @@ User.prototype.fetchTodos = function(callback) {
       }
    });
    this.toCheckin(function(err, requests) {
-      console.log("got checkin");
       if (err) throw err;
       data.checkin = {items: requests};
       if (++count == total) {
@@ -66,7 +64,6 @@ User.prototype.fetchTodos = function(callback) {
       }
    });
    this.toNag(function(err, requests) {
-      console.log("got nag");
       if (err) throw err;
       data.nag = {items: requests};
       if (++count == total) {
