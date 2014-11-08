@@ -58,7 +58,7 @@ var TodosApp = React.createClass({
 
     setInterval(this.update, this.props.pollInterval);
 
-    // When they navigate to+away, mark all items as "seen"
+    // When switch to another browser tab, mark all items as "seen"
     $(window).blur(function() {
       this.markAsSeen();
       this.updateTitle(0);
@@ -70,6 +70,17 @@ var TodosApp = React.createClass({
   componentDidUpdate: function() {
     // turn timestamps into human times
     $(".timeago").timeago();
+  },
+
+  render: function() {
+    return (
+      <div>
+        <TodosLogin onLoginSubmit={this.handleLoginSubmit}/>
+        <TodoTabs tabs={tabs} data={this.state.data}
+                  selectedTab={this.state.selectedTab}
+                  onTabSelect={this.handleTabSelect}/>
+      </div>
+    );
   },
 
   loadUser: function() {
@@ -196,6 +207,9 @@ var TodosApp = React.createClass({
     Tinycon.setBubble(updateCount);
   },
 
+  /**
+   * Start listening for key events for changing tabs.
+   */
   addKeyBindings: function() {
     var keys = {
       // Tabs
@@ -262,17 +276,6 @@ var TodosApp = React.createClass({
       }
     }
     return -1;
-  },
-
-  render: function() {
-    return (
-      <div>
-        <TodosLogin onLoginSubmit={this.handleLoginSubmit}/>
-        <TodoTabs tabs={tabs} data={this.state.data}
-                  selectedTab={this.state.selectedTab}
-                  onTabSelect={this.handleTabSelect}/>
-      </div>
-    );
   }
 });
 
@@ -284,11 +287,12 @@ var TodosLogin = React.createClass({
   handleSubmit: function(e) {
     e.preventDefault();
 
-    // Update the app for the new user
     var email = this.refs.email.getDOMNode().value.trim();
+
     this.props.onLoginSubmit(email);
 
-    // From http://stackoverflow.com/questions/8400269/browser-native-autocomplete-for-ajaxed-forms */
+    // We do all this so we get the default form autocomplete for the email address
+    // http://stackoverflow.com/questions/8400269/browser-native-autocomplete-for-ajaxed-forms
     var iFrameWindow = document.getElementById("submit-iframe").contentWindow;
     var cloned = document.getElementById("login-form").cloneNode(true);
     iFrameWindow.document.body.appendChild(cloned);
@@ -335,7 +339,8 @@ var TodosLogin = React.createClass({
 })
 
 $(document).ready(function() {
-  React.renderComponent(<TodosApp pollInterval={1000 * 60 * 10}/>, document.getElementById("content"))
+  React.renderComponent(<TodosApp pollInterval={1000 * 60 * 10}/>,
+                        document.getElementById("content"))
 });
 
 

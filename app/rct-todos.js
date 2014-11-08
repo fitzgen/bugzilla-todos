@@ -9,7 +9,8 @@ var reviewURL = baseURL + "/page.cgi?id=splinter.html&bug=" // +"&attachment=" +
 
 var TodoTabs = React.createClass({
   render: function() {
-    return <div id="todo-lists" className="tabs">
+    return (
+      <div id="todo-lists" className="tabs">
         <TabsNav tabs={this.props.tabs}
           selectedTab={this.props.selectedTab}
           data={this.props.data}
@@ -17,7 +18,8 @@ var TodoTabs = React.createClass({
         <TabsContent tabs={this.props.tabs}
           selectedTab={this.props.selectedTab}
           data={this.props.data}/>
-      </div>;
+      </div>
+    );
   },
   handleTabClick: function(tabId) {
     this.props.onTabSelect(tabId);
@@ -27,26 +29,40 @@ var TodoTabs = React.createClass({
 var TabsNav = React.createClass({
   render: function() {
     var selectedTab = this.props.selectedTab;
-    var items = this.props.tabs.map(function(item, index) {
-      var list = this.props.data[item.id];
-      var count = list.items ? list.items.length : "";
 
+    var tabNodes = this.props.tabs.map(function(item, index) {
+      var list = this.props.data[item.id];
+
+      // display a count of the items and unseen items in this list
+      var count = list.items ? list.items.length : "";
       var newCount = "";
       if (list.newCount) {
-        newCount = <span className="new-count"> +{list.newCount}</span>;
+        newCount = (
+          <span className="new-count">
+            &nbsp;+{list.newCount}
+          </span>
+        );
       }
 
       var className = "tab" + (selectedTab == item.id ? " tab-selected" : "");
 
-      return <a href="#" className={className}
-                onClick={this.onClick.bind(this, item.id)}
-                title={item.alt}>
-                {item.name}
-                <span className="count">{count}</span>
-                {newCount}
-             </a>;
+      return (
+        <a href="#" className={className} title={item.alt}
+           onClick={this.onClick.bind(this, item.id)}>
+          {item.name}
+          <span className="count">
+            {count}
+          </span>
+          {newCount}
+        </a>
+      );
     }.bind(this));
-    return <div className="tab-head">{items}</div>;
+
+    return (
+      <div className="tab-head">
+        {tabNodes}
+      </div>
+    );
   },
   onClick: function(index) {
     this.props.onTabClick(index);
@@ -55,7 +71,7 @@ var TabsNav = React.createClass({
 
 var TabsContent = React.createClass({
   render: function() {
-    var panels = this.props.tabs.map(function(tab, index) {
+    var panelNodes = this.props.tabs.map(function(tab, index) {
       var data = this.props.data[tab.id];
 
       var list;
@@ -75,10 +91,19 @@ var TabsContent = React.createClass({
           break;
       }
 
-      return <div className={'tab-content ' + (this.props.selectedTab == tab.id ?
-                             'tab-content-selected' : '')}>{list}</div>;
+      return (
+        <div className={'tab-content ' + (this.props.selectedTab == tab.id ?
+                        'tab-content-selected' : '')}>
+          {list}
+        </div>
+      );
     }.bind(this));
-    return <div className="tab-body">{panels}</div>
+
+    return (
+      <div className="tab-body">
+        {panels}
+      </div>
+    );
   }
 });
 
@@ -87,12 +112,18 @@ var BugList = React.createClass({
     var items = this.props.data.items;
     if (items) {
       var listItems = items.map(function(item) {
-        return <ListItem isNew={item.new}>
-                 <BugItem bug={item.bug}/>
-               </ListItem>;
+        return (
+          <ListItem isNew={item.new}>
+            <BugItem bug={item.bug}/>
+          </ListItem>
+        );
       });
     }
-    return <List items={items}>{listItems}</List>;
+    return (
+      <List items={items}>
+        {listItems}
+      </List>
+    );
   }
 });
 
@@ -109,13 +140,21 @@ var NagList = React.createClass({
         });
         var requests = patches.concat(flags);
 
-        return <ListItem isNew={item.new}>
-                 <BugItem bug={item.bug}/>
-                 <div>{requests}</div>
-               </ListItem>;
+        return (
+          <ListItem isNew={item.new}>
+            <BugItem bug={item.bug}/>
+            <div>
+              {requests}
+            </div>
+          </ListItem>
+        );
       });
     }
-    return <List items={items}>{listItems}</List>;
+    return (
+      <List items={items}>
+        {listItems}
+      </List>
+    );
   }
 });
 
@@ -127,13 +166,21 @@ var RespondList = React.createClass({
         var flags = item.bug.flags.map(function(flag) {
           return <FlagItem flag={flag}/>;
         });
-        return <ListItem isNew={item.new}>
-                 <BugItem bug={item.bug}/>
-                 <div>{flags}</div>
-               </ListItem>;
+        return (
+          <ListItem isNew={item.new}>
+            <BugItem bug={item.bug}/>
+            <div>
+              {flags}
+            </div>
+          </ListItem>
+        );
       });
     }
-    return <List items={items}>{listItems}</List>;
+    return (
+      <List items={items}>
+        {listItems}
+      </List>
+    );
   }
 });
 
@@ -145,13 +192,21 @@ var PatchList = React.createClass({
         var patches = item.attachments.map(function(patch) {
            return <PatchItem patch={patch}/>;
         });
-        return <ListItem isNew={item.new}>
-                 <BugItem bug={item.bug}/>
-                 <div>{patches}</div>
-               </ListItem>;
+        return (
+          <ListItem isNew={item.new}>
+            <BugItem bug={item.bug}/>
+            <div>
+              {patches}
+            </div>
+          </ListItem>
+        );
       });
     }
-    return <List items={items}>{listItems}</List>;
+    return (
+      <List items={items}>
+        {listItems}
+      </List>
+    );
   }
 });
 
@@ -163,72 +218,102 @@ var List = React.createClass({
     if (this.props.items.length == 0) {
       return <EmptyList/>;
     }
-    return <div>{this.props.children}</div>;
+    return (
+      <div>
+        {this.props.children}
+      </div>
+    );
   }
 })
 
 var WaitingList = React.createClass({
   render: function() {
-    return <div className="list-item">
-      <img src='lib/indicator.gif' className='spinner'></img>
-    </div>;
+    return (
+      <div className="list-item">
+        <img src='lib/indicator.gif' className='spinner'></img>
+      </div>
+    );
   }
 })
 
 var EmptyList = React.createClass({
   render: function() {
-    return <div className="list-item empty-message">
-      No items to display
-    </div>;
+    return (
+      <div className="list-item empty-message">
+        No items to display
+      </div>
+    );
   }
 })
 
 var PatchItem = React.createClass({
   render: function() {
     var patch = this.props.patch;
-    return <div>
-      <a className="att-link" href={attachURL + patch.id} target="_blank"
-        title={"patch by " + patch.name}>patch by {patch.attacher.name}
-      </a>
-      <span className="att-suffix">
-        <span className="att-date timeago"
-              title={patch.last_change_time}>
-          {patch.last_change_time}
+    return (
+      <div>
+        <a className="att-link" href={attachURL + patch.id} target="_blank"
+           title={"patch by " + patch.name}>
+           patch by {patch.attacher.name}
+        </a>
+        <span className="att-suffix">
+          <span className="att-date timeago" title={patch.last_change_time}>
+            {patch.last_change_time}
+          </span>
         </span>
-      </span></div>;
+      </div>
+    );
   }
 });
 
 var FlagItem = React.createClass({
   render: function() {
     var flag = this.props.flag;
-    return <div className="flag">
-      <span className="flag-name">{flag.name}</span>
-      <span className="flag-status">{flag.status}</span>
-      <span className="flag-requestee"> {flag.requestee}</span>
-    </div>;
+    return (
+      <div className="flag">
+        <span className="flag-name">
+          {flag.name}
+        </span>
+        <span className="flag-status">
+          {flag.status} &nbsp;
+        </span>
+        <span className="flag-requestee">
+          {flag.requestee}
+        </span>
+      </div>
+    );
   }
 });
 
 var BugItem = React.createClass({
   render: function() {
     var bug = this.props.bug;
-    return <div className="bug">
-      <a className="bug-link" href={bugURL + bug.id}
-         target="_blank" title={bug.status + " " + bug.id + "-" + bug.summary}>
-         <span className="bug-id">{bug.id}</span>-
-        <span className="full-bug bug-summary"> {bug.summary}</span>
-      </a>
-      <span className="item-date timeago"
-            title={bug.last_change_time}>{bug.last_change_time}</span>
-    </div>
+    return (
+      <div className="bug">
+        <a className="bug-link" href={bugURL + bug.id}
+           target="_blank" title={bug.status + " " + bug.id + "-" + bug.summary}>
+          <span className="bug-id">
+            {bug.id}
+          </span>
+          -&nbsp;
+          <span className="full-bug bug-summary">
+            {bug.summary}
+          </span>
+        </a>
+        <span className="item-date timeago"
+              title={bug.last_change_time}>
+          {bug.last_change_time}
+        </span>
+      </div>
+    );
   }
 });
 
 var ListItem = React.createClass({
   render: function() {
-    return <div className={"list-item " + (this.props.isNew ? "new-item" : "")}>
-             {this.props.children}
-           </div>;
+    return (
+      <div className={"list-item " + (this.props.isNew ? "new-item" : "")}>
+        {this.props.children}
+      </div>
+    );
   }
 });
