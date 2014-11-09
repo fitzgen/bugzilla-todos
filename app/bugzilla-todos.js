@@ -28,7 +28,7 @@ var TodosApp = (function() {
     }
   ];
 
-  var TodosModel = {
+  var TodosStorage = {
     get email() {
       return localStorage['bztodos-email'];
     },
@@ -57,7 +57,7 @@ var TodosApp = (function() {
 
   var TodosApp = React.createClass({
     handleLoginSubmit: function(email) {
-      if (!email || email == TodosModel.email) {
+      if (!email || email == TodosStorage.email) {
         return;
       }
       this.setState(this.getInitialState());
@@ -65,20 +65,18 @@ var TodosApp = (function() {
     },
 
     handleTabSelect: function(listId) {
-      if (listId == TodosModel.selectedTab) {
+      if (listId == TodosStorage.selectedTab) {
         return;
       }
-
-      TodosModel.selectedTab = listId;
-
+      TodosStorage.selectedTab = listId;
       this.setState({selectedTab: listId});
     },
 
     getInitialState: function() {
       return {
         data: {review: {}, checkin: {}, nag: {}, respond: {}, fix: {}},
-        selectedTab: TodosModel.selectedTab || "review",
-        includeBlockedBugs: TodosModel.includeBlockedBugs
+        selectedTab: TodosStorage.selectedTab || "review",
+        includeBlockedBugs: TodosStorage.includeBlockedBugs
       };
     },
 
@@ -93,7 +91,7 @@ var TodosApp = (function() {
         this.setUser(email);
       }
 
-      // When switch to another browser tab, mark all items as "seen"
+      // When they switch to another browser tab, mark all items as "seen"
       $(window).blur(function() {
         this.markAsSeen();
         this.updateTitle(0);
@@ -123,6 +121,9 @@ var TodosApp = (function() {
       );
     },
 
+    /**
+     * Get the user's email from the current url or storage.
+     */
     loadUser: function() {
       // first see if the user is specified in the url
       var query = queryFromUrl();
@@ -132,7 +133,7 @@ var TodosApp = (function() {
       }
       // if not, fetch the last user from storage
       if (!email) {
-        email = TodosModel.email;
+        email = TodosStorage.email;
         if (!email) {
           return null;
         }
@@ -140,10 +141,13 @@ var TodosApp = (function() {
       return email;
     },
 
+    /**
+     * Reset the user by email, fetching new data and updating the lists.
+     */
     setUser: function(email) {
       this.user = new BugzillaUser(email);
 
-      TodosModel.email = email;
+      TodosStorage.email = email;
 
       $("#login-container").removeClass("logged-out");
       $("#login-container").addClass("logged-in");
@@ -157,7 +161,7 @@ var TodosApp = (function() {
     },
 
     /**
-     * Update the todo lists with new data fetched from Bugzilla.
+     * Fetch new data from Bugzilla and update the todo lists.
      */
     update: function() {
       this.user.fetchTodos(function(data) {
@@ -206,7 +210,6 @@ var TodosApp = (function() {
         }
         // cache the count of new items for easy fetching
         newData[id].newCount = newCount;
-        console.log("new count:", newCount);
       }
 
       return totalNew;
@@ -321,13 +324,13 @@ var TodosApp = (function() {
 
     setupPreferences: function () {
       var checkbox = $("#include-blocked-bugs");
-      checkbox.attr("checked", TodosModel.includeBlockedBugs);
+      checkbox.attr("checked", TodosStorage.includeBlockedBugs);
       checkbox.change(this.setIncludeBlockedBugs);
     },
 
     setIncludeBlockedBugs: function(event) {
       var shouldInclude = event.target.checked;
-      TodosModel.includeBlockedBugs = shouldInclude;
+      TodosStorage.includeBlockedBugs = shouldInclude;
 
       this.setState({includeBlockedBugs: shouldInclude});
     }
@@ -342,7 +345,6 @@ var TodosApp = (function() {
       e.preventDefault();
 
       var email = this.refs.email.getDOMNode().value.trim();
-
       this.props.onLoginSubmit(email);
 
       // We do all this so we get the native autocomplete for the email address
@@ -358,7 +360,7 @@ var TodosApp = (function() {
 
     componentDidMount: function() {
       var input = $(this.refs.email.getDOMNode());
-      input.val(TodosModel.email);
+      input.val(TodosStorage.email);
 
       input.click(function(){
         this.select();
@@ -390,6 +392,9 @@ var TodosApp = (function() {
     }
   })
 
+  /**
+   * Get an object with the query paramaters and values for the current page.
+   */
   function queryFromUrl(url) {
     var vars = (url || document.URL).replace(/.+\?/, "").split("&"),
         query = {};
