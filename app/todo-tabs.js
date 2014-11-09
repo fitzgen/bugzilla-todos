@@ -142,7 +142,15 @@ var TodoTabs = (function() {
             return <FlagItem flag={flag}/>;
           });
           var patches = item.attachments.map(function(patch) {
-            return <PatchItem patch={patch}/>;
+            var patchFlags = patch.flags.map(function(flag) {
+              return <FlagItem flag={flag}/>;
+            });
+            return (
+              <div>
+                <PatchItem patch={patch}/>
+                {patchFlags}
+              </div>
+            );
           });
           var requests = patches.concat(flags);
 
