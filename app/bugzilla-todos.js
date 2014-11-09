@@ -43,6 +43,15 @@ var TodosApp = (function() {
 
     set selectedTab(id) {
       localStorage['bztodos-selected-tab'] = id;
+    },
+
+    get includeBlockedBugs() {
+      // default is true
+      return !(localStorage['bztodos-include-blocked-bugs'] === "false");
+    },
+
+    set includeBlockedBugs(shouldInclude) {
+      localStorage['bztodos-include-blocked-bugs'] = JSON.stringify(shouldInclude);
     }
   }
 
@@ -68,13 +77,13 @@ var TodosApp = (function() {
     getInitialState: function() {
       return {
         data: {review: {}, checkin: {}, nag: {}, respond: {}, fix: {}},
-        selectedTab: TodosModel.selectedTab || "review"
+        selectedTab: TodosModel.selectedTab || "review",
+        includeBlockedBugs: TodosModel.includeBlockedBugs
       };
     },
 
     componentDidMount: function() {
       var email = this.loadUser();
-
       if (!email) {
         $("#login-container").addClass("logged-out");
         $("#todo-lists").hide();
@@ -84,8 +93,6 @@ var TodosApp = (function() {
         this.setUser(email);
       }
 
-      setInterval(this.update, this.props.pollInterval);
-
       // When switch to another browser tab, mark all items as "seen"
       $(window).blur(function() {
         this.markAsSeen();
@@ -93,6 +100,10 @@ var TodosApp = (function() {
       }.bind(this));
 
       this.addKeyBindings();
+      this.setupPreferences();
+
+      // Update the todo lists every so often
+      setInterval(this.update, this.props.pollInterval);
     },
 
     componentDidUpdate: function() {
@@ -106,6 +117,7 @@ var TodosApp = (function() {
           <TodosLogin onLoginSubmit={this.handleLoginSubmit}/>
           <TodoTabs tabs={tabs} data={this.state.data}
                     selectedTab={this.state.selectedTab}
+                    includeBlockedBugs={this.state.includeBlockedBugs}
                     onTabSelect={this.handleTabSelect}/>
         </div>
       );
@@ -144,8 +156,10 @@ var TodosApp = (function() {
       this.update();
     },
 
+    /**
+     * Update the todo lists with new data fetched from Bugzilla.
+     */
     update: function() {
-      // refresh lists
       this.user.fetchTodos(function(data) {
         var count = this.markNew(data);
         this.updateTitle(count);
@@ -303,6 +317,19 @@ var TodosApp = (function() {
         }
       }
       return -1;
+    },
+
+    setupPreferences: function () {
+      var checkbox = $("#include-blocked-bugs");
+      checkbox.attr("checked", TodosModel.includeBlockedBugs);
+      checkbox.change(this.setIncludeBlockedBugs);
+    },
+
+    setIncludeBlockedBugs: function(event) {
+      var shouldInclude = event.target.checked;
+      TodosModel.includeBlockedBugs = shouldInclude;
+
+      this.setState({includeBlockedBugs: shouldInclude});
     }
   });
 

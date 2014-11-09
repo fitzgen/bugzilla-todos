@@ -10,12 +10,13 @@ var TodoTabs = (function() {
       return (
         <div id="todo-lists" className="tabs">
           <TabsNav tabs={this.props.tabs}
-            selectedTab={this.props.selectedTab}
-            data={this.props.data}
-            onTabClick={this.handleTabClick}/>
+              selectedTab={this.props.selectedTab}
+              data={this.props.data}
+              onTabClick={this.handleTabClick}/>
           <TabsContent tabs={this.props.tabs}
-            selectedTab={this.props.selectedTab}
-            data={this.props.data}/>
+              selectedTab={this.props.selectedTab}
+              data={this.props.data}
+              includeBlockedBugs={this.props.includeBlockedBugs}/>
         </div>
       );
     },
@@ -85,7 +86,8 @@ var TodoTabs = (function() {
             break;
           case "bugs":
           default:
-            list = <BugList data={data}/>;
+            list = <BugList data={data}
+                      includeBlockedBugs={this.props.includeBlockedBugs}/>;
             break;
         }
 
@@ -109,6 +111,12 @@ var TodoTabs = (function() {
     render: function() {
       var items = this.props.data.items;
       if (items) {
+        // filter out the blocked bugs, if pref is set
+        if (!this.props.includeBlockedBugs) {
+          items = items.filter(function(item) {
+            return !item.bug.depends_on || !item.bug.depends_on.length;
+          });
+        }
         var listItems = items.map(function(item) {
           return (
             <ListItem isNew={item.new}>
