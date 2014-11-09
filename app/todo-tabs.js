@@ -263,10 +263,11 @@ var TodoTabs = (function() {
   var PatchItem = React.createClass({
     render: function() {
       var patch = this.props.patch;
+      var size = Math.round(patch.size / 1000) + "KB";
       return (
         <div>
           <a className="att-link" href={attachURL + patch.id} target="_blank"
-             title={"patch by " + patch.name}>
+             title={patch.description + " - " + size}>
              patch by {patch.attacher.name}
           </a>
           <span className="att-suffix">
