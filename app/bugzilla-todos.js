@@ -1,298 +1,416 @@
-$(document).ready(function() {
-  MyReviews.initialize();
-  MyReviews.loadUser();
-});
+/** @jsx React.DOM */
+var TodosApp = (function() {
+  var tabs = [
+    { id: "review",
+      name: "To Review",
+      alt: "Patches you have to review (key: r)",
+      type: "patches"
+    },
+    { id: "checkin",
+      name: "To Check In",
+      alt: "Patches by you, ready to check in (key: c)",
+      type: "patches"
+    },
+    { id: "nag",
+      name: "To Nag",
+      alt: "Patches by you, awaiting review (key: n)",
+      type: "flags+reviews"
+    },
+    { id: "respond",
+      name: "To Respond",
+      alt: "Bugs where you're a flag requestee (key: p)",
+      type: "flags"
+    },
+    { id: "fix",
+      name: "To Fix",
+      alt: "Bugs assigned to you (key: f)",
+      type: "bugs"
+    }
+  ];
 
-Tinycon.setOptions({
-  background: '#E530A4',
-});
+  var TodosStorage = {
+    get email() {
+      return localStorage['bztodos-email'];
+    },
 
-const fetchFrequency = 1000 * 60 * 15;  // every 15 minutes
+    set email(address) {
+      localStorage["bztodos-email"] = address;
+    },
 
-var tabs = {
-  review : {
-    name: "To Review",
-    alt: "Patches you have to review (key: r)"
-  },
-  checkin : {
-    name: "To Check In",
-    alt: "Patches by you, ready to check in (key: c)"
-  },
-  nag : {
-    name: "To Nag",
-    alt: "Patches by you, awaiting review (key: n)"
-  },
-  respond : {
-    name: "To Respond",
-    alt: "Bugs where you're a flag requestee (key: p)"
-  },
-  fix : {
-    name: "To Fix",
-    alt: "Bugs assigned to you (key: f)"
+    get selectedTab() {
+      return localStorage['bztodos-selected-tab'];
+    },
+
+    set selectedTab(id) {
+      localStorage['bztodos-selected-tab'] = id;
+    },
+
+    get includeBlockedBugs() {
+      // default is true
+      return !(localStorage['bztodos-include-blocked-bugs'] === "false");
+    },
+
+    set includeBlockedBugs(shouldInclude) {
+      localStorage['bztodos-include-blocked-bugs'] = JSON.stringify(shouldInclude);
+    }
   }
-};
 
-var tabsByIndex; // defined in initTabs
-
-var MyReviews = {
-  base: "https://bugzilla.mozilla.org",
-
-  get email() {
-    return localStorage['bzhome-email'];
-  },
-
-  set email(address) {
-    localStorage["bzhome-email"] = address;
-  },
-
-  initialize: function() {
-    this.initTabs();
-    this.initQueues();
-
-    var input = $("#login-name");
-    input.val(this.email);
-    input.click(function(){
-      this.select();
-    });
-    input.blur(function() {
-      $("#login-form").submit();
-    });
-
-    $("#login-form").submit(function(event) {
-      // don't want to navigate page
-      event.preventDefault();
-
-      var email = input.val();
-      if (email && email != MyReviews.email) {
-        MyReviews.setUser(email);
+  var TodosApp = React.createClass({
+    handleLoginSubmit: function(email) {
+      if (!email || email == TodosStorage.email) {
+        return;
       }
-    });
+      this.setState(this.getInitialState());
+      this.setUser(email);
+    },
 
-    $(".tab").click(function(event) {
-      var tab = $(event.target).closest("a");
-      MyReviews.selectTab(tab.data("section"));
-      return false;
-    });
+    handleTabSelect: function(listId) {
+      if (listId == TodosStorage.selectedTab) {
+        return;
+      }
+      TodosStorage.selectedTab = listId;
+      this.setState({selectedTab: listId});
+    },
 
-    var storedTab;
-    var queryTab = utils.queryFromUrl()['tab'];
-    if (queryTab) {
-      this.selectTab(queryTab);
-    }
-    else if(storedTab = localStorage['bztodos-selected-tab']) {
-      this.selectTab(storedTab);
-    }
-    else {
-      this.selectTab("review");
-    }
+    getInitialState: function() {
+      return {
+        data: {review: {}, checkin: {}, nag: {}, respond: {}, fix: {}},
+        selectedTab: TodosStorage.selectedTab || "review",
+        includeBlockedBugs: TodosStorage.includeBlockedBugs
+      };
+    },
 
-    this.addKeyBindings();
-
-    $("#submit-iframe").hide();
-  },
-
-  initTabs: function() {
-    var tabTemplate = Handlebars.compile($("#tab-template").html());
-    var bodyTemplate = Handlebars.compile($("#tab-body-template").html());
-
-    tabsByIndex = [];
-    var i = 0;
-    for (var id in tabs) {
-      var tab = tabs[id];
-      tab.id = id;
-      tabsByIndex.push(tab);
-      tab.index = i;
-      ++i;
-      $(".tab-head").append(tabTemplate(tab));
-      $(".tab-body").append(bodyTemplate(tab));
-    }
-  },
-
-  initQueues: function() {
-    var reviewQueue = new Reviews();
-    var reviewlist = new ReviewList();
-    reviewlist.initialize(reviewQueue);
-
-    var checkinQueue = new Checkins();
-    var checkinlist = new CheckinList(this.checkinQueue);
-    checkinlist.initialize(checkinQueue);
-
-    var nagQueue = new Nags();
-    var naglist = new NagList(this.nagQueue);
-    naglist.initialize(nagQueue);
-
-    var fixQueue = new Fixes();
-    var fixlist = new FixList(this.fixQueue);
-    fixlist.initialize(fixQueue);
-
-    var respondQueue = new Responds();
-    var respondlist = new RespondList(this.respondQueue);
-    respondlist.initialize(respondQueue);
-
-    this.queues = {
-      review: reviewQueue,
-      checkin: checkinQueue,
-      nag: nagQueue,
-      fix: fixQueue,
-      respond: respondQueue
-    };
-
-    for (var id in this.queues) {
-      var queue = this.queues[id];
-      queue.on("update-count-changed", this.updateTitle.bind(this));
-    }
-  },
-
-  updateTitle: function() {
-    var title = document.title;
-    title = title.replace(/\(\w+\) /, "");
-
-    var updates = 0;
-    for (var id in this.queues) {
-      updates += this.queues[id].updateCount;
-    }
-
-    // update title with the number of new requests
-    if (updates) {
-      title = "(" + updates + ") " + title;
-    }
-    document.title = title;
-
-    // update favicon too
-    Tinycon.setBubble(updates);
-  },
-
-  setUser: function(email) {
-    this.email = email;
-    this.user = new User(email);
-
-    $("#header").addClass("logged-in");
-    $("#login-name").val(email);
-    this.populate();
-
-    $("#content").show();
-  },
-
-  loadUser: function() {
-    var email = utils.queryFromUrl()['email'];
-    if (!email) {
-      email = utils.queryFromUrl()['user'];
-    }
-    if (!email) {
-      email = this.email; // from localStorage
+    componentDidMount: function() {
+      var email = this.loadUser();
       if (!email) {
-        $("#header").addClass("was-logged-out");
-        $("#content").hide();
-        return false;
+        $("#login-container").addClass("logged-out");
+        $("#todo-lists").hide();
+        $("footer").hide();
       }
+      else {
+        this.setUser(email);
+      }
+
+      // When they switch to another browser tab, mark all items as "seen"
+      $(window).blur(function() {
+        this.markAsSeen();
+        this.updateTitle(0);
+      }.bind(this));
+
+      this.addKeyBindings();
+      this.setupPreferences();
+
+      // Update the todo lists every so often
+      setInterval(this.update, this.props.pollInterval);
+    },
+
+    componentDidUpdate: function() {
+      // turn timestamps into human times
+      $(".timeago").timeago();
+    },
+
+    render: function() {
+      return (
+        <div>
+          <TodosLogin onLoginSubmit={this.handleLoginSubmit}/>
+          <TodoTabs tabs={tabs} data={this.state.data}
+                    selectedTab={this.state.selectedTab}
+                    includeBlockedBugs={this.state.includeBlockedBugs}
+                    onTabSelect={this.handleTabSelect}/>
+        </div>
+      );
+    },
+
+    /**
+     * Get the user's email from the current url or storage.
+     */
+    loadUser: function() {
+      // first see if the user is specified in the url
+      var query = queryFromUrl();
+      var email = query['email'];
+      if (!email) {
+        email = query['user'];
+      }
+      // if not, fetch the last user from storage
+      if (!email) {
+        email = TodosStorage.email;
+        if (!email) {
+          return null;
+        }
+      }
+      return email;
+    },
+
+    /**
+     * Reset the user by email, fetching new data and updating the lists.
+     */
+    setUser: function(email) {
+      this.user = new BugzillaUser(email);
+
+      TodosStorage.email = email;
+
+      $("#login-container").removeClass("logged-out");
+      $("#login-container").addClass("logged-in");
+      $("#login-name").val(email);
+
+      $("#welcome-message").hide();
+      $("#todo-lists").show();
+      $("footer").show();
+
+      this.update();
+    },
+
+    /**
+     * Fetch new data from Bugzilla and update the todo lists.
+     */
+    update: function() {
+      this.user.fetchTodos(function(data) {
+        var count = this.markNew(data);
+        this.updateTitle(count);
+
+        this.setState({data: data});
+      }.bind(this));
+    },
+
+    /**
+     * Mark which items in the fetched data are new since last time.
+     * We need this to display the count of new items in the tab title
+     * and favicon, and to visually highlight the new items in the list.
+     */
+    markNew: function(newData) {
+      var oldData = this.state.data;
+      var totalNew = 0; // number of new non-seen items
+
+      for (var id in newData) {
+        var newList = newData[id].items;
+        var oldList = oldData[id].items;
+        var newCount = 0;
+
+        if (!newList || !oldList) {
+          continue;
+        }
+        for (var i in newList) {
+          // try to find this item in the old list
+          var newItem = newList[i];
+          var oldItem = null;
+          for (var j in oldList) {
+            if (newItem.bug.id == oldList[j].bug.id) {
+              oldItem = oldList[j];
+              break;
+            }
+          }
+          // mark as new if there was no match in the old list, or
+          // there is, but that item hasn't been seen yet by the user.
+          var isNew = !oldItem || oldItem.new;
+          if (isNew) {
+            newCount++;
+            totalNew++;
+          }
+          newItem.new = isNew;
+        }
+        // cache the count of new items for easy fetching
+        newData[id].newCount = newCount;
+      }
+
+      return totalNew;
+    },
+
+    /**
+     * Mark every item as "seen", thus clearing favicon and title counts
+     * and removing the highlights from new items.
+     */
+    markAsSeen: function() {
+      // mutate old state briefly
+      var data = this.state.data;
+      for (var id in data) {
+        var list = data[id].items;
+        if (!list) {
+          continue;
+        }
+
+        for (var i in list) {
+          list[i].new = false;
+        }
+      }
+      // then reset state to old state but without markers
+      this.setState(data);
+    },
+
+    /**
+     * Update the page title to reflect the number of updates.
+     */
+    updateTitle: function(updateCount) {
+      var title = document.title;
+      title = title.replace(/\(\w+\) /, "");
+
+      // update title with the number of new requests
+      if (updateCount) {
+        title = "(" + updateCount + ") " + title;
+      }
+      document.title = title;
+
+      // update favicon too
+      Tinycon.setBubble(updateCount);
+    },
+
+    /**
+     * Start listening for key events for changing tabs.
+     */
+    addKeyBindings: function() {
+      var keys = {
+        'r': 'review',
+        'c': 'checkin',
+        'n': 'nag',
+        'p': 'respond',
+        'f': 'fix',
+        'h': 'selectPreviousTab',
+        'l': 'selectNextTab',
+      };
+
+      $(document).keypress(function(e) {
+        if (e.ctrlKey || e.altKey || e.shiftKey || e.metaKey
+           || e.target.nodeName.toLowerCase() == "input") {
+          return;
+        }
+        var action = keys[String.fromCharCode(e.charCode)];
+        if (!action) {
+          return;
+        }
+        if (this.indexForTab(action) >= 0) {
+          return void this.handleTabSelect(action);
+        }
+        if (typeof this[action] == "function") {
+          return void this[action]();
+        }
+      }.bind(this));
+
+      // Tell the user what keybindings exist.
+      var keyInfo = $("#key-info");
+      var firstIteration = true;
+      for (var key in keys) {
+        if (firstIteration) {
+          firstIteration = false;
+        } else {
+          keyInfo.append(", ");
+        }
+        keyInfo.append($("<code>").append(key));
+      }
+    },
+
+    selectNextTab: function() {
+      this.selectTabRelative(1);
+    },
+
+    selectPreviousTab: function() {
+      this.selectTabRelative(-1);
+    },
+
+    selectTabRelative: function (offset) {
+      var N = tabs.length;
+      var index = this.indexForTab(this.state.selectedTab);
+      var tab = tabs[(index + offset + N) % N];
+
+      this.handleTabSelect(tab.id);
+    },
+
+    indexForTab: function(listId) {
+      for (var i = 0; i < tabs.length; i++) {
+        if (tabs[i].id == listId) {
+          return i;
+        }
+      }
+      return -1;
+    },
+
+    setupPreferences: function () {
+      var checkbox = $("#include-blocked-bugs");
+      checkbox.attr("checked", TodosStorage.includeBlockedBugs);
+      checkbox.change(this.setIncludeBlockedBugs);
+    },
+
+    setIncludeBlockedBugs: function(event) {
+      var shouldInclude = event.target.checked;
+      TodosStorage.includeBlockedBugs = shouldInclude;
+
+      this.setState({includeBlockedBugs: shouldInclude});
     }
-    this.setUser(email);
-  },
+  });
 
-  addKeyBindings: function() {
-    var keys = {
-      // Tabs
-      'r': 'review',
-      'c': 'checkin',
-      'n': 'nag',
-      'f': 'fix',
-      'p': 'respond',
-      // Navigation
-      'h': 'selectPreviousTab',
-      'j': 'nextItem',
-      'k': 'previousItem',
-      'l': 'selectNextTab',
-      'v': 'viewItem'
-    };
+  var TodosLogin = React.createClass({
+    /**
+     * Handle login form submission. We're using a form here so we can take
+     * advantage of the browser's native autocomplete for remembering emails.
+     */
+    handleSubmit: function(e) {
+      e.preventDefault();
 
-    $(document).keypress(function(e) {
-      if (e.ctrlKey || e.altKey || e.shiftKey || e.metaKey
-         || e.target.nodeName.toLowerCase() == "input") {
-        return;
-      }
-      var action = keys[String.fromCharCode(e.charCode)];
-      if (!action) {
-        return;
-      }
-      if (action in tabs) {
-        return void this.selectTab(action);
-      }
-      if (typeof this.queues[this.selectedTab][action] == "function") {
-        return void this.queues[this.selectedTab][action]();
-      }
-      if (typeof this[action] == "function") {
-        return void this[action]();
-      }
-    }.bind(this));
+      var email = this.refs.email.getDOMNode().value.trim();
+      this.props.onLoginSubmit(email);
 
-    // Tell the user what keybindings exist.
-    var keyInfo = $("#key-info");
-    var firstIteration = true;
-    for (var key in keys) {
-      if (firstIteration) {
-        firstIteration = false;
-      } else {
-        keyInfo.append(", ");
-      }
-      keyInfo.append($("<code>").append(key));
+      // We do all this so we get the native autocomplete for the email address
+      // http://stackoverflow.com/questions/8400269/browser-native-autocomplete-for-ajaxed-forms
+      var iFrameWindow = document.getElementById("submit-iframe").contentWindow;
+      var cloned = document.getElementById("login-form").cloneNode(true);
+      iFrameWindow.document.body.appendChild(cloned);
+      var frameForm = iFrameWindow.document.getElementById("login-form");
+      frameForm.onsubmit = null;
+      frameForm.submit();
+      return false;
+    },
+
+    componentDidMount: function() {
+      var input = $(this.refs.email.getDOMNode());
+      input.val(TodosStorage.email);
+
+      input.click(function(){
+        this.select();
+      });
+      // clicking outside of the login should change the user
+      input.blur(function() {
+        $("#login-form").submit();
+      });
+      // React won't catch the submission fired from the blur handler
+      $("#login-form").submit(this.handleSubmit);
+    },
+
+    render: function() {
+      return (
+        <div id="login-container">
+          <span id="title">
+            <img id="bug-icon" src="lib/bugzilla.png" alt="Bugzilla"></img>
+             Todos
+          </span>
+          <span id="login"> for
+            <form id="login-form" onSubmit={this.handleSubmit}>
+              <input id="login-name"
+                     name="email" placeholder="Enter Bugzilla user..."
+                     ref="email"/>
+            </form>
+          </span>
+        </div>
+      );
     }
-  },
+  })
 
-  selectTab: function(type) {
-    if (type == this.selectedTab) {
-      return;
+  /**
+   * Get an object with the query paramaters and values for the current page.
+   */
+  function queryFromUrl(url) {
+    var vars = (url || document.URL).replace(/.+\?/, "").split("&"),
+        query = {};
+    for (var i = 0; i < vars.length; i++) {
+      var pair = vars[i].split("=");
+      query[pair[0]] = decodeURIComponent(pair[1]);
     }
-    // mark previous tab's updates as "read"
-    if (this.selectedTab) {
-      this.queues[this.selectedTab].clearUpdates();
-    }
-
-    var tab = $("#" + type + "-tab");
-    tab.siblings().removeClass("tab-selected");
-    tab.addClass("tab-selected");
-
-    /* Show the content for the section */
-    tab.parents(".tabs").find("section").hide();
-    $("#" + type).show();
-
-    localStorage['bztodos-selected-tab'] = type;
-
-    this.selectedTab = type;
-  },
-
-  selectNextTab: function() {
-    return this._selectTabRelative(1);
-  },
-
-  selectPreviousTab: function() {
-    return this._selectTabRelative(-1);
-  },
-
-  _selectTabRelative: function (offset) {
-    var N = tabsByIndex.length;
-    var tab = tabsByIndex[(tabs[this.selectedTab].index + offset + N) % N];
-    return this.selectTab(tab.id);
- },
-
-  populate: function() {
-    clearInterval(this.intervalID);
-
-    this.clearQueues();
-    this.update();
-    this.updateTitle();
-
-    this.intervalID = setInterval(this.update.bind(this), fetchFrequency);
-  },
-
-  clearQueues: function() {
-    for (var id in this.queues) {
-      this.queues[id].newUser();
-    }
-  },
-
-  update: function() {
-    for (var id in this.queues) {
-      this.queues[id].fetch();
-    }
+    return query;
   }
-};
+
+  return TodosApp;
+})();
+
+$(document).ready(function() {
+  var interval = 1000 * 60 * 20; // twenty minutes
+
+  React.renderComponent(<TodosApp pollInterval={interval}/>,
+                        document.getElementById("content"))
+});

@@ -14,183 +14,24 @@
   <link rel="stylesheet" href="lib/normalize.css">
   <link rel="stylesheet" href="index.css" type="text/css">
 
-  <script src="lib/less-1.1.3.min.js" type="text/javascript"></script>
+  <script src="lib/react-0.12.0.js"></script>
   <script src="lib/jquery-1.6.4.min.js" type="text/javascript"></script>
   <script src="lib/jquery.timeago.js" type="text/javascript"></script>
   <script src="lib/bz-0.2.4.js" type="text/javascript"></script>
-  <script src="lib/handlebars.js" type="text/javascript"></script>
-  <script src="lib/ba-linkify.min.js"></script>
   <script src="lib/tinycon.min.js"></script>
-  <script src="lib/underscore-min.js"></script>
-  <script src="lib/backbone-min.js"></script>
+
   <script src="app/user.js"></script>
-  <script src="app/handlers.js"></script>
-  <script src="app/utils.js"></script>
+  <script src="app/install-app.js"></script>
 
-  <script src="app/queue.js"></script>
-  <script src="app/fixes.js"></script>
-  <script src="app/responds.js"></script>
-  <script src="app/reviews.js"></script>
-  <script src="app/checkins.js"></script>
-  <script src="app/nags.js"></script>
-  <script src="app/mozApps.js"></script>
-  <script src="app/bugzilla-todos.js"></script>
-
-  <script id="review-item" type="text/html">
-    <div class="{{retire bug.last_change_time}}">
-      <div class="bug att-bug">
-        {{> bug}}
-      </div>
-      {{#each attachments}}
-        <div class="review-attachment">
-          <span class="attachment">
-            {{> attachment}}
-          </span>
-          <a class="review-type" href={{show_splinter bug_id id}}>
-            {{type}}
-          </a>
-        </div>
-      {{/each}}
-    </div>
-  </script>
-
-  <script id="checkin-item" type="text/html">
-    <div class="{{retire bug.last_change_time}}">
-      <div class="bug att-bug">
-        {{> bug}}
-      </div>
-      {{#each attachments}}
-        <div class="checkin-attachment">
-          <span class="attachment">
-            {{> attachment}}
-          </span>
-        </div>
-      {{/each}}
-    </div>
-  </script>
-
-  <script id="nag-item" type="text/html">
-    <div class="{{retire bug.last_change_time}}">
-      <div class="bug att-bug">
-       {{> bug}}
-      </div>
-      {{#each attachments}}
-        <div class="nag-attachment">
-          {{> attachment}}
-        </div>
-        <div class="flags">
-          {{#each flags}}
-            {{> flag}}
-          {{/each}}
-        </div>
-      {{/each}}
-      <div class="flags">
-        {{#each bug.flags}}
-          {{> flag}}
-        {{/each}}
-      </div>
-    </div>
-  </script>
-
-  <script id="fix-item" type="text/html">
-    <div class="bug {{retire bug.last_change_time}}">
-      {{> full_bug}}
-    </div>
-  </script>
-
-  <script id="respond-item" type="text/html">
-    <div class="{{retire bug.last_change_time}}">
-      <div class="bug">
-        {{> full_bug}}
-      </div>
-      <div class="flags">
-        {{#each bug.flags}}
-          {{> flag}}
-        {{/each}}
-      </div>
-    </div>
-  </script>
-
-  <script id="flag-partial" type="text/html">
-    {{#if_flag status}}
-    <div class="flag">
-      <span class="flag-name">{{name}}</span><span class="flag-status">{{status}}</span>
-      {{#if requestee}}
-      <span class="flag-requestee">
-        {{requestee.name}}
-      </span>
-      {{/if}}
-    </div>
-    {{/if_flag}}
-  </script>
-
-  <script id="attachment-partial" type="text/html">
-    <a class="att-link" href={{show_attach id}} target=_blank
-       title="{{> attachment_tooltip}}">
-      patch by {{attacher.name}}
-    </a>
-    <span class="att-suffix">
-      <span class="att-date timeago {{last_change_time}}"
-            title="{{last_change_time}}">
-      </span>
-    </span>
-  </script>
-
-  <script id="bug-partial" type="text/html">
-    <a href={{show_bug bug.id}} target=_blank title="{{> bug_tooltip}}">
-      {{bug.id}} -
-      <span class="bug-summary">{{bug.summary}}</span>
-    </a>
-  </script>
-
-  <script id="full-bug-partial" type="text/html">
-    <a class="bug-link" href={{show_bug bug.id}}
-       target=_blank title="{{> bug_tooltip}}">
-       <span class="bug-id">{{bug.id}}</span>-
-       <span class="full-bug bug-summary">{{bug.summary}}</span>
-    </a>
-    <span class="item-date timeago {{bug.last_change_time}}"
-          title="{{bug.last_change_time}}"></span>
-  </script>
-
-  <script id="tab-template" type="text/html">
-    <a id="{{id}}-tab" class="tab" href="#"
-       data-section="{{id}}"
-       title="{{alt}}">
-      {{name}}
-      <span class="count"><span class="tally"></span></span><span class="added-tally"></span>
-    </a>
-  </script>
-
-  <script id="tab-body-template" type="text/html">
-    <section id="{{id}}" class="patches-section">
-     <div class="content">
-       <div id="{{id}}-list">
-       </div>
-     </div>
-    </section>
-  </script>
+  <script src="build/todo-tabs.js"></script>
+  <script src="build/bugzilla-todos.js"></script>
 </head>
 <body>
  <div id="container">
     <div id="error-message"></div>
-    <div id="header">
-      <span id="title">
-        <img id="bug-icon" src="lib/bugzilla.png" title="Bugzilla">
-         Todos for
-      </span>
-      <form id="login-form" onsubmit="submitLogin()">
-        <input id="login-name"
-               name="email" placeholder="Enter Bugzilla user..."/>
-      </form>
+    <div id="welcome-message">Bugzilla Todos fetches a list of the bugs and patches you have to <span class="keyword">review</span>, <span class="keyword">check in</span>, <span class="keyword">respond</span> to, (mindfully) <span class="keyword">nag</span> someone about, and <span class="keyword">fix</span>. Enter your <a href="http://bugzilla.mozilla.org">bugzilla.mozilla.org</a> email to fetch your todos:</span>
     </div>
     <div id="content">
-      <div class="patches-tab tabs">
-         <div class="tab-head">
-         </div>
-         <div class="tab-body">
-        </div>
-      </div>
     </div>
     <footer>
       <p>
@@ -204,23 +45,13 @@
         <span class="divider">|</span>
         <span id="key-info">key shortcuts: </span>
       </p>
-      <button id="install">Install App</button>
+      <button id="install">Install app</button>
     </footer>
   </div>
 
   <iframe id="submit-iframe" name="submit-iframe" hidden>
   </iframe>
   <script>
-    /* From http://stackoverflow.com/questions/8400269/browser-native-autocomplete-for-ajaxed-forms */
-    function submitLogin() {
-      var iFrameWindow = document.getElementById("submit-iframe").contentWindow;
-      var cloned = document.getElementById("login-form").cloneNode(true);
-      iFrameWindow.document.body.appendChild(cloned);
-      var frameForm = iFrameWindow.document.getElementById("login-form");
-      frameForm.onsubmit = null;
-      frameForm.submit();
-      return false;
-    }
   </script>
   <script type="text/javascript">
     var _gaq = _gaq || [];

@@ -1,4 +1,5 @@
-@import url(//fonts.googleapis.com/css?family=Crete+Round:400,400italic);
+@import url(http://fonts.googleapis.com/css?family=Roboto:400,300,500,700);
+@import url(http://fonts.googleapis.com/css?family=Roboto+Slab:400,300,700);
 
 * {
   -moz-box-sizing: border-box;
@@ -10,12 +11,12 @@ html {
 }
 
 body {
-  font-size: 13.25px;
+  font-size: 13.5px;
   background-image: url(satinweave.png);
 }
 
 body, input, select, optgroup {
-  font-family: Helvetica Neue, Helvetica, sans-serif;
+  font-family: Roboto, Helvetica Neue, Helvetica, sans-serif;
 }
 
 a {
@@ -45,33 +46,44 @@ footer > a {
   text-align: center;
 }
 
+/* Special header displays */
+
 #error-message {
   color: red;
   font-size: 1.4em;
 }
 
-#header {
-  font-family: Crete Round, Helvetica Neue, sans-serif;
-  font-size: 2em;
+#welcome-message {
+  margin-top: 60px;
+  font-size: 22px;
+  font-weight: 300;
+}
+
+.keyword {
+  font-weight: 400;
+}
+
+/* Login */
+
+#login-container {
+  font-family: Roboto Slab, Helvetica, sans-serif;
+  font-size: 22px;
   color: #333;
   text-align: center;
   margin: 80px 0 30px 0;
   padding-left: 20px;
 }
 
-#header.was-logged-out {
-  transition: margin-top 2s ease, font-size 2s ease;
+#login-container.logged-out {
+  font-size: 2em;
 }
 
-#header.logged-in {
-  margin-top: 60px;
-  font-size: 1.4em;
+.logged-in {
+  transition: font-size 2s ease;
 }
-
-/* Login */
 
 #bug-icon {
-  margin-bottom: -2px;
+  margin-bottom: 0px;
   margin-right: 1px;
 }
 
@@ -81,7 +93,7 @@ footer > a {
 }
 
 #login-name {
-  font-weight: inherit;
+  font-weight: 300;
   font-family: inherit;
   color: inherit;
   background-color: inherit;
@@ -89,17 +101,15 @@ footer > a {
   box-sizing: border-box;
   border: none;
   vertical-align: 0px;
-  margin-left: -4px;
+  margin-left: 1px;
   margin-bottom: 2px;
-  width: 220px;
+  width: 280px;
   padding: 0.3em 0.3em 0.3em 0.3em;
-  font-style: italic;
   border: 1px solid transparent;
 }
 
-#header:not(.logged-in) #login-name {
+.logged-out #login-name {
   border: 1px solid #ddd;
-  width: 300px;
 }
 
 #login-name:focus {
@@ -120,10 +130,10 @@ footer > a {
 .tab,
 .tab:visited {
   font-weight: normal;
-  font-size: 1.1em;
+  font-size: 15.5px;
   display: inline-block;
   padding: 3px 0 8px 0;
-  margin: 0 6px;
+  margin: 0 0.45em;
   color: #888;
   border-bottom: 3px solid transparent;
 }
@@ -141,6 +151,14 @@ footer > a {
   font-weight: bold;
   border-bottom: 3px solid #333;
   color: #333;
+}
+
+.tab-content {
+  display: none;
+}
+
+.tab-content-selected {
+  display: block;
 }
 
 /* Sections */
@@ -182,11 +200,7 @@ footer > a {
   content: ")";
 }
 
-.new {
-  color: hsl(320, 80%, 50%);
-}
-
-.added-tally {
+.new-count {
   color: hsl(320, 80%, 50%);
   letter-spacing: -1px;
   font-weight: bold;
@@ -265,10 +279,13 @@ footer > a {
 }
 
 .bug {
-  white-space: nowrap;
   overflow: hidden;
-  max-width: 100%;
   text-overflow: ellipsis;
+}
+
+.bug-link {
+  width: 100px;
+  white-space: nowrap;
 }
 
 .bug-id:hover, .bug-summary {
@@ -332,14 +349,21 @@ footer > a {
 
 #install {
   display: none;
-  background-color: hsl(60, 95%, 96%);
+  color: #333;
+  background-color: hsl(0, 0%, 99%);
   border: 1px solid #ccc;
-  padding: 6px 20px;
-  text-transform: uppercase;
+  border-radius: 3px;
+  padding: 8px 14px;
 }
 
 #install.show-install {
   display: inline;
+}
+
+@media (min-width: 560px) {
+  #content {
+    width: 560px;
+  }
 }
 
 /* small screen */

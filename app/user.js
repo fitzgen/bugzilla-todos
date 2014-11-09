@@ -1,5 +1,5 @@
 /* -*- Mode: javascript; tab-width: 3; indent-tabs-mode: nil; c-basic-offset: 3; js-indent-level: 3; -*- */
-function User(username, limit) {
+function BugzillaUser(username, limit) {
    this.username = username;
    this.name = this.username.replace(/@.+/, "");
    this.limit = limit;
@@ -9,11 +9,11 @@ function User(username, limit) {
    });
 }
 
-User.prototype = {
+BugzillaUser.prototype = {
    fields : 'id,summary,status,resolution,last_change_time'
 }
 
-User.prototype.component = function(product, component, callback) {
+BugzillaUser.prototype.component = function(product, component, callback) {
    this.client.searchBugs({
       product: product,
       component: component,
@@ -23,7 +23,7 @@ User.prototype.component = function(product, component, callback) {
    }, callback);
 }
 
-User.prototype.bugs = function(methods, callback) {
+BugzillaUser.prototype.bugs = function(methods, callback) {
    var query = {
       email1: this.username,
       email1_type: "equals",
@@ -44,7 +44,49 @@ User.prototype.bugs = function(methods, callback) {
    this.client.searchBugs(query, callback);
 }
 
-User.prototype.requests = function(callback) {
+BugzillaUser.prototype.fetchTodos = function(callback) {
+   var total = 5;
+   var count = 0;  // lists fetched so far
+   var data = {};
+
+   this.toReview(function(err, requests) {
+      if (err) throw err;
+      data.review = {items: requests};
+      if (++count == total) {
+         callback(data);
+      }
+   });
+   this.toCheckin(function(err, requests) {
+      if (err) throw err;
+      data.checkin = {items: requests};
+      if (++count == total) {
+         callback(data);
+      }
+   });
+   this.toNag(function(err, requests) {
+      if (err) throw err;
+      data.nag = {items: requests};
+      if (++count == total) {
+         callback(data);
+      }
+   });
+   this.toRespond(function(err, requests) {
+      if (err) throw err;
+      data.respond = {items: requests};
+      if (++count == total) {
+         callback(data);
+      }
+   });
+   this.toFix(function(err, requests) {
+      if (err) throw err;
+      data.fix = {items: requests};
+      if (++count == total) {
+         callback(data);
+      }
+   });
+}
+
+BugzillaUser.prototype.toReview = function(callback) {
    var name = this.name;
 
    this.client.searchBugs({
@@ -93,13 +135,13 @@ User.prototype.requests = function(callback) {
             })
          }
       });
-      requests.sort(utils.byTime);
+      requests.sort(compareByTime);
 
       callback(null, requests);
    });
 }
 
-User.prototype.needsCheckin = function(callback) {
+BugzillaUser.prototype.toCheckin = function(callback) {
    var name = this.name;
 
    this.client.searchBugs({
@@ -166,7 +208,7 @@ User.prototype.needsCheckin = function(callback) {
             })
          }
       });
-      requests.sort(utils.byTime);
+      requests.sort(compareByTime);
 
       callback(null, requests);
   });
@@ -176,7 +218,7 @@ User.prototype.needsCheckin = function(callback) {
  * All the patches and bugs the user is awaiting action on
  * (aka they have a outstanding flag request)
  */
-User.prototype.awaitingFlag = function(callback) {
+BugzillaUser.prototype.toNag = function(callback) {
    var name = this.name;
 
    this.client.searchBugs({
@@ -234,13 +276,13 @@ User.prototype.awaitingFlag = function(callback) {
             });
          }
       })
-      requests.sort(utils.byTime);
+      requests.sort(compareByTime);
 
       callback(null, requests);
    })
 }
 
-User.prototype.toFix = function(callback) {
+BugzillaUser.prototype.toFix = function(callback) {
    var query = {
       email1: this.username,
       email1_type: "equals",
@@ -289,7 +331,7 @@ User.prototype.toFix = function(callback) {
 
 // Fetch all of each bugs dependencies and modify in place each bug's depends_on
 // array so that it only contains OPEN bugs that it depends on.
-User.prototype.fetchDeps = function(bugs, callback) {
+BugzillaUser.prototype.fetchDeps = function(bugs, callback) {
    // The number of bug requests we are waiting on.
    var waiting = 0;
 
@@ -339,7 +381,7 @@ User.prototype.fetchDeps = function(bugs, callback) {
    maybeFinish();
 };
 
-User.prototype.flagged = function(callback) {
+BugzillaUser.prototype.toRespond = function(callback) {
    var name = this.name;
 
    this.client.searchBugs({
@@ -372,4 +414,8 @@ User.prototype.flagged = function(callback) {
 
       callback(null, flags);
    });
+}
+
+function compareByTime(event1, event2) {
+  return new Date(event2.time) - new Date(event1.time);
 }

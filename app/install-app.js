@@ -1,4 +1,6 @@
-// Install app
+/**
+ * For installing this app as an Open Web App, e.g. on FirefoxOS
+ */
 if (navigator.mozApps) {
   var checkIfInstalled = navigator.mozApps.getSelf();
   checkIfInstalled.onsuccess = function () {
