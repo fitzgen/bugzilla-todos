@@ -176,16 +176,13 @@
     <div id="error-message"></div>
     <div id="header">
       <span id="title">
-        <img id="bug-icon" src="lib/bugzilla.png" title="Bugzilla"></img>
-         Todos
+        <img id="bug-icon" src="lib/bugzilla.png" title="Bugzilla">
+         Todos for
       </span>
-        <span id="login"> for
-          <form id="login-form" onsubmit="submitLogin()">
-            <input id="login-name"
-                   name="email" placeholder="Enter Bugzilla user..."/>
-          </form>
-        </span>
-      </span>
+      <form id="login-form" onsubmit="submitLogin()">
+        <input id="login-name"
+               name="email" placeholder="Enter Bugzilla user..."/>
+      </form>
     </div>
     <div id="content">
       <div class="patches-tab tabs">
@@ -211,7 +208,7 @@
     </footer>
   </div>
 
-  <iframe id="submit-iframe" name="submit-iframe" hidden="true">
+  <iframe id="submit-iframe" name="submit-iframe" hidden>
   </iframe>
   <script>
     /* From http://stackoverflow.com/questions/8400269/browser-native-autocomplete-for-ajaxed-forms */

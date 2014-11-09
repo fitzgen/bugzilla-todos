@@ -1,4 +1,4 @@
-@import url(http://fonts.googleapis.com/css?family=Crete+Round:400,400italic);
+@import url(//fonts.googleapis.com/css?family=Crete+Round:400,400italic);
 
 * {
   -moz-box-sizing: border-box;
@@ -40,7 +40,7 @@ footer > a {
 }
 
 #container {
-  max-width: 560px;
+  max-width: 580px;
   margin: 0 auto;
   text-align: center;
 }
@@ -75,11 +75,8 @@ footer > a {
   margin-right: 1px;
 }
 
-#login {
-  margin-left: 0.1em;
-}
-
 #login-form {
+  margin-left: 0.1em;
   display: inline-block;
 }
 
