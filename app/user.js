@@ -1,4 +1,6 @@
 /* -*- Mode: javascript; tab-width: 3; indent-tabs-mode: nil; c-basic-offset: 3; js-indent-level: 3; -*- */
+var BugzillaUser = (function() {
+
 function BugzillaUser(username, limit) {
    this.username = username;
    this.name = this.username.replace(/@.+/, "");
@@ -163,7 +165,7 @@ BugzillaUser.prototype.toCheckin = function(callback) {
       var requests = [];
 
       function readyToLand(att) {
-         if (att.is_obsolete || !utils.isCodeAttachment(att) || !att.flags
+         if (att.is_obsolete || !isCodeAttachment(att) || !att.flags
              || att.attacher.name != name) {
             return false;
          }
@@ -304,7 +306,7 @@ BugzillaUser.prototype.toFix = function(callback) {
          }
 
          var patchForReview = bug.attachments.some(function(att) {
-            if (att.is_obsolete || !utils.isCodeAttachment(att) || !att.flags) {
+            if (att.is_obsolete || !isCodeAttachment(att) || !att.flags) {
                return false;
             }
             var reviewFlag = att.flags.some(function(flag) {
@@ -416,6 +418,14 @@ BugzillaUser.prototype.toRespond = function(callback) {
    });
 }
 
-function compareByTime(event1, event2) {
-  return new Date(event2.time) - new Date(event1.time);
+function isCodeAttachment(att) {
+   return att.is_patch || att.content_type == "text/x-github-pull-request"
+      || att.content_type == "text/x-review-board-request";
 }
+
+function compareByTime(event1, event2) {
+   return new Date(event2.time) - new Date(event1.time);
+}
+
+return BugzillaUser;
+})();
