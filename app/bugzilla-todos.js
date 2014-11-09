@@ -411,6 +411,6 @@ var TodosApp = (function() {
 $(document).ready(function() {
   var interval = 1000 * 60 * 20; // twenty minutes
 
-  React.renderComponent(<TodosApp pollInterval={interval}/>,
-                        document.getElementById("content"))
+  React.render(<TodosApp pollInterval={interval}/>,
+               document.getElementById("content"))
 });
