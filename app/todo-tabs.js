@@ -305,7 +305,7 @@ var TodoTabs = (function() {
       return (
         <div className="bug">
           <a className="bug-link" href={bugURL + bug.id}
-             target="_blank" title={bug.status + " " + bug.id + "-" + bug.summary}>
+             target="_blank" title={bug.status + " - " + bug.summary}>
             <span className="bug-id">
               {bug.id}
             </span>
