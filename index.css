@@ -36,10 +36,6 @@ footer {
   text-align: center;
 }
 
-footer > a {
-  text-decoration: underline;
-}
-
 #container {
   max-width: 580px;
   margin: 0 auto;
@@ -163,24 +159,6 @@ footer > a {
 
 /* Sections */
 
-#patch {
-  box-shadow: rgba(0,0,0,.2) 0 .15em 0.6em;
-  border-radius: 4px 4px 0 0;
-  margin: 1em;
-  background-color: white;
-  border: 1px solid #CCC;
-  float: left;
-}
-
-.header {
-  font-size: 1.1em;
-  border-bottom: 1px solid #ccc;
-  border-radius: 2px 2px 0 0;
-  padding: 9px 14px;
-  font-weight: bold;
-  background: linear-gradient(#ededed, #eee);
-}
-
 #content {
   display: inline-block;
   text-align: left;
@@ -248,12 +226,7 @@ footer > a {
 
 /* Attachments */
 
-.attachment {
-  display: inline-block;
-  padding: 2px 0;
-}
-
-.att-link, .att-link:visited { /* FIXME */
+.att-link, .att-link:visited {
   display: inline-block;
   vertical-align: text-bottom;
   white-space: nowrap;
@@ -266,10 +239,6 @@ footer > a {
   margin-left: 2px;
   font-size: .9em;
   color: #999;
-}
-
-.att-name {
-  color: #444;
 }
 
 .bug-id {
@@ -290,28 +259,6 @@ footer > a {
 
 .bug-id:hover, .bug-summary {
   text-decoration: inherit;
-}
-
-/* Review section */
-
-.review-type {
-  color: inherit;
-  background-color: #eff4ef;
-  font-size: 0.9em;
-  border: 1px solid #ededed;
-  border-radius: 2px;
-  padding: 1px 4px;
-  float: right;
-  cursor: pointer;
-}
-
-.review-type:hover {
-  background-color: #ded;
-  text-decoration: none;
-}
-
-.review-type:active {
-  background-color: #cdc;
 }
 
 /* Micellaneous */
