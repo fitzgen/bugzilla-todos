@@ -162,7 +162,8 @@ footer {
 #content {
   display: inline-block;
   text-align: left;
-  margin-bottom: 40px;
+  min-height: 400px;
+  margin-bottom: 30px;
   max-width: 100%;
 }
 
