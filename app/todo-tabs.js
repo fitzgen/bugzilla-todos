@@ -46,21 +46,25 @@ var TodoTabs = (function() {
         var className = "tab" + (selectedTab == item.id ? " tab-selected" : "");
 
         return (
-          <a href="#" className={className} title={item.alt}
-             onClick={this.onClick.bind(this, item.id)}>
-            {item.name}
-            <span className="count">
-              {count}
-            </span>
-            {newCount}
-          </a>
+          <li>
+            <a className={className} title={item.alt}
+               onClick={this.onClick.bind(this, item.id)}>
+              {item.name}
+              <span className="count">
+                {count}
+              </span>
+              {newCount}
+            </a>
+          </li>
         );
       }.bind(this));
 
       return (
-        <div className="tab-head">
-          {tabNodes}
-        </div>
+        <nav className="tab-head">
+          <ul>
+            {tabNodes}
+          </ul>
+        </nav>
       );
     },
     onClick: function(index) {

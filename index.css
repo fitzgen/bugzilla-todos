@@ -30,6 +30,14 @@ a:visited {
   color: inherit;
 }
 
+nav ul {
+  margin: 0;
+  padding: 0;
+}
+nav li {
+  display: inline-block;
+}
+
 footer {
   color: grey;
   margin: 40px 0;
@@ -132,6 +140,7 @@ footer {
   margin: 0 0.45em;
   color: #888;
   border-bottom: 3px solid transparent;
+  cursor: pointer;
 }
 
 .tab:hover {
