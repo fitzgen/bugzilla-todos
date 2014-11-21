@@ -1,4 +1,5 @@
 # Bugzilla Todos
+[![Gitter](https://badges.gitter.im/Join Chat.svg)](https://gitter.im/harthur/bugzilla-todos?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 Bugzilla Todos is a quick way to see your outstanding Bugzilla requests.
 
