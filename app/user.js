@@ -1,8 +1,24 @@
 var BugzillaUser = (function() {
+  function isPending(flag) {
+    return flag.status == "?"
+  }
+
+  function isFlagMatchesUser(field, username) {
+    var name = username.replace(/@.+/, "").toLowerCase();
+    return function(flag) {
+      return flag[field] &&
+             flag[field].name &&
+             flag[field].name.toLowerCase() == name
+    }
+  }
+
   function BugzillaUser(username, limit) {
     this.username = username;
-    this.name = this.username.replace(/@.+/, "");
     this.limit = limit;
+
+    this.isSetter = isFlagMatchesUser("setter", username);
+    this.isRequestee = isFlagMatchesUser("requestee", username);
+    this.isAttacher = isFlagMatchesUser("attacher", username);
 
     this.client = bz.createClient({
       username: username
@@ -97,7 +113,7 @@ var BugzillaUser = (function() {
   }
 
   BugzillaUser.prototype.toReview = function(callback) {
-    var name = this.name;
+    var isRequestee = this.isRequestee;
 
     this.client.searchBugs({
         'field0-0-0': 'flag.requestee',
@@ -125,7 +141,7 @@ var BugzillaUser = (function() {
               return;
             }
             att.flags.some(function(flag) {
-              if (flag.requestee && flag.requestee.name == name && flag.status == "?") {
+              if (isPending(flag) && isRequestee(flag)) {
                 att.bug = bug;
                 att.type = flag.name;
                 att.time = att.last_change_time;
@@ -151,7 +167,7 @@ var BugzillaUser = (function() {
   }
 
   BugzillaUser.prototype.toCheckin = function(callback) {
-    var name = this.name;
+    var isAttacher = this.isAttacher;
 
     this.client.searchBugs({
         'field0-0-0': 'attachment.attacher',
@@ -174,7 +190,7 @@ var BugzillaUser = (function() {
         var requests = [];
 
         function readyToLand(att) {
-          if (att.is_obsolete || !isCodeAttachment(att) || !att.flags || att.attacher.name != name) {
+          if (att.is_obsolete || !isCodeAttachment(att) || !att.flags || !isAttacher(att)) {
             return false;
           }
 
@@ -227,7 +243,9 @@ var BugzillaUser = (function() {
    * (aka they have a outstanding flag request)
    */
   BugzillaUser.prototype.toNag = function(callback) {
-    var name = this.name;
+    var isSetter = this.isSetter;
+    var isRequestee = this.isRequestee;
+
 
     this.client.searchBugs({
       'field0-0-0': 'flag.setter',
@@ -250,7 +268,7 @@ var BugzillaUser = (function() {
 
         if (bug.flags) {
           bug.flags.forEach(function(flag) {
-            if (flag.status == "?" && flag.setter && flag.setter.name == name && (!flag.requestee || flag.requestee.name != name) && flag.name != "in-testsuite") {
+            if (isPending(flag) && isSetter(flag) && !isRequestee(flag) && flag.name != "in-testsuite") {
               flags.push(flag);
             }
           });
@@ -262,7 +280,7 @@ var BugzillaUser = (function() {
             }
 
             att.flags.some(function(flag) {
-              if (flag.status == "?" && flag.setter.name == name) {
+              if (isPending(flag) && isSetter(flag)) {
                 att.bug = bug;
                 atts.push(att);
                 return true;
@@ -391,7 +409,7 @@ var BugzillaUser = (function() {
   };
 
   BugzillaUser.prototype.toRespond = function(callback) {
-    var name = this.name;
+    var isRequestee = this.isRequestee;
 
     this.client.searchBugs({
         'field0-0-0': 'flag.requestee',
@@ -409,7 +427,7 @@ var BugzillaUser = (function() {
             return;
           }
           bug.flags.forEach(function(flag) {
-            if (flag.requestee && flag.requestee.name == name) {
+            if (isRequestee(flag)) {
               flags.push({
                 name: flag.name,
                 flag: flag,
