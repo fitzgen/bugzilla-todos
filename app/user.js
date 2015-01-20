@@ -336,7 +336,10 @@ var BugzillaUser = (function() {
             return flag.name == "review" && (flag.status == "?" ||
               flag.status == "+");
           });
-          return reviewFlag;
+          var checkedIn = att.flags.some(function(flag) {
+            return flag.name == "checkin" && flag.status == "+";
+          });
+          return reviewFlag && !checkedIn;
         });
         return !patchForReview;
       });
