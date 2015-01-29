@@ -21,8 +21,16 @@ For the given username, Bugzilla Todos will display:
 
 Bugzilla Todos uses [bz.js](https://github.com/canuckistani/bz.js) to make calls to the Bugzilla REST API. The Bugzilla queries used in the app are located in `app/user.js`.
 
-The UI uses the [React](http://facebook.github.io/react/) library. Build the react JSX files with:
+The UI uses the [React](http://facebook.github.io/react/) library. With [Node.js](http://nodejs.org/) installed, install react-tools using:
+
+```
+npm install react-tools -g
+```
+
+Then build the react JSX files with:
 
 ```
 jsx app/ build/ --source-map-inline --watch &
 ```
+
+Note: All files in app/ are currently built, but only those using JSX syntax need to be checked into the repository - the others are used untouched from the app directory.
