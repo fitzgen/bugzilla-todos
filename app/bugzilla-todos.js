@@ -52,6 +52,22 @@ var TodosApp = (function() {
 
     set includeBlockedBugs(shouldInclude) {
       localStorage['bztodos-include-blocked-bugs'] = JSON.stringify(shouldInclude);
+    },
+
+    get notifications() {
+      // default is false
+      var result = (localStorage['bztodos-notifications'] === 'true');
+      if (result) {
+        maybeAskNotifcationPermission();
+      }
+      return result;
+    },
+
+    set notifications(shouldNotify) {
+      if (shouldNotify) {
+        maybeAskNotifcationPermission();
+      }
+      localStorage['bztodos-notifications'] = JSON.stringify(!!shouldNotify);
     }
   }
 
@@ -76,7 +92,8 @@ var TodosApp = (function() {
       return {
         data: {review: {}, checkin: {}, nag: {}, respond: {}, fix: {}},
         selectedTab: TodosStorage.selectedTab || "review",
-        includeBlockedBugs: TodosStorage.includeBlockedBugs
+        includeBlockedBugs: TodosStorage.includeBlockedBugs,
+        notifications: TodosStorage.notifications
       };
     },
 
@@ -116,6 +133,7 @@ var TodosApp = (function() {
           <TodoTabs tabs={tabs} data={this.state.data}
                     selectedTab={this.state.selectedTab}
                     includeBlockedBugs={this.state.includeBlockedBugs}
+                    notifications={this.state.notifications}
                     onTabSelect={this.handleTabSelect}/>
         </div>
       );
@@ -210,6 +228,10 @@ var TodosApp = (function() {
         }
         // cache the count of new items for easy fetching
         newData[id].newCount = newCount;
+      }
+
+      if (totalNew > 0 && this.state.notifications && window.Notification && window.Notification.permission === 'granted') {
+        new Notification('+' + totalNew + ' bugs in ' + document.title);
       }
 
       return totalNew;
@@ -326,6 +348,15 @@ var TodosApp = (function() {
       var checkbox = $("#include-blocked-bugs");
       checkbox.attr("checked", TodosStorage.includeBlockedBugs);
       checkbox.change(this.setIncludeBlockedBugs);
+
+      if (window.Notification) {
+        var notifications = $("#notifications");
+        notifications.attr("checked", TodosStorage.notifications);
+        notifications.change(this.setNotifications);
+      } else {
+        // No notifications available.
+        $("#notifications-container").css({display: "none"});
+      }
     },
 
     setIncludeBlockedBugs: function(event) {
@@ -333,6 +364,13 @@ var TodosApp = (function() {
       TodosStorage.includeBlockedBugs = shouldInclude;
 
       this.setState({includeBlockedBugs: shouldInclude});
+    },
+
+    setNotifications: function(event) {
+      var shouldNotify = event.target.checked;
+      TodosStorage.notifications = shouldNotify;
+
+      this.setState({notifications: shouldNotify});
     }
   });
 
@@ -403,6 +441,16 @@ var TodosApp = (function() {
       query[pair[0]] = decodeURIComponent(pair[1]);
     }
     return query;
+  }
+
+  function maybeAskNotifcationPermission() {
+    if (window.Notification && Notification.permission !== 'granted') {
+      Notification.requestPermission(function (status) {
+        if (Notification.permission !== status) {
+          Notification.permission = status;
+        }
+      });
+    }
   }
 
   return TodosApp;
