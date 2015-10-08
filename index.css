@@ -33,21 +33,29 @@ a:visited {
 nav ul {
   margin: 0;
   padding: 0;
+  display: flex;
+  flex-direction: row;
 }
+
 nav li {
-  display: inline-block;
+  flex: 1;
 }
 
 footer {
   color: grey;
-  margin: 40px 0;
   text-align: center;
 }
 
-#container {
-  max-width: 580px;
-  margin: 0 auto;
+body {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
   text-align: center;
+  display: flex;
+  flex-direction: column;
+  padding: 2em;
 }
 
 /* Special header displays */
@@ -74,8 +82,6 @@ footer {
   font-size: 22px;
   color: #333;
   text-align: center;
-  margin: 80px 0 30px 0;
-  padding-left: 20px;
 }
 
 #login-container.logged-out {
@@ -158,22 +164,49 @@ footer {
   color: #333;
 }
 
+.tab-body {
+  display: flex;
+  flex-direction: row;
+  background-color: white;
+  overflow: hidden;
+  height: 100%;
+  border-left: 1px solid #ccc;
+  border-right: 1px solid #ccc;
+  border-bottom: 1px solid #ccc;
+  border-radius: 0 0 5px 5px;
+}
+
 .tab-content {
-  display: none;
+  flex: 1;
+  overflow: scroll;
+  border-right: 5px solid #eaeaea;
+}
+
+.tab-content:last-of-type {
+  border-right: none;
 }
 
 .tab-content-selected {
-  display: block;
 }
 
 /* Sections */
 
 #content {
-  display: inline-block;
+  display: flex;
+  flex-direction: column;
   text-align: left;
-  min-height: 400px;
-  margin-bottom: 30px;
-  max-width: 100%;
+  width: 100%;
+  overflow: hidden;
+}
+
+#content > div {
+  height: 100%;
+  overflow: hidden;
+}
+
+#todo-lists {
+  height: 100%;
+  overflow: hidden;
 }
 
 .count {
@@ -199,8 +232,10 @@ footer {
   padding: 0.8em;
   background-color: white;
   border-top: 1px solid #ccc;
-  border-left: 1px solid #ccc;
-  border-right: 1px solid #ccc;
+}
+
+.list-item:first-of-type {
+  border-top: none;
 }
 
 .new-item {
@@ -264,7 +299,6 @@ footer {
 
 .bug-link {
   width: 100px;
-  white-space: nowrap;
 }
 
 .bug-id:hover, .bug-summary {
@@ -315,12 +349,6 @@ footer {
 
 #install.show-install {
   display: inline;
-}
-
-@media (min-width: 560px) {
-  #content {
-    width: 560px;
-  }
 }
 
 /* small screen */

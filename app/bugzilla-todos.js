@@ -409,7 +409,7 @@ var TodosApp = (function() {
 })();
 
 $(document).ready(function() {
-  var interval = 1000 * 60 * 20; // twenty minutes
+  var interval = 1000 * 60 * 5; // 5 minutes
 
   React.render(<TodosApp pollInterval={interval}/>,
                document.getElementById("content"))
