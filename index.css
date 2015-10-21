@@ -165,11 +165,11 @@ body {
 }
 
 .tab-body {
+  flex: 1 1 auto;
   display: flex;
   flex-direction: row;
   background-color: white;
   overflow: hidden;
-  height: 100%;
   border-left: 1px solid #ccc;
   border-right: 1px solid #ccc;
   border-bottom: 1px solid #ccc;
@@ -202,11 +202,15 @@ body {
 #content > div {
   height: 100%;
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
 }
 
 #todo-lists {
-  height: 100%;
   overflow: hidden;
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
 }
 
 .count {
