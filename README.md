@@ -6,7 +6,7 @@ You can view yours at:
 
 [https://fitzgen.github.com/bugzilla-todos](https://fitzgen.github.com/bugzilla-todos)
 
-You can also add a `email=name@mail.com` to the url to get the dashboard for a particular user. It's also hosted at [http://bugmotodo.org/](http://bugmotodo.org/) for an easier url.
+You can also add a `email=name@mail.com` to the url to get the dashboard for a particular user.
 
 ## details
 
